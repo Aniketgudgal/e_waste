@@ -312,201 +312,127 @@
 
   <!-- Main Content -->
   <main id="main-content" class="relative">
-    <!-- AI-Powered Hero Section -->
-    <section id="home" class="relative overflow-hidden bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 min-h-screen flex items-center">
-      <!-- Animated Background -->
-      <div class="absolute inset-0 bg-black bg-opacity-10">
-        <div class="absolute inset-0 opacity-10">
-          <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <defs>
-              <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
+    <!-- AI-Powered Hero Section (Redesigned) -->
+    <section id="home" class="relative overflow-hidden min-h-screen flex items-center">
+      <!-- Animated Gradient Background -->
+      <div class="absolute inset-0 -z-10" aria-hidden="true" style="background: linear-gradient(135deg, rgba(16,185,129,0.9), rgba(59,130,246,0.9), rgba(147,51,234,0.9)); filter: saturate(1.05);">
+        <svg class="w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="hero-grid" width="12" height="12" patternUnits="userSpaceOnUse">
+              <path d="M12 0 L0 0 0 12" fill="none" stroke="white" stroke-width="0.4" opacity="0.08"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid)" />
+        </svg>
       </div>
 
-      <!-- Floating AI Elements -->
-      <div class="absolute top-20 left-10 animate-bounce">
-        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
+      <!-- Floating interactive widgets -->
+      <div class="absolute top-16 left-12 floating interactive-card" data-speed="0.2" role="button" tabindex="0" aria-label="AI Brain Widget">
+        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 hover:scale-110 transition-transform">
           <i class="fas fa-brain text-white text-2xl"></i>
         </div>
-      </div>
-      <div class="absolute top-40 right-20 animate-pulse">
-        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
-          <i class="fas fa-robot text-white text-xl"></i>
-        </div>
-      </div>
-      <div class="absolute bottom-32 left-20 animate-bounce" style="animation-delay: 1s;">
-        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
-          <i class="fas fa-magic text-white text-2xl"></i>
-        </div>
+        <div class="mt-2 text-xs text-white/85 text-center">AI Brain</div>
       </div>
 
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="absolute top-36 right-20 floating interactive-card" data-speed="0.18" role="button" tabindex="0" aria-label="AI Bot Widget">
+        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 hover:scale-110 transition-transform">
+          <i class="fas fa-robot text-white text-xl"></i>
+        </div>
+        <div class="mt-2 text-xs text-white/85 text-center">Bot</div>
+      </div>
+
+      <div class="absolute bottom-36 left-20 floating interactive-card" data-speed="0.22" role="button" tabindex="0" aria-label="Magic AI Widget">
+        <div class="w-20 h-20 bg-white/18 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/18 hover:scale-110 transition-transform">
+          <i class="fas fa-magic text-white text-2xl"></i>
+        </div>
+        <div class="mt-2 text-xs text-white/85 text-center">Magic AI</div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div class="text-center">
-          <!-- AI-Powered Headline -->
-          <div class="mb-8">
-            <div class="inline-flex items-center bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white border-opacity-30">
-              <i class="fas fa-sparkles text-yellow-300 mr-2"></i>
+          <div class="mb-8 fade-in-up">
+            <div class="inline-flex items-center bg-white/10 backdrop-blur rounded-full px-6 py-3 mb-6 border border-white/10">
+              <i class="fas fa-sparkles text-yellow-300 mr-3 animate-pulse"></i>
               <span class="text-white font-medium">AI-Powered Recycling Platform</span>
+              <button id="voice-search-btn" class="ml-3 text-white/90 hover:text-yellow-300 transition-colors" title="Voice Commands" aria-label="Voice commands">
+                <i class="fas fa-microphone"></i>
+              </button>
             </div>
-            <h1 class="text-6xl md:text-8xl font-black text-white mb-6 animate-fade-in-up leading-tight">
-              Turn Your <span class="text-yellow-300 relative">
-                E-Waste
-                <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0,5 Q25,0 50,5 T100,5" stroke="rgba(253, 224, 71, 0.8)" stroke-width="3" fill="none"/>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight tracking-tight mb-6">
+              Turn Your <span class="text-yellow-300 relative">E-Waste
+                <svg class="absolute -bottom-3 left-0 w-full opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0,8 Q50,0 100,8" stroke="currentColor" stroke-width="3" fill="none"/>
                 </svg>
               </span><br>
               into <span class="text-yellow-300">Smart Rewards</span>
             </h1>
-            <div class="w-32 h-1 bg-yellow-300 mx-auto mb-8 rounded-full"></div>
-            <p class="text-xl md:text-2xl text-white text-opacity-95 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-300 font-light">
-              Experience the future of e-waste management with AI-driven insights, smart scheduling,
+
+            <div class="mx-auto max-w-3xl text-lg md:text-xl text-white/95 mb-8 fade-in-up">
+              Experience the future of e-waste management with AI-driven insights, predictive scheduling,
               personalized rewards, and real-time environmental impact tracking.
-            </p>
+            </div>
           </div>
 
-          <!-- AI CTA Buttons -->
-          <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16 animate-fade-in-up animation-delay-500">
-            <button onclick="scrollToSection('centers')"
-                    class="group relative bg-white text-green-600 px-10 py-5 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden">
-              <span class="relative z-10 flex items-center">
-                <i class="fas fa-search mr-3"></i>
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-5 justify-center mb-14 fade-in-up">
+            <button onclick="scrollToSection('centers')" class="btn-ripple relative overflow-hidden bg-white text-green-600 px-8 py-4 rounded-3xl font-semibold text-lg shadow-lg hover:scale-105 transition-transform">
+              <span class="flex items-center gap-3">
+                <i class="fas fa-search"></i>
                 AI Smart Search
-                <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform duration-300"></i>
               </span>
-              <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
             </button>
 
-            <button onclick="scrollToSection('pickup')"
-                    class="group relative bg-transparent border-3 border-white text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-white hover:text-green-600 transform hover:scale-105 transition-all duration-500 backdrop-blur-sm">
-              <span class="flex items-center">
-                <i class="fas fa-calendar-plus mr-3"></i>
+            <button onclick="scrollToSection('pickup')" class="btn-ripple relative overflow-hidden border-2 border-white text-white px-8 py-4 rounded-3xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-colors">
+              <span class="flex items-center gap-3">
+                <i class="fas fa-calendar-plus"></i>
                 Smart Scheduling
-                <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform duration-300"></i>
               </span>
             </button>
 
-            <button onclick="scrollToSection('rewards')"
-                    class="group relative bg-yellow-400 text-green-800 px-10 py-5 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500">
-              <span class="flex items-center">
-                <i class="fas fa-gift mr-3"></i>
+            <button onclick="scrollToSection('rewards')" class="btn-ripple relative overflow-hidden bg-yellow-400 text-green-800 px-8 py-4 rounded-3xl font-semibold text-lg shadow-lg hover:scale-105 transition-transform">
+              <span class="flex items-center gap-3">
+                <i class="fas fa-gift"></i>
                 AI Rewards
-                <i class="fas fa-star ml-3 text-yellow-600 animate-pulse"></i>
               </span>
             </button>
           </div>
 
-          <!-- AI-Powered Stats -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto animate-fade-in-up animation-delay-700">
-            <div class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 hover:bg-opacity-25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2">
-              <div class="flex items-center justify-center mb-4">
-                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <i class="fas fa-weight-hanging text-white text-2xl"></i>
-                </div>
-              </div>
-              <div class="counter text-4xl font-black text-white mb-2" id="waste-counter">0</div>
-              <p class="text-white text-opacity-90 font-semibold">E-waste Recycled</p>
-              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-4 rounded-full"></div>
-              <p class="text-white text-opacity-75 text-sm mt-2">AI-optimized collection</p>
+          <!-- Live Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center interactive-card">
+              <div class="text-3xl font-black text-white mb-2 counter" id="waste-counter">15,247</div>
+              <div class="text-sm text-white/80">E-waste Recycled (kg)</div>
+              <div class="text-xs text-green-200 mt-2">+12 kg today</div>
             </div>
 
-            <div class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 hover:bg-opacity-25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2">
-              <div class="flex items-center justify-center mb-4">
-                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <i class="fas fa-users text-white text-2xl"></i>
-                </div>
-              </div>
-              <div class="counter text-4xl font-black text-white mb-2" id="users-counter">0</div>
-              <p class="text-white text-opacity-90 font-semibold">Active Users</p>
-              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-4 rounded-full"></div>
-              <p class="text-white text-opacity-75 text-sm mt-2">Growing community</p>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center interactive-card">
+              <div class="text-3xl font-black text-white mb-2 counter" id="users-counter">8,924</div>
+              <div class="text-sm text-white/80">Active Users</div>
+              <div class="text-xs text-blue-200 mt-2">+5 users online</div>
             </div>
 
-            <div class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 hover:bg-opacity-25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2">
-            <div class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 hover:bg-opacity-25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2">
-              <div class="flex items-center justify-center mb-4">
-                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <i class="fas fa-cloud text-white text-2xl"></i>
-                </div>
-              </div>
-              <div class="counter text-4xl font-black text-white mb-2" id="co2-counter">0</div>
-              <p class="text-white text-opacity-90 font-semibold">CO₂ Saved</p>
-              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-4 rounded-full"></div>
-              <p class="text-white text-opacity-75 text-sm mt-2">Environmental impact</p>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center interactive-card">
+              <div class="text-3xl font-black text-white mb-2 counter" id="co2-counter">2,156</div>
+              <div class="text-sm text-white/80">CO₂ Saved (kg)</div>
+              <div class="text-xs text-green-200 mt-2">+8 kg saved today</div>
             </div>
 
-            <div class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 hover:bg-opacity-25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2">
-              <div class="flex items-center justify-center mb-4">
-                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <i class="fas fa-brain text-white text-2xl"></i>
-                </div>
-              </div>
-              <div class="counter text-4xl font-black text-white mb-2" id="ai-insights-counter">0</div>
-              <p class="text-white text-opacity-90 font-semibold">AI Insights</p>
-              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-4 rounded-full"></div>
-              <p class="text-white text-opacity-75 text-sm mt-2">Smart recommendations</p>
-            </div>
-          </div>
-
-          <!-- AI Features Showcase -->
-          <div class="mt-20 bg-white bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 animate-fade-in-up animation-delay-900">
-            <h3 class="text-2xl font-bold text-white mb-6 flex items-center justify-center">
-              <i class="fas fa-sparkles text-yellow-300 mr-3"></i>
-              Powered by Advanced AI
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="text-center">
-                <div class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <i class="fas fa-search text-green-800"></i>
-                </div>
-                <h4 class="text-white font-semibold mb-2">Smart Search</h4>
-                <p class="text-white text-opacity-90 text-sm">AI-powered location and item detection</p>
-              </div>
-              <div class="text-center">
-                <div class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <i class="fas fa-calendar-check text-green-800"></i>
-                </div>
-                <h4 class="text-white font-semibold mb-2">Predictive Scheduling</h4>
-                <p class="text-white text-opacity-90 text-sm">Optimal pickup times based on your habits</p>
-              </div>
-              <div class="text-center">
-                <div class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <i class="fas fa-gift text-green-800"></i>
-                </div>
-                <h4 class="text-white font-semibold mb-2">Personalized Rewards</h4>
-                <p class="text-white text-opacity-90 text-sm">Tailored incentives based on your profile</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trust Indicators -->
-          <div class="mt-16 flex flex-wrap justify-center items-center gap-8 text-white text-opacity-90 animate-fade-in-up animation-delay-1100">
-            <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-              <i class="fas fa-shield-alt text-yellow-300"></i>
-              <span class="font-semibold">AI-Secured Platform</span>
-            </div>
-            <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-              <i class="fas fa-clock text-yellow-300"></i>
-              <span class="font-semibold">24/7 AI Support</span>
-            </div>
-            <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-full px-4 py-2 border border-white border-opacity-20">
-              <i class="fas fa-award text-yellow-300"></i>
-              <span class="font-semibold">Award-Winning AI</span>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center interactive-card">
+              <div class="text-3xl font-black text-white mb-2 counter" id="ai-insights-counter">47,392</div>
+              <div class="text-sm text-white/80">AI Insights</div>
+              <div class="text-xs text-purple-200 mt-2">+23 insights today</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- AI Scroll Indicator -->
-      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div class="w-8 h-14 border-2 border-white border-opacity-50 rounded-full flex justify-center pt-2">
-          <div class="w-1.5 h-3 bg-white bg-opacity-50 rounded-full animate-pulse"></div>
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer" onclick="scrollToSection('centers')" aria-hidden="false">
+        <div class="w-8 h-14 border-2 border-white/60 rounded-full flex justify-center pt-2">
+          <div class="w-1.5 h-3 bg-white/60 rounded-full animate-pulse"></div>
         </div>
-        <p class="text-white text-opacity-75 text-sm mt-2 font-medium">Explore AI Features</p>
+        <p class="text-white/80 text-sm mt-2 text-center">Explore AI Features</p>
       </div>
     </section>
 
