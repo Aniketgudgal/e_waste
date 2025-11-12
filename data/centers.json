@@ -1,0 +1,40 @@
+{
+  "centers": [
+    {
+      "id": 1,
+      "name": "E-Zero Center Pune",
+      "lat": 18.5204,
+      "lng": 73.8567,
+      "address": "123 Green Street, Pune, Maharashtra",
+      "certificates": ["ISO 14001", "EPR Certified"],
+      "accepts": ["phones", "laptops", "batteries"],
+      "verified": true,
+      "contact": "+91-9876543210",
+      "hours": "9 AM - 6 PM"
+    },
+    {
+      "id": 2,
+      "name": "GreenRecycle Mumbai",
+      "lat": 19.0760,
+      "lng": 72.8777,
+      "address": "456 Eco Lane, Mumbai, Maharashtra",
+      "certificates": ["CPCB Approved"],
+      "accepts": ["appliances", "batteries"],
+      "verified": true,
+      "contact": "+91-9876543211",
+      "hours": "10 AM - 5 PM"
+    },
+    {
+      "id": 3,
+      "name": "TechWaste Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025,
+      "address": "789 Recycle Road, Delhi",
+      "certificates": ["Pending"],
+      "accepts": ["phones", "laptops"],
+      "verified": false,
+      "contact": "+91-9876543212",
+      "hours": "8 AM - 7 PM"
+    }
+  ]
+}

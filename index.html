@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Zero - Turn E-Waste into Rewards</title>
+  <meta name="description" content="Schedule doorstep e-waste pickup and earn rewards for responsible recycling.">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50">
+  <!-- Advanced Header -->
+  <header class="bg-white shadow-xl sticky top-0 z-50 border-b border-green-100">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo & Brand -->
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <img src="assets/logo.svg" alt="E-Zero Logo" class="h-12 w-12 transition-transform hover:scale-110">
+            <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">E-Zero</h1>
+            <p class="text-xs text-gray-500 hidden sm:block">Sustainable E-Waste Solutions</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex items-center space-x-8">
+          <a href="#home" class="nav-link text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+            <i class="fas fa-home mr-2"></i>Home
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#centers" class="nav-link text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+            <i class="fas fa-map-marker-alt mr-2"></i>Centers
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#pickup" class="nav-link text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+            <i class="fas fa-calendar-check mr-2"></i>Pickup
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#rewards" class="nav-link text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+            <i class="fas fa-gift mr-2"></i>Rewards
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#impact" class="nav-link text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+            <i class="fas fa-chart-line mr-2"></i>Impact
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        </div>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-4">
+          <!-- Language Selector -->
+          <div class="relative">
+            <button id="lang-selector" class="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors">
+              <i class="fas fa-globe"></i>
+              <span id="current-lang">EN</span>
+              <i class="fas fa-chevron-down text-xs"></i>
+            </button>
+            <div id="lang-dropdown" class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border hidden z-10">
+              <button class="lang-option block w-full text-left px-4 py-2 hover:bg-green-50 rounded-t-lg" data-lang="en">English</button>
+              <button class="lang-option block w-full text-left px-4 py-2 hover:bg-green-50" data-lang="hi">हिंदी</button>
+              <button class="lang-option block w-full text-left px-4 py-2 hover:bg-green-50 rounded-b-lg" data-lang="mr">मराठी</button>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button id="notification-btn" class="relative text-gray-700 hover:text-green-600 transition-colors">
+              <i class="fas fa-bell text-xl"></i>
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+            </button>
+            <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border hidden z-10 max-h-96 overflow-y-auto">
+              <div class="p-4 border-b">
+                <h3 class="font-semibold text-gray-900">Notifications</h3>
+              </div>
+              <div class="notification-item p-4 border-b hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-start space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <i class="fas fa-check-circle text-green-600"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900">Pickup Confirmed</p>
+                    <p class="text-sm text-gray-500">Your e-waste pickup is scheduled for tomorrow</p>
+                    <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                  </div>
+                </div>
+              </div>
+              <div class="notification-item p-4 border-b hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-start space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <i class="fas fa-gift text-blue-600"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900">Reward Earned</p>
+                    <p class="text-sm text-gray-500">You earned 50 points for recycling</p>
+                    <p class="text-xs text-gray-400 mt-1">1 day ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Menu -->
+          <div class="relative">
+            <button id="user-menu-btn" class="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors">
+              <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                JD
+              </div>
+              <span class="hidden md:block font-medium">John Doe</span>
+              <i class="fas fa-chevron-down text-xs"></i>
+            </button>
+            <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border hidden z-10">
+              <div class="px-4 py-3 border-b">
+                <p class="text-sm font-medium text-gray-900">John Doe</p>
+                <p class="text-sm text-gray-500">john@example.com</p>
+              </div>
+              <a href="#profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-user mr-2"></i>Profile
+              </a>
+              <a href="#settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-cog mr-2"></i>Settings
+              </a>
+              <button id="theme-toggle" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-moon mr-2"></i>Dark Mode
+              </button>
+              <div class="border-t">
+                <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                  <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" class="lg:hidden text-gray-700 hover:text-green-600 transition-colors">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200 py-4">
+        <div class="flex flex-col space-y-2">
+          <a href="#home" class="mobile-nav-link flex items-center px-4 py-2 text-gray-700 hover:bg-green-50 rounded-lg">
+            <i class="fas fa-home mr-3"></i>Home
+          </a>
+          <a href="#centers" class="mobile-nav-link flex items-center px-4 py-2 text-gray-700 hover:bg-green-50 rounded-lg">
+            <i class="fas fa-map-marker-alt mr-3"></i>Centers
+          </a>
+          <a href="#pickup" class="mobile-nav-link flex items-center px-4 py-2 text-gray-700 hover:bg-green-50 rounded-lg">
+            <i class="fas fa-calendar-check mr-3"></i>Pickup
+          </a>
+          <a href="#rewards" class="mobile-nav-link flex items-center px-4 py-2 text-gray-700 hover:bg-green-50 rounded-lg">
+            <i class="fas fa-gift mr-3"></i>Rewards
+          </a>
+          <a href="#impact" class="mobile-nav-link flex items-center px-4 py-2 text-gray-700 hover:bg-green-50 rounded-lg">
+            <i class="fas fa-chart-line mr-3"></i>Impact
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Advanced Hero Section -->
+    <section id="home" class="relative overflow-hidden bg-gradient-to-br from-green-400 via-blue-500 to-purple-600">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 bg-black bg-opacity-10">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+      </div>
+
+      <!-- Floating Elements -->
+      <div class="absolute top-20 left-10 animate-bounce">
+        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+          <i class="fas fa-recycle text-white text-2xl"></i>
+        </div>
+      </div>
+      <div class="absolute top-40 right-20 animate-pulse">
+        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+          <i class="fas fa-leaf text-white text-xl"></i>
+        </div>
+      </div>
+      <div class="absolute bottom-32 left-20 animate-bounce animation-delay-1s">
+        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+          <i class="fas fa-award text-white text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        <div class="text-center">
+          <!-- Main Headline with Animation -->
+          <div class="mb-8">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-4 animate-fade-in-up">
+              Turn Your <span class="text-yellow-300">E-Waste</span><br>
+              into <span class="text-yellow-300">Rewards</span>
+            </h1>
+            <div class="w-24 h-1 bg-yellow-300 mx-auto mb-6 rounded-full"></div>
+            <p class="text-xl md:text-2xl text-white text-opacity-90 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200ms">
+              Schedule doorstep pickup and earn points for recycling electronics responsibly.
+              Join thousands making a difference for our planet.
+            </p>
+          </div>
+
+          <!-- Advanced CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16 animate-fade-in-up animation-delay-400ms">
+            <button onclick="scrollToSection('centers')"
+                    class="group relative bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+              <span class="relative z-10 flex items-center">
+                <i class="fas fa-search mr-3"></i>
+                Find Centers
+                <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+
+            <button onclick="scrollToSection('pickup')"
+                    class="group relative bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-green-600 transform hover:scale-105 transition-all duration-300">
+              <span class="flex items-center">
+                <i class="fas fa-calendar-plus mr-3"></i>
+                Schedule Pickup
+                <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+              </span>
+            </button>
+
+            <button onclick="scrollToSection('rewards')"
+                    class="group relative bg-yellow-400 text-green-800 px-8 py-4 rounded-full font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
+              <span class="flex items-center">
+                <i class="fas fa-gift mr-3"></i>
+                Check Rewards
+                <i class="fas fa-star ml-3 text-yellow-600"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Dynamic Impact Counters -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-600ms">
+            <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20 hover:bg-opacity-20 transition-all duration-300 transform hover:scale-105">
+              <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <i class="fas fa-weight-hanging text-white text-2xl"></i>
+                </div>
+              </div>
+              <div class="counter text-4xl font-bold text-white mb-2" id="waste-counter">0</div>
+              <p class="text-white text-opacity-90 font-semibold">E-waste Collected</p>
+              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20 hover:bg-opacity-20 transition-all duration-300 transform hover:scale-105">
+              <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <i class="fas fa-users text-white text-2xl"></i>
+                </div>
+              </div>
+              <div class="counter text-4xl font-bold text-white mb-2" id="users-counter">0</div>
+              <p class="text-white text-opacity-90 font-semibold">Users Served</p>
+              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20 hover:bg-opacity-20 transition-all duration-300 transform hover:scale-105">
+              <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <i class="fas fa-cloud text-white text-2xl"></i>
+                </div>
+              </div>
+              <div class="counter text-4xl font-bold text-white mb-2" id="co2-counter">0</div>
+              <p class="text-white text-opacity-90 font-semibold">CO₂ Saved (tons)</p>
+              <div class="w-12 h-1 bg-yellow-300 mx-auto mt-3 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Trust Indicators -->
+          <div class="mt-16 flex flex-wrap justify-center items-center gap-8 text-white text-opacity-80 animate-fade-in-up animation-delay-800ms">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-shield-alt text-yellow-300"></i>
+              <span class="font-semibold">Certified Partners</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-clock text-yellow-300"></i>
+              <span class="font-semibold">24/7 Support</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-award text-yellow-300"></i>
+              <span class="font-semibold">Award Winning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div class="w-6 h-10 border-2 border-white border-opacity-50 rounded-full flex justify-center">
+          <div class="w-1 h-3 bg-white bg-opacity-50 rounded-full mt-2 animate-pulse"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Find Centers Section -->
+    <section id="centers" class="section bg-gradient-to-br from-gray-50 to-green-50">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">
+          <i class="fas fa-map-marked-alt text-green-600 mr-3"></i>
+          Find Recycling Centers Near You
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Discover authorized e-waste collection centers in your area with real-time availability and ratings.
+        </p>
+      </div>
+
+      <!-- Advanced Search Panel -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 card-hover">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Location Search with Autocomplete -->
+          <div class="lg:col-span-2">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-search text-green-600 mr-2"></i>Search Location
+            </label>
+            <div class="relative">
+              <input type="text" id="location-search" placeholder="Enter city, area, or pincode"
+                     class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all form-input-focus">
+              <i class="fas fa-map-marker-alt absolute left-4 top-4 text-gray-400"></i>
+              <div id="autocomplete-results" class="absolute z-10 w-full bg-white border border-gray-200 rounded-xl shadow-lg mt-1 hidden max-h-60 overflow-y-auto">
+                <!-- Autocomplete results will appear here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Item Type Filter -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-filter text-blue-600 mr-2"></i>Item Type
+            </label>
+            <select id="item-filter" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+              <option value="">All Items</option>
+              <option value="phones">📱 Phones & Tablets</option>
+              <option value="laptops">💻 Laptops & Computers</option>
+              <option value="batteries">🔋 Batteries</option>
+              <option value="appliances">🏠 Home Appliances</option>
+              <option value="accessories">🎧 Accessories</option>
+            </select>
+          </div>
+
+          <!-- Distance Filter -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-route text-purple-600 mr-2"></i>Distance
+            </label>
+            <select id="distance-filter" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
+              <option value="5">Within 5 km</option>
+              <option value="10" selected>Within 10 km</option>
+              <option value="25">Within 25 km</option>
+              <option value="50">Within 50 km</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Search Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 mt-6 justify-between items-center">
+          <div class="flex items-center space-x-4">
+            <button id="use-location-btn" class="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
+              <i class="fas fa-crosshairs mr-2"></i>Use My Location
+            </button>
+            <button id="clear-filters-btn" class="flex items-center px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+              <i class="fas fa-times mr-2"></i>Clear Filters
+            </button>
+          </div>
+          <button id="search-centers-btn" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+            <i class="fas fa-search mr-2"></i>Search Centers
+          </button>
+        </div>
+
+        <!-- Search Results Summary -->
+        <div id="search-summary" class="mt-6 p-4 bg-green-50 rounded-xl hidden">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-check-circle text-green-600"></i>
+              <span id="results-count" class="font-semibold text-green-800">0 centers found</span>
+            </div>
+            <div class="flex items-center space-x-4 text-sm text-gray-600">
+              <span id="search-location">Pune, Maharashtra</span>
+              <span>•</span>
+              <span id="search-radius">Within 10 km</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map and Results Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Map Container -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
+            <div class="p-4 bg-gradient-to-r from-green-500 to-blue-600 text-white">
+              <h3 class="text-lg font-semibold flex items-center">
+                <i class="fas fa-map-marked-alt mr-2"></i>
+                Interactive Map
+              </h3>
+              <p class="text-sm opacity-90">Click on markers for details</p>
+            </div>
+            <div id="map" class="map-container"></div>
+          </div>
+        </div>
+
+        <!-- Results Sidebar -->
+        <div class="space-y-4">
+          <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <i class="fas fa-list-ul text-green-600 mr-2"></i>
+              Nearby Centers
+            </h3>
+
+            <!-- Loading State -->
+            <div id="centers-loading" class="space-y-4 hidden">
+              <div class="loading-skeleton h-24 rounded-lg"></div>
+              <div class="loading-skeleton h-24 rounded-lg"></div>
+              <div class="loading-skeleton h-24 rounded-lg"></div>
+            </div>
+
+            <!-- Centers List -->
+            <div id="centers-list" class="space-y-4 max-h-96 overflow-y-auto">
+              <!-- Centers will be populated here -->
+            </div>
+
+            <!-- No Results -->
+            <div id="no-results" class="text-center py-8 text-gray-500 hidden">
+              <i class="fas fa-search text-4xl mb-4 text-gray-300"></i>
+              <p class="font-semibold">No centers found</p>
+              <p class="text-sm">Try adjusting your search criteria</p>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white card-hover">
+            <h4 class="font-semibold mb-4 flex items-center">
+              <i class="fas fa-bolt mr-2"></i>
+              Quick Actions
+            </h4>
+            <div class="space-y-3">
+              <button onclick="scrollToSection('pickup')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-4 rounded-lg transition-all text-left">
+                <i class="fas fa-calendar-plus mr-2"></i>Schedule Pickup
+              </button>
+              <button onclick="scrollToSection('rewards')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-4 rounded-lg transition-all text-left">
+                <i class="fas fa-gift mr-2"></i>Check Rewards
+              </button>
+              <button onclick="openSupport()" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-4 rounded-lg transition-all text-left">
+                <i class="fas fa-headset mr-2"></i>Get Support
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Schedule Pickup Section -->
+    <section id="pickup" class="section bg-gradient-to-br from-blue-50 to-green-50">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">
+          <i class="fas fa-calendar-plus text-blue-600 mr-3"></i>
+          Schedule Your Pickup
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Book a doorstep e-waste collection with our certified partners. Get rewarded for your contribution to the environment.
+        </p>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="max-w-4xl mx-auto mb-8">
+        <div class="flex items-center justify-center space-x-4">
+          <div class="flex items-center">
+            <div id="step-1" class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <span class="ml-2 text-sm font-medium text-gray-700">Details</span>
+          </div>
+          <div class="w-16 h-1 bg-gray-300 rounded">
+            <div id="progress-1" class="w-0 h-1 bg-green-500 rounded transition-all duration-500"></div>
+          </div>
+          <div class="flex items-center">
+            <div id="step-2" class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
+              <i class="fas fa-box"></i>
+            </div>
+            <span class="ml-2 text-sm font-medium text-gray-500">Items</span>
+          </div>
+          <div class="w-16 h-1 bg-gray-300 rounded">
+            <div id="progress-2" class="w-0 h-1 bg-green-500 rounded transition-all duration-500"></div>
+          </div>
+          <div class="flex items-center">
+            <div id="step-3" class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
+              <i class="fas fa-calendar"></i>
+            </div>
+            <span class="ml-2 text-sm font-medium text-gray-500">Schedule</span>
+          </div>
+          <div class="w-16 h-1 bg-gray-300 rounded">
+            <div id="progress-3" class="w-0 h-1 bg-green-500 rounded transition-all duration-500"></div>
+          </div>
+          <div class="flex items-center">
+            <div id="step-4" class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
+              <i class="fas fa-check"></i>
+            </div>
+            <span class="ml-2 text-sm font-medium text-gray-500">Confirm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Step Booking Form -->
+      <div class="max-w-4xl mx-auto">
+        <form id="booking-form" class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
+          <!-- Step 1: Personal Details -->
+          <div id="step1-content" class="step-content p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i class="fas fa-user text-green-600 mr-3"></i>
+              Personal Details
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-group">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fas fa-user mr-2 text-blue-600"></i>Full Name *
+                </label>
+                <input type="text" id="name" required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all form-input-focus"
+                       placeholder="Enter your full name">
+                <div class="text-xs text-gray-500 mt-1">As per government ID</div>
+              </div>
+
+              <div class="form-group">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fas fa-phone mr-2 text-green-600"></i>Phone Number *
+                </label>
+                <input type="tel" id="phone" required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all form-input-focus"
+                       placeholder="+91 XXXXX XXXXX">
+                <div class="text-xs text-gray-500 mt-1">For pickup confirmation</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-envelope mr-2 text-purple-600"></i>Email (Optional)
+              </label>
+              <input type="email" id="email"
+                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all form-input-focus"
+                     placeholder="your@email.com">
+              <div class="text-xs text-gray-500 mt-1">For booking updates</div>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Pickup Address *
+              </label>
+              <div class="relative">
+                <textarea id="address" rows="3" required
+                          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all form-input-focus resize-none"
+                          placeholder="Enter complete address with landmark"></textarea>
+                <button type="button" id="use-current-location" class="absolute right-3 top-3 text-gray-400 hover:text-blue-600 transition-colors">
+                  <i class="fas fa-crosshairs"></i>
+                </button>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">Include pincode and nearby landmark</div>
+            </div>
+
+            <div class="flex justify-end mt-8">
+              <button type="button" onclick="nextStep(1)" class="bg-gradient-to-r from-blue-500 to-green-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                Next: Select Items
+                <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Item Selection -->
+          <div id="step2-content" class="step-content p-8 hidden">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i class="fas fa-box text-blue-600 mr-3"></i>
+              Select Items for Pickup
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <!-- Item Categories -->
+              <div class="item-category bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer" data-category="phones">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Phones & Tablets</h4>
+                  <p class="text-sm text-gray-600">Smartphones, tablets, chargers</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Up to 50 points</div>
+                </div>
+              </div>
+
+              <div class="item-category bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer" data-category="laptops">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-laptop text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Laptops & Computers</h4>
+                  <p class="text-sm text-gray-600">Laptops, desktops, peripherals</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Up to 200 points</div>
+                </div>
+              </div>
+
+              <div class="item-category bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all cursor-pointer" data-category="batteries">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-battery-half text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Batteries</h4>
+                  <p class="text-sm text-gray-600">Li-ion, NiMH, lead-acid batteries</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Up to 30 points</div>
+                </div>
+              </div>
+
+              <div class="item-category bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer" data-category="appliances">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tv text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Home Appliances</h4>
+                  <p class="text-sm text-gray-600">TVs, refrigerators, washing machines</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Up to 500 points</div>
+                </div>
+              </div>
+
+              <div class="item-category bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border-2 border-red-200 hover:border-red-400 transition-all cursor-pointer" data-category="accessories">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-headphones text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Accessories</h4>
+                  <p class="text-sm text-gray-600">Headphones, cables, chargers</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Up to 20 points</div>
+                </div>
+              </div>
+
+              <div class="item-category bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border-2 border-gray-200 hover:border-gray-400 transition-all cursor-pointer" data-category="other">
+                <div class="text-center">
+                  <div class="w-16 h-16 bg-gray-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-plus text-white text-2xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Other Items</h4>
+                  <p class="text-sm text-gray-600">Any other e-waste items</p>
+                  <div class="text-xs text-green-600 font-medium mt-2">Contact for points</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selected Items Summary -->
+            <div id="selected-items" class="bg-gray-50 p-6 rounded-xl mb-6 hidden">
+              <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-shopping-cart text-green-600 mr-2"></i>
+                Selected Items
+              </h4>
+              <div id="items-list" class="space-y-3"></div>
+              <div class="border-t pt-4 mt-4">
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold text-gray-900">Estimated Points:</span>
+                  <span id="estimated-points" class="text-2xl font-bold text-green-600">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-8">
+              <button type="button" onclick="prevStep(2)" class="bg-gray-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button type="button" onclick="nextStep(2)" class="bg-gradient-to-r from-blue-500 to-green-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                Next: Schedule Time
+                <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Schedule Time -->
+          <div id="step3-content" class="step-content p-8 hidden">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i class="fas fa-calendar-alt text-purple-600 mr-3"></i>
+              Choose Pickup Time
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- Date Selection -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-4">
+                  <i class="fas fa-calendar-day mr-2 text-purple-600"></i>
+                  Preferred Date *
+                </label>
+                <input type="date" id="pickup-date" required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all form-input-focus"
+                       min="2025-11-13">
+                <div class="text-xs text-gray-500 mt-2">Pickup available in 2-7 days</div>
+              </div>
+
+              <!-- Time Slot Selection -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-4">
+                  <i class="fas fa-clock mr-2 text-blue-600"></i>
+                  Preferred Time Slot *
+                </label>
+                <div class="space-y-3">
+                  <label class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-blue-400 cursor-pointer transition-all">
+                    <input type="radio" name="time-slot" value="morning" class="mr-3">
+                    <div>
+                      <div class="font-semibold text-gray-900">Morning (9 AM - 12 PM)</div>
+                      <div class="text-sm text-gray-600">Most popular time slot</div>
+                    </div>
+                  </label>
+                  <label class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-blue-400 cursor-pointer transition-all">
+                    <input type="radio" name="time-slot" value="afternoon" class="mr-3">
+                    <div>
+                      <div class="font-semibold text-gray-900">Afternoon (12 PM - 5 PM)</div>
+                      <div class="text-sm text-gray-600">Flexible pickup window</div>
+                    </div>
+                  </label>
+                  <label class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-blue-400 cursor-pointer transition-all">
+                    <input type="radio" name="time-slot" value="evening" class="mr-3">
+                    <div>
+                      <div class="font-semibold text-gray-900">Evening (5 PM - 8 PM)</div>
+                      <div class="text-sm text-gray-600">After work hours</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="mt-8">
+              <label class="block text-sm font-semibold text-gray-700 mb-4">
+                <i class="fas fa-camera mr-2 text-green-600"></i>
+                Upload Photos (Optional but Recommended)
+              </label>
+              <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-400 transition-colors">
+                <div class="mb-4">
+                  <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-600 mb-2">Drag & drop photos here or click to browse</p>
+                <p class="text-sm text-gray-500">Upload clear photos of your e-waste items for accurate assessment</p>
+                <input type="file" id="photos" multiple accept="image/*" class="hidden">
+                <button type="button" onclick="document.getElementById('photos').click()"
+                        class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                  Choose Files
+                </button>
+              </div>
+              <div id="photo-preview" class="mt-4 grid grid-cols-4 gap-4"></div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="mt-8">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-sticky-note mr-2 text-yellow-600"></i>
+                Additional Notes
+              </label>
+              <textarea id="notes" rows="3"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all form-input-focus resize-none"
+                        placeholder="Any special instructions or additional information..."></textarea>
+            </div>
+
+            <div class="flex justify-between mt-8">
+              <button type="button" onclick="prevStep(3)" class="bg-gray-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button type="button" onclick="nextStep(3)" class="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                Review & Confirm
+                <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Review & Confirm -->
+          <div id="step4-content" class="step-content p-8 hidden">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i class="fas fa-clipboard-check text-green-600 mr-3"></i>
+              Review Your Booking
+            </h3>
+
+            <!-- Booking Summary -->
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl mb-6">
+              <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                Booking Summary
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div class="text-sm text-gray-600">Name</div>
+                  <div class="font-semibold text-gray-900" id="summary-name">-</div>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-600">Phone</div>
+                  <div class="font-semibold text-gray-900" id="summary-phone">-</div>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-600">Pickup Date</div>
+                  <div class="font-semibold text-gray-900" id="summary-date">-</div>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-600">Time Slot</div>
+                  <div class="font-semibold text-gray-900" id="summary-time">-</div>
+                </div>
+                <div class="md:col-span-2">
+                  <div class="text-sm text-gray-600">Pickup Address</div>
+                  <div class="font-semibold text-gray-900" id="summary-address">-</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Items Summary -->
+            <div class="bg-gray-50 p-6 rounded-xl mb-6">
+              <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-box text-green-600 mr-2"></i>
+                Selected Items
+              </h4>
+              <div id="summary-items" class="space-y-2"></div>
+              <div class="border-t pt-4 mt-4 flex justify-between items-center">
+                <span class="font-semibold text-gray-900">Estimated Reward Points:</span>
+                <span class="text-2xl font-bold text-green-600" id="summary-points">0</span>
+              </div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl mb-6">
+              <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                Important Notes
+              </h4>
+              <ul class="text-sm text-gray-700 space-y-1">
+                <li>• Ensure items are clean and ready for pickup</li>
+                <li>• Keep original packaging if available</li>
+                <li>• Final points may vary based on item condition</li>
+                <li>• Cancellation possible up to 24 hours before pickup</li>
+              </ul>
+            </div>
+
+            <!-- Terms Checkbox -->
+            <div class="flex items-start space-x-3 mb-8">
+              <input type="checkbox" id="terms-agree" class="mt-1">
+              <label for="terms-agree" class="text-sm text-gray-700">
+                I agree to the <a href="#" class="text-blue-600 hover:underline">Terms & Conditions</a> and
+                <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>. I understand that by submitting this booking,
+                I authorize E-Zero to collect the specified e-waste items.
+              </label>
+            </div>
+
+            <div class="flex justify-between mt-8">
+              <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back
+              </button>
+              <button type="submit" id="submit-booking" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i class="fas fa-paper-plane mr-2"></i>
+                Confirm Booking
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Rewards Section -->
+    <section id="rewards" class="section">
+      <h2 class="text-3xl font-bold text-center mb-8" data-i18n="rewardsTitle">Your Rewards</h2>
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h3 class="text-xl font-semibold mb-4" data-i18n="pointsBalance">Points Balance</h3>
+          <div class="text-3xl font-bold text-green-700" id="points-balance">150</div>
+          <button class="btn-primary mt-4" data-i18n="redeemButton">Redeem Rewards</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-semibold mb-2">Recent Activity</h4>
+            <ul id="activity-list">
+              <li class="py-2 border-b">Pickup scheduled - 50 points</li>
+              <li class="py-2">Reward redeemed - 20 points</li>
+            </ul>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-semibold mb-2">Achievements</h4>
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-2">🏆</span>
+              <span>Green Recycler</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-2xl mr-2">⭐</span>
+              <span>Eco Warrior</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section id="impact" class="section bg-white">
+      <h2 class="text-3xl font-bold text-center mb-8" data-i18n="impactTitle">Our Impact</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <canvas id="impact-chart"></canvas>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Monthly Collection</h3>
+          <canvas id="monthly-chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+      <h2 class="text-3xl font-bold text-center mb-8" data-i18n="aboutTitle">About E-Zero</h2>
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-lg mb-6">E-Zero is committed to responsible e-waste management, turning electronic waste into valuable resources while rewarding users for their eco-friendly actions.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-semibold mb-2">Our Mission</h4>
+            <p>Reduce e-waste pollution and promote circular economy.</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-semibold mb-2">Our Vision</h4>
+            <p>A world where e-waste is responsibly recycled everywhere.</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-semibold mb-2">Our Values</h4>
+            <p>Sustainability, Innovation, Community Engagement.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-gray-100">
+      <h2 class="text-3xl font-bold text-center mb-8" data-i18n="contactTitle">Contact Us</h2>
+      <div class="max-w-2xl mx-auto">
+        <form class="bg-white p-6 rounded-lg shadow-md">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" required>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary w-full">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p>&copy; 2025 E-Zero. All rights reserved.</p>
+      <div class="mt-4 space-x-4">
+        <a href="#" class="hover:text-green-400">Privacy Policy</a>
+        <a href="#" class="hover:text-green-400">Terms of Service</a>
+        <a href="#" class="hover:text-green-400">FAQ</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals and Overlays -->
+  <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Booking Confirmed!</h3>
+      <p>Your pickup has been scheduled. You'll receive a confirmation SMS shortly.</p>
+      <button onclick="closeModal()" class="btn-primary mt-4 w-full">OK</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/map.js"></script>
+  <script type="module" src="js/booking.js"></script>
+  <script type="module" src="js/rewards.js"></script>
+  <script type="module" src="js/charts.js"></script>
+</body>
+</html>

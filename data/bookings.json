@@ -1,0 +1,18 @@
+{
+  "bookings": [
+    {
+      "id": 1,
+      "userId": 1,
+      "centerId": 1,
+      "items": [
+        {"type": "mobile", "brand": "Samsung", "condition": "working", "qty": 1}
+      ],
+      "status": "scheduled",
+      "pickupWindow": "2025-11-15T10:00:00Z",
+      "photos": [],
+      "notes": "Please call before pickup",
+      "weightKg": null,
+      "rewardPoints": 50
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+91-9876543210",
+      "walletPoints": 150,
+      "role": "user"
+    }
+  ]
+}

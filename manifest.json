@@ -1,0 +1,16 @@
+{
+  "name": "E-Zero E-Waste Platform",
+  "short_name": "E-Zero",
+  "description": "Turn Your E-Waste into Rewards",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F5",
+  "theme_color": "#2E7D32",
+  "icons": [
+    {
+      "src": "assets/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
