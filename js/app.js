@@ -2,6 +2,59 @@
 import { initI18n, changeLanguage } from './i18n.js';
 import { initTheme } from './theme.js';
 
+// Global state management
+window.EZero = {
+  state: {
+    user: {
+      id: 'user-001',
+      name: 'John Doe',
+      email: 'john@example.com',
+      level: 7,
+      points: 2450,
+      recycledItems: 23,
+      co2Saved: 156
+    },
+    notifications: [
+      { id: 1, type: 'success', title: 'Pickup Completed!', message: 'Your electronics have been recycled', time: '2 hours ago', unread: true },
+      { id: 2, type: 'reward', title: 'New Reward Available!', message: '50% off on eco-friendly products', time: '1 day ago', unread: true },
+      { id: 3, type: 'achievement', title: 'Level Up!', message: 'You reached Level 7 - Eco Warrior', time: '3 days ago', unread: false }
+    ],
+    selectedLanguage: 'en'
+  },
+  utils: {
+    formatNumber: (num) => new Intl.NumberFormat().format(num),
+    debounce: (func, delay) => {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(null, args), delay);
+      };
+    },
+    showNotification: (message, type = 'info') => {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full
+        ${type === 'success' ? 'bg-green-500 text-white' : 
+          type === 'error' ? 'bg-red-500 text-white' : 
+          type === 'warning' ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'}`;
+      notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+          <i class="fas ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-times' : type === 'warning' ? 'fa-exclamation' : 'fa-info'}"></i>
+          <span>${message}</span>
+          <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    }
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   initI18n();
   initTheme();
@@ -9,45 +62,70 @@ document.addEventListener('DOMContentLoaded', () => {
   initCounters();
   initDropdowns();
   initAnimations();
+  initNotifications();
+  initUserProfile();
+  initScrollIndicator();
   registerSW();
+  console.log('🚀 E-Zero App Initialized Successfully!');
 });
 
-// Enhanced Navigation
+// Enhanced Navigation System
 function initNavigation() {
   const navMenu = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
+  // Mobile menu toggle
   navMenu?.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
+    const isHidden = mobileMenu.classList.contains('hidden');
+    mobileMenu?.classList.toggle('hidden');
+    navMenu.setAttribute('aria-expanded', !isHidden);
+    
+    // Animate hamburger to X
+    const icon = navMenu.querySelector('i');
+    if (icon) {
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    }
   });
 
-  // Smooth scrolling for navigation links
+  // Enhanced smooth scrolling for navigation links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const targetId = this.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      
       if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
+        const headerOffset = 100;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
         });
+        
         // Close mobile menu if open
         mobileMenu?.classList.add('hidden');
+        navMenu?.querySelector('i')?.classList.replace('fa-times', 'fa-bars');
+        
+        // Update URL without triggering navigation
+        history.pushState(null, null, `#${targetId}`);
       }
     });
   });
 
-  // Active navigation highlighting
+  // Active navigation highlighting with intersection observer
   const observerOptions = {
-    threshold: 0.5,
-    rootMargin: '-50px 0px -50px 0px'
+    threshold: 0.3,
+    rootMargin: '-80px 0px -80px 0px'
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const id = entry.target.getAttribute('id');
-        document.querySelectorAll('.nav-link').forEach(link => {
+        document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
           link.classList.remove('active');
         });
         document.querySelector(`a[href="#${id}"]`)?.classList.add('active');
