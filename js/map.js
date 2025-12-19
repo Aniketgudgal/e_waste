@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 export function initMap() {
   try {
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet library not found; map cannot be initialized.');
+      showMapError('Map library not loaded. Please check your internet connection or CDN.');
+      return;
+    }
     console.log('🗺️ Initializing map...');
     
     // Check if map already exists

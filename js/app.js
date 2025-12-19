@@ -104,6 +104,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await registerSW();
     
     console.log('✅ E-Zero Application Initialized Successfully!');
+    // Initialize debug panel (show runtime logs when ?debug=true in URL)
+    initDebugPanel();
+    initIconFallback();
+    initLocomotive();
+    initLottieHero();
+    initGSAPInteractions();
     
     setTimeout(() => {
       window.EZero.utils.showNotification('Welcome to E-Zero! 🌱', 'success');
@@ -114,6 +120,84 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.EZero.utils.showNotification('Failed to initialize app', 'error');
   }
 });
+
+// Simple GSAP micro-interactions for buttons if GSAP is available
+function initGSAPInteractions() {
+  if (typeof gsap === 'undefined') return;
+  document.querySelectorAll('.btn-magnetic, .group .btn-magnetic, button, .btn-outline-glow').forEach(btn => {
+    btn.addEventListener('mouseenter', () => { gsap.to(btn, { scale: 1.04, duration: 0.25 }); });
+    btn.addEventListener('mouseleave', () => { gsap.to(btn, { scale: 1, duration: 0.25 }); });
+    btn.addEventListener('mousedown', () => { gsap.to(btn, { scale: 0.96, duration: 0.1 }); });
+    btn.addEventListener('mouseup', () => { gsap.to(btn, { scale: 1.02, duration: 0.1 }); });
+  });
+}
+
+// Initialize Locomotive Scroll (if available)
+function initLocomotive() {
+  if (typeof LocomotiveScroll === 'undefined') {
+    console.warn('Locomotive Scroll not loaded');
+    return;
+  }
+  const scrollEl = document.querySelector('[data-scroll-container]') || document.getElementById('main-content');
+  if (!scrollEl) return;
+  try {
+    const loco = new LocomotiveScroll({ el: scrollEl, smooth: true, multiplier: 0.8, class: 'is-reveal' });
+    window.locoScroll = loco;
+    // Keep loco in sync with resize
+    window.addEventListener('resize', () => loco.update());
+    // Connect loco to gsap if available
+    if (window.gsap && window.gsap.registerPlugin) {
+      try {
+        const ScrollTrigger = window.gsap?.ScrollTrigger || (window.gsap.registerPlugin && window.ScrollTrigger);
+        // if ScrollTrigger exists as plugin, register; else skip safe
+      } catch (err) {
+        /* ignore - scrolltrigger not present */
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to init Locomotive Scroll', error);
+  }
+}
+
+// Initialize a Lottie micro-animation in the hero area
+function initLottieHero() {
+  if (typeof lottie === 'undefined') { console.warn('Lottie not loaded'); return; }
+  const container = document.getElementById('lottie-hero');
+  if (!container) return;
+  try {
+    lottie.loadAnimation({
+      container: container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'https://assets3.lottiefiles.com/packages/lf20_jcikwtux.json' // Sample Lottie animation (public)
+    });
+  } catch (err) {
+    console.warn('Lottie init failed', err);
+  }
+}
+
+function initIconFallback() {
+  try {
+    const testEl = document.createElement('i');
+    testEl.className = 'fas fa-smile';
+    testEl.style.position = 'absolute';
+    testEl.style.left = '-9999px';
+    document.body.appendChild(testEl);
+    const fontFamily = window.getComputedStyle(testEl).getPropertyValue('font-family');
+    document.body.removeChild(testEl);
+
+    if (!fontFamily || !fontFamily.toLowerCase().includes('font awesome')) {
+      console.warn('Font Awesome not detected. Adding fallback CDN link.');
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css';
+      document.head.appendChild(link);
+    }
+  } catch (error) {
+    console.warn('Icon fallback detection failed:', error);
+  }
+}
 
 // Navigation System
 function initNavigation() {
@@ -274,6 +358,12 @@ function initDropdowns() {
     const dropdown = document.getElementById(targetId);
     if (dropdown) {
       dropdown.classList.toggle('hidden');
+      // Update aria-expanded for associated button
+      const button = document.querySelector(`[aria-haspopup][aria-controls='${targetId}']`) || document.querySelector(`#${targetId}`)?.previousElementSibling;
+      if (button) {
+        const isExpanded = !dropdown.classList.contains('hidden');
+        button.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+      }
     }
   }
 
@@ -363,6 +453,57 @@ function initUserProfile() {
     if (nameElement) nameElement.textContent = user.name;
     if (levelElement) levelElement.textContent = `Level ${user.level} Eco Warrior`;
   }
+
+  // Populate profile form if present
+  const fullnameInput = document.getElementById('profile-fullname');
+  const emailInput = document.getElementById('profile-email-input');
+  const phoneInput = document.getElementById('profile-phone');
+  const avatarEl = document.getElementById('profile-avatar');
+  const nameEl = document.getElementById('profile-name');
+  const emailEl = document.getElementById('profile-email');
+  const levelEl = document.getElementById('profile-level');
+
+  if (fullnameInput) fullnameInput.value = user.name || '';
+  if (emailInput) emailInput.value = user.email || '';
+  if (phoneInput) phoneInput.value = user.phone || '';
+  if (avatarEl) avatarEl.textContent = user.avatar || (user.name ? user.name.split(' ').map(n => n[0]).join('') : 'JD');
+  if (nameEl) nameEl.textContent = user.name || 'User';
+  if (emailEl) emailEl.textContent = user.email || '';
+  if (levelEl) levelEl.textContent = `Level ${user.level}`;
+
+  const saveBtn = document.getElementById('save-profile-btn');
+  const cancelBtn = document.getElementById('cancel-profile-btn');
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      // Update state and save to localStorage
+      window.EZero.state.user.name = fullnameInput.value;
+      window.EZero.state.user.email = emailInput.value;
+      window.EZero.state.user.phone = phoneInput.value;
+      const avatarText = (fullnameInput.value || 'User').split(' ').map(n => n[0]).join('').toUpperCase();
+      window.EZero.state.user.avatar = avatarText;
+      localStorage.setItem('eZero_currentUser', JSON.stringify(window.EZero.state.user));
+      window.EZero.utils.showNotification('Profile updated successfully', 'success');
+
+      // Reflect changes in header
+      if (avatarEl) avatarEl.textContent = avatarText;
+      if (nameEl) nameEl.textContent = fullnameInput.value;
+      if (emailEl) emailEl.textContent = emailInput.value;
+      if (userButton) {
+        const headerName = userButton.querySelector('.text-sm.font-semibold');
+        if (headerName) headerName.textContent = fullnameInput.value;
+      }
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      if (fullnameInput) fullnameInput.value = user.name || '';
+      if (emailInput) emailInput.value = user.email || '';
+      if (phoneInput) phoneInput.value = user.phone || '';
+      window.EZero.utils.showNotification('Edits canceled', 'info');
+    });
+  }
 }
 
 // Scroll Progress Indicator
@@ -415,6 +556,47 @@ async function registerSW() {
   }
 }
 
+// Global error handlers to capture runtime exceptions and promise rejections
+window.addEventListener('error', (e) => {
+  console.error('Global uncaught error:', e.error || e.message || e);
+  try { window.EZero.utils.showNotification('An error occurred: ' + (e.message || e.error?.message || 'See console'), 'error'); } catch (err) { console.error('Notification failed', err); }
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('Unhandled promise rejection:', e.reason);
+  try { window.EZero.utils.showNotification('A promise rejection occurred: ' + (e.reason?.message || String(e.reason)), 'warning'); } catch (err) { console.error('Notification failed', err); }
+});
+
+// Theme toggle initialization
+function initThemeToggle() {
+  const toggle = document.getElementById('theme-toggle');
+  if (!toggle) return;
+
+  const applyTheme = (isDark) => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  // Apply saved theme
+  const saved = localStorage.getItem('theme');
+  applyTheme(saved === 'dark');
+
+  toggle.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    applyTheme(isDark);
+  });
+}
+
+// Hook theme function on start
+document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
+});
+
 // Global utility functions
 window.scrollToSection = (sectionId) => {
   const section = document.getElementById(sectionId);
@@ -443,3 +625,182 @@ window.closeModal = (modalId) => {
     document.body.style.overflow = 'auto';
   }
 };
+
+// Push notification handler for custom events
+class PushSystem {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    // Listen for custom events dispatched across app
+    document.addEventListener('bookingConfirmed', (e) => this.onBookingConfirmed(e.detail));
+    document.addEventListener('rewardEarned', (e) => this.onRewardEarned(e.detail));
+    document.addEventListener('milestoneReached', (e) => this.onMilestoneReached(e.detail));
+  }
+
+  addNotification({ title, message, type = 'info' }) {
+    const id = Date.now();
+    const notification = { id, type, title, message, time: 'Just now', unread: true };
+    window.EZero.state.notifications.unshift(notification);
+    updateNotificationBadge();
+    renderNotifications();
+    return notification;
+  }
+
+  onBookingConfirmed(detail) {
+    const title = 'Booking Confirmed! 🎉';
+    const message = `Your pickup is scheduled for ${detail.date} at ${detail.time}`;
+    this.addNotification({ title, message, type: 'success' });
+    // Show local browser notification
+    window.EZero.utils.showNotification(message, 'success');
+  }
+
+  onRewardEarned(detail) {
+    const title = 'Reward Earned! 🏆';
+    const message = `You earned ${detail.points} points for recycling ${detail.items} items`;
+    this.addNotification({ title, message, type: 'reward' });
+    window.EZero.utils.showNotification(message, 'success');
+  }
+
+  onMilestoneReached(detail) {
+    const title = 'Milestone Achieved! 🌟';
+    const message = `You've reached ${detail.milestone}`;
+    this.addNotification({ title, message, type: 'achievement' });
+    window.EZero.utils.showNotification(message, 'success');
+  }
+}
+
+// Initialize push system globally
+const pushSystem = new PushSystem();
+window.pushSystem = pushSystem;
+
+// Simple in-app chat widget for support (local-only mock)
+class ChatSystem {
+  constructor() {
+    this.messages = JSON.parse(localStorage.getItem('eZero_chat') || '[]');
+    this.isOpen = false;
+    this.init();
+  }
+
+  init() {
+    this.createWidget();
+    this.renderMessages();
+  }
+
+  createWidget() {
+    // Basic chat UI
+    if (document.getElementById('chat-widget')) return;
+    const widget = document.createElement('div');
+    widget.id = 'chat-widget';
+    widget.className = 'fixed bottom-6 right-6 z-40';
+    widget.innerHTML = `
+      <button id="chat-toggle" class="bg-emerald-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center">
+        <i class="fas fa-comments text-lg"></i>
+      </button>
+      <div id="chat-panel" class="hidden w-96 h-120 bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="p-3 bg-emerald-600 text-white flex items-center justify-between">
+          <div class="font-semibold">E-Zero Support</div>
+          <button id="chat-close" class="text-white">✕</button>
+        </div>
+        <div id="chat-messages" style="height:320px; overflow:auto; padding:12px;"></div>
+        <div class="p-3 border-t border-gray-200 flex gap-2">
+          <input id="chat-input" class="flex-1 p-2 border rounded-lg" placeholder="Type a message..." />
+          <button id="chat-send" class="bg-emerald-600 text-white px-3 py-2 rounded-lg">Send</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(widget);
+
+    document.getElementById('chat-toggle').addEventListener('click', () => this.toggle());
+    document.getElementById('chat-close').addEventListener('click', () => this.toggle());
+    document.getElementById('chat-send').addEventListener('click', () => this.sendMessage());
+    document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendMessage(); });
+  }
+
+  toggle() {
+    this.isOpen = !this.isOpen;
+    const panel = document.getElementById('chat-panel');
+    if (!panel) return;
+    panel.classList.toggle('hidden');
+    document.getElementById('chat-toggle').classList.toggle('ring-2');
+    if (this.isOpen) this.scrollToBottom();
+  }
+
+  renderMessages() {
+    const container = document.getElementById('chat-messages');
+    if (!container) return;
+    container.innerHTML = '';
+    this.messages.slice(-40).forEach(m => {
+      const el = document.createElement('div');
+      el.className = `mb-2 p-2 rounded ${m.sender === 'user' ? 'bg-emerald-600 text-white self-end' : 'bg-gray-100 text-gray-800'}`;
+      el.textContent = m.content;
+      container.appendChild(el);
+    });
+    this.scrollToBottom();
+  }
+
+  sendMessage() {
+    const input = document.getElementById('chat-input');
+    if (!input || !input.value.trim()) return;
+    const message = { sender: 'user', content: input.value.trim(), time: new Date().toISOString() };
+    this.messages.push(message);
+    localStorage.setItem('eZero_chat', JSON.stringify(this.messages));
+    input.value = '';
+    this.renderMessages();
+    // Simulate response
+    setTimeout(() => this.addSystemMessage('Thanks for reaching out! Our team will get back to you soon.'), 800);
+  }
+
+  addSystemMessage(text) {
+    const message = { sender: 'system', content: text, time: new Date().toISOString() };
+    this.messages.push(message);
+    localStorage.setItem('eZero_chat', JSON.stringify(this.messages));
+    this.renderMessages();
+  }
+
+  scrollToBottom() {
+    const container = document.getElementById('chat-messages');
+    if (container) container.scrollTop = container.scrollHeight;
+  }
+}
+
+// Initialize chat system
+const chatSystem = new ChatSystem();
+window.chatSystem = chatSystem;
+
+// Debug panel to collect and display console logs for easier troubleshooting
+function initDebugPanel() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.get('debug')) return;
+
+  const panel = document.createElement('div');
+  panel.id = 'debug-panel';
+  Object.assign(panel.style, {
+    position: 'fixed', right: '8px', bottom: '8px', width: '360px', height: '240px', overflow: 'auto', zIndex: 99999,
+    background: 'rgba(0,0,0,0.8)', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+  });
+  panel.innerHTML = '<strong>Debug Panel</strong><div id="debug-log" style="margin-top:6px; font-family:monospace; font-size:11px;"></div>';
+  document.body.appendChild(panel);
+
+  const logEl = panel.querySelector('#debug-log');
+  const appendLog = (msg) => {
+    const entry = document.createElement('div');
+    entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    logEl.appendChild(entry);
+    logEl.scrollTop = logEl.scrollHeight;
+  };
+
+  // Capture console logs
+  ['log', 'info', 'warn', 'error'].forEach(level => {
+    const original = console[level];
+    console[level] = function(...args) {
+      try { appendLog(args.join(' ')); } catch (e) {}
+      original.apply(console, args);
+    };
+  });
+
+  // Capture global errors
+  window.addEventListener('error', (e) => appendLog(`ERROR: ${e.message}`));
+  window.addEventListener('unhandledrejection', (e) => appendLog(`UNHANDLED PROMISE REJECTION: ${e.reason?.message || e.reason}`));
+}

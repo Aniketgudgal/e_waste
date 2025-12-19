@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme-color" content="#059669">
+  
+  <!-- Content Security Policy to allow external resources -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' * data: blob: 'unsafe-inline' 'unsafe-eval'; script-src 'self' * 'unsafe-inline' 'unsafe-eval'; connect-src 'self' * 'unsafe-inline'; img-src 'self' * data: blob:; style-src 'self' * 'unsafe-inline'; font-src 'self' * data:;">
 
   <!-- Primary Meta Tags -->
   <title>E-Zero - AI-Powered E-Waste Management Platform</title>
@@ -47,11 +50,17 @@
 
   <!-- Core CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <!-- External libs (Three.js, GSAP, Locomotive, Lottie, Lucide) -->
+  <link rel="stylesheet" href="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css" />
+  <script src="https://unpkg.com/three@0.156.0/build/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.243.0/dist/lucide.min.js" defer></script>
 
   <!-- External Libraries -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
@@ -376,9 +385,9 @@
   </header>
 
   <!-- Main Content -->
-  <main id="main-content" class="relative">
+  <main id="main-content" class="relative" data-scroll-container>
     <!-- Premium Hero Section -->
-    <section id="home" class="relative overflow-hidden min-h-screen flex items-center">
+    <section id="home" class="relative overflow-hidden min-h-screen flex items-center" data-scroll-section>
       <!-- Animated Background -->
       <div class="absolute inset-0 -z-10">
         <div class="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700"></div>
@@ -514,6 +523,12 @@
               </span>
             </button>
           </div>
+          <!-- Hero Lottie (micro animation) -->
+          <div id="lottie-hero" class="absolute left-6 bottom-6 w-40 h-40 hidden lg:block"></div>
+          <!-- 3D Hero Canvas -->
+          <div id="hero-3d" class="absolute inset-0 -z-20 pointer-events-auto" style="height:520px; opacity: 0.95;">
+            <!-- Three.js canvas will be injected here -->
+          </div>
 
           <!-- Live Stats Cards -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto px-4" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="800">
@@ -575,8 +590,33 @@
       </div>
     </section>
 
+    <!-- 3D Interactive Recycling Lab -->
+    <section id="recycling-lab" class="py-20 bg-gradient-to-br from-indigo-50 to-purple-50" data-scroll-section>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900">3D Recycling Lab</h2>
+          <p class="text-gray-600">Explore 3D interactive models of common e-waste items and learn how they are recycled.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Interactive 3D Models</h3>
+              <p class="text-gray-600 mb-4">Rotate and inspect common devices — batteries, phones, laptops — to understand recycling steps and safety.</p>
+              <div class="flex gap-3">
+                <button class="btn-magnetic bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-4 py-2 rounded-lg">Start Exploration</button>
+                <button class="btn-outline-glow" onclick="scrollToSection('centers')">Find Recycling Centers</button>
+              </div>
+            </div>
+            <div>
+              <div id="recycle-3d" style="width:100%; height:420px; border-radius: 12px; overflow:hidden;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Features Overview Section -->
-    <section id="features" class="py-20 bg-white relative overflow-hidden">
+    <section id="features" class="py-20 bg-white relative overflow-hidden" data-scroll-section>
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-5 bg-pattern-dots"></div>
       
@@ -673,7 +713,7 @@
     </section>
 
     <!-- AI-Powered Centers Section -->
-    <section id="centers" class="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+    <section id="centers" class="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden" data-scroll-section>
       <!-- Background decoration -->
       <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-30"></div>
       <div class="absolute bottom-0 left-0 w-72 h-72 bg-cyan-100 rounded-full blur-3xl opacity-30"></div>
@@ -929,7 +969,7 @@
     </section>
 
     <!-- AI-Powered Pickup Section -->
-    <section id="pickup" class="py-24 bg-gradient-to-br from-slate-50 via-green-50 to-blue-50">
+    <section id="pickup" class="py-24 bg-gradient-to-br from-slate-50 via-green-50 to-blue-50" data-scroll-section>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <div class="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-6">
@@ -1196,8 +1236,60 @@
       </div>
     </section>
 
+    <!-- Profile Section (User) -->
+    <section id="profile" class="py-20 bg-white" data-scroll-section>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900">My Profile</h2>
+          <p class="text-gray-600">Manage your account settings, view activity, and check your rewards.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1">
+            <div class="bg-gray-50 rounded-2xl p-6 text-center">
+              <div class="w-28 h-28 rounded-full mx-auto bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-3xl font-bold mb-3" id="profile-avatar">JD</div>
+              <h3 id="profile-name" class="text-xl font-bold text-gray-900">John Doe</h3>
+              <p class="text-sm text-gray-600" id="profile-email">john@example.com</p>
+              <div class="mt-6">
+                <div class="text-sm text-gray-600">Level</div>
+                <div id="profile-level" class="text-2xl font-bold text-emerald-600">3</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="bg-gray-50 rounded-2xl p-6">
+              <h4 class="text-lg font-bold text-gray-900 mb-4">Account Information</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label class="text-sm text-gray-600 mb-1">Full Name</label>
+                  <input type="text" id="profile-fullname" class="w-full p-3 rounded-lg border border-gray-200" value="John Doe">
+                </div>
+                <div>
+                  <label class="text-sm text-gray-600 mb-1">Email Address</label>
+                  <input type="email" id="profile-email-input" class="w-full p-3 rounded-lg border border-gray-200" value="john@example.com">
+                </div>
+                <div>
+                  <label class="text-sm text-gray-600 mb-1">Phone Number</label>
+                  <input type="tel" id="profile-phone" class="w-full p-3 rounded-lg border border-gray-200" value="+91 XXXXX XXXXX">
+                </div>
+                <div>
+                  <label class="text-sm text-gray-600 mb-1">Member Since</label>
+                  <input type="text" id="profile-joined" class="w-full p-3 rounded-lg border border-gray-200 bg-white" value="January 2024" readonly>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <button id="save-profile-btn" class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors">Save Changes</button>
+                <button id="cancel-profile-btn" class="bg-gray-200 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- AI-Powered Rewards Section -->
-    <section id="rewards" class="py-24 bg-white">
+    <section id="rewards" class="py-24 bg-white" data-scroll-section>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <div class="inline-flex items-center bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full mb-6">
@@ -1463,7 +1555,7 @@
     </section>
 
     <!-- AI-Powered Impact Section -->
-    <section id="impact" class="py-24 bg-gradient-to-br from-slate-50 via-green-50 to-blue-50">
+    <section id="impact" class="py-24 bg-gradient-to-br from-slate-50 via-green-50 to-blue-50" data-scroll-section>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <div class="inline-flex items-center bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full mb-6">
@@ -1716,6 +1808,7 @@
 
   <!-- Core Scripts -->
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/three-3d.js"></script>
   <script type="module" src="js/map.js"></script>
   <script type="module" src="js/booking.js"></script>
   <script type="module" src="js/rewards.js"></script>
@@ -1971,7 +2064,7 @@
         }, 30000);
       }
 
-    function updateLiveStats() {
+    updateLiveStats() {
       const stats = [
         { id: 'waste-counter', increment: Math.floor(Math.random() * 10) + 1 },
         { id: 'users-counter', increment: Math.floor(Math.random() * 5) + 1 },
