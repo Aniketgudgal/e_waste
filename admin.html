@@ -1,352 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - E-Zero</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#00d4aa',
-                        secondary: '#1a1a2e',
-                        accent: '#16213e',
-                        glass: 'rgba(255, 255, 255, 0.1)',
-                        neon: '#00ff88',
-                        lightPrimary: '#00d4aa',
-                        lightSecondary: '#f8fafc',
-                        lightAccent: '#e2e8f0',
-                        lightGlass: 'rgba(0, 0, 0, 0.05)',
-                        lightNeon: '#00d4aa'
-                    },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        },
-                        glow: {
-                            from: { boxShadow: '0 0 5px #00ff88, 0 0 10px #00ff88, 0 0 15px #00ff88' },
-                            to: { boxShadow: '0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88' }
-                        },
-                        pulse: {
-                            '0%, 100%': { opacity: 1 },
-                            '50%': { opacity: 0.5 }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons: Lucide -->
-    <script src="https://unpkg.com/lucide@0.243.0/dist/lucide.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Animations: GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
-    <!-- 3D: Three.js -->
-    <script src="https://unpkg.com/three@0.156.0/build/three.min.js"></script>
-    
-    <!-- Scroll Effects: Locomotive Scroll -->
-    <script src="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-    
-    <!-- Micro-interactions: Lottie -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
-    
-    <!-- Chart.js for analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- DataTables for advanced tables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.min.js"></script>
-    
-    <!-- Custom Admin Styles -->
-    <link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Dashboard - E-Zero</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
 </head>
-<body class="min-h-screen dark">
-    <!-- Overlay for mobile -->
-    <div id="overlay" class="overlay"></div>
-    
-    <!-- Theme Toggle -->
-    <button id="theme-toggle" class="theme-toggle glass-card p-3 rounded-lg hover:neon-border transition-all">
-        <i data-lucide="sun" class="w-5 h-5"></i>
-    </button>
-    
-    <!-- Mobile Menu Toggle -->
-    <button id="menu-toggle" class="menu-toggle fixed top-4 left-4 z-50 glass-card p-3 rounded-lg md:hidden">
-        <i data-lucide="menu" class="w-5 h-5"></i>
-    </button>
-    
-    <div class="flex">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-64 min-h-screen p-6 fixed left-0 top-0 z-40">
-            <div class="flex items-center mb-8">
-                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3 animate-glow">
-                    <i data-lucide="recycle" class="w-6 h-6 text-white"></i>
-                </div>
-                <h1 class="text-xl font-bold text-neon">E-Zero Admin</h1>
-            </div>
-            <nav>
-                <ul class="space-y-2">
-                    <li><a href="#dashboard" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all active" data-section="dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a></li>
-                    <li><a href="#pickups" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="pickups"><i data-lucide="truck" class="w-5 h-5 mr-3"></i>Pickups</a></li>
-                    <li><a href="#users" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="users"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Users</a></li>
-                    <li><a href="#centers" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="centers"><i data-lucide="building" class="w-5 h-5 mr-3"></i>Centers</a></li>
-                    <li><a href="#analytics" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="analytics"><i data-lucide="bar-chart" class="w-5 h-5 mr-3"></i>Analytics</a></li>
-                    <li><a href="#reports" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="reports"><i data-lucide="file-text" class="w-5 h-5 mr-3"></i>Reports</a></li>
-                    <li><a href="#notifications" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="notifications"><i data-lucide="bell" class="w-5 h-5 mr-3"></i>Notifications</a></li>
-                    <li><a href="#settings" class="nav-link flex items-center p-3 rounded-lg hover:bg-glass transition-all" data-section="settings"><i data-lucide="settings" class="w-5 h-5 mr-3"></i>Settings</a></li>
-                </ul>
-            </nav>
-            <!-- 3D Earth Mini Widget -->
-            <div class="mt-8">
-                <h3 class="text-sm font-semibold mb-2">Recycling Awareness</h3>
-                <div id="mini-3d-earth" class="w-32 h-32 mx-auto"></div>
-            </div>
-        </aside>
-        
-        <!-- Main Content -->
-        <main class="main-content flex-1 ml-0 md:ml-64 p-4 md:p-8">
-            <!-- Header -->
-            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-                <div class="mb-4 md:mb-0">
-                    <h2 class="text-2xl md:text-3xl font-bold text-neon">Dashboard Overview</h2>
-                    <p class="text-gray-400 dark:text-gray-400 light:text-gray-600">Manage your E-Zero platform with advanced insights</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button class="glass-card p-3 rounded-lg hover:neon-border transition-all">
-                        <i data-lucide="bell" class="w-5 h-5"></i>
-                    </button>
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                            <i data-lucide="user" class="w-4 h-4 text-white"></i>
-                        </div>
-                        <span>Admin</span>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Dashboard Section -->
-            <section id="dashboard-section" class="section active">
-                <!-- 3D Interactive Hero -->
-                <div class="glass-card p-6 mb-8 animate-float">
-                    <h3 class="text-xl font-semibold mb-4">3D Recycling Components</h3>
-                    <div id="hero-3d" class="w-full h-64"></div>
-                </div>
-                
-                <!-- Metrics Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="glass-card p-6 neon-border">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-gray-400 dark:text-gray-400 light:text-gray-600">Total Revenue</p>
-                                <p class="text-2xl font-bold text-neon" id="total-revenue">₹2,345,670</p>
-                            </div>
-                            <i data-lucide="dollar-sign" class="w-8 h-8 text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="glass-card p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-gray-400 dark:text-gray-400 light:text-gray-600">Active Users</p>
-                                <p class="text-2xl font-bold text-neon" id="active-users">8,920</p>
-                            </div>
-                            <i data-lucide="users" class="w-8 h-8 text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="glass-card p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-gray-400 dark:text-gray-400 light:text-gray-600">Total Pickups</p>
-                                <p class="text-2xl font-bold text-neon" id="total-pickups">15,632</p>
-                            </div>
-                            <i data-lucide="truck" class="w-8 h-8 text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="glass-card p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-gray-400 dark:text-gray-400 light:text-gray-600">Satisfaction</p>
-                                <p class="text-2xl font-bold text-neon" id="satisfaction">4.8★</p>
-                            </div>
-                            <i data-lucide="star" class="w-8 h-8 text-primary"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <div class="glass-card p-6">
-                        <h3 class="text-xl font-semibold mb-4">Revenue Trends</h3>
-                        <canvas id="revenue-chart"></canvas>
-                    </div>
-                    <div class="glass-card p-6">
-                        <h3 class="text-xl font-semibold mb-4">User Growth</h3>
-                        <canvas id="user-growth-chart"></canvas>
-                    </div>
-                </div>
-                <!-- Additional Charts -->
-                <!-- Additional Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <div class="glass-card p-6">
-                        <h3 class="text-xl font-semibold mb-4">Pickup Distribution</h3>
-                        <canvas id="pickup-distribution-chart"></canvas>
-                    </div>
-                    <div class="glass-card p-6">
-                        <h3 class="text-xl font-semibold mb-4">Trends</h3>
-                        <canvas id="trends-chart"></canvas>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Pickups Section -->
-            <section id="pickups-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Pickup Management</h3>
-                    <table id="pickups-table" class="w-full text-left">
-                        <thead>
-                            <tr class="border-b border-gray-600 dark:border-gray-600 light:border-gray-300">
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Customer</th>
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pickups-table-body">
-                            <!-- Sample data -->
-                            <tr>
-                                <td class="p-3">1</td>
-                                <td class="p-3">John Doe</td>
-                                <td class="p-3">2023-10-01</td>
-                                <td class="p-3"><span class="px-2 py-1 bg-green-500 text-white rounded">Completed</span></td>
-                                <td class="p-3"><button class="text-primary hover:text-neon"><i data-lucide="eye" class="w-4 h-4 mr-1"></i>View</button></td>
-                            </tr>
-                            <!-- More rows can be added dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            
-            <!-- Users Section -->
-            <section id="users-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">User Management</h3>
-                    <table id="users-table" class="w-full text-left">
-                        <thead>
-                            <tr class="border-b border-gray-600 dark:border-gray-600 light:border-gray-300">
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Email</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body">
-                            <!-- Sample data -->
-                            <tr>
-                                <td class="p-3">Jane Smith</td>
-                                <td class="p-3">jane@example.com</td>
-                                <td class="p-3"><span class="px-2 py-1 bg-blue-500 text-white rounded">Active</span></td>
-                                <td class="p-3"><button class="text-primary hover:text-neon"><i data-lucide="edit" class="w-4 h-4 mr-1"></i>Edit</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            
-            <!-- Centers Section -->
-            <section id="centers-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Recycling Centers</h3>
-                    <div id="centers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Sample center card -->
-                        <div class="glass-card p-4">
-                            <h4 class="font-semibold">Center 1</h4>
-                            <p>Location: City A</p>
-                            <p>Capacity: 500kg</p>
-                            <button class="text-primary hover:text-neon mt-2"><i data-lucide="map-pin" class="w-4 h-4 mr-1"></i>View Map</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Analytics Section -->
-            <section id="analytics-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Advanced Analytics</h3>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <canvas id="environmental-chart"></canvas>
-                        <canvas id="geographic-chart"></canvas>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Reports Section -->
-            <section id="reports-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Reports</h3>
-                    <div class="space-y-4">
-                        <button class="bg-primary px-4 py-2 rounded hover:animate-glow"><i data-lucide="download" class="w-4 h-4 mr-2"></i>Generate Revenue Report</button>
-                        <button class="bg-primary px-4 py-2 rounded hover:animate-glow"><i data-lucide="download" class="w-4 h-4 mr-2"></i>Generate User Report</button>
-                        <button class="bg-primary px-4 py-2 rounded hover:animate-glow"><i data-lucide="download" class="w-4 h-4 mr-2"></i>Generate Pickup Report</button>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Notifications Section -->
-            <section id="notifications-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">Notifications</h3>
-                    <ul class="space-y-2">
-                        <li class="p-3 glass-card flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-3 text-yellow-500"></i>New pickup request from user X</li>
-                        <li class="p-3 glass-card flex items-center"><i data-lucide="tool" class="w-5 h-5 mr-3 text-blue-500"></i>System maintenance scheduled</li>
-                    </ul>
-                </div>
-            </section>
-            
-            <!-- Settings Section -->
-            <section id="settings-section" class="section hidden">
-                <div class="glass-card p-6">
-                    <h3 class="text-xl font-semibold mb-4">System Settings</h3>
-                    <form class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Platform Name</label>
-                            <input type="text" class="w-full p-3 bg-glass border border-gray-600 dark:border-gray-600 light:border-gray-300 rounded-lg" value="E-Zero">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Admin Email</label>
-                            <input type="email" class="w-full p-3 bg-glass border border-gray-600 dark:border-gray-600 light:border-gray-300 rounded-lg" value="admin@e-zero.com">
-                        </div>
-                        <button type="submit" class="bg-primary px-6 py-3 rounded-lg hover:animate-glow transition-all"><i data-lucide="save" class="w-4 h-4 mr-2"></i>Save Changes</button>
-                    </form>
-                </div>
-            </section>
-        </main>
+<body class="dark">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-recycle"></i>
+        </div>
+        <span class="logo-text">E-Zero <span>Admin</span></span>
+      </div>
     </div>
     
-    <!-- Scripts -->
-    <!-- Custom Admin Script -->
-    <script type="module" src="js/admin.js"></script>
-    <script>
-       // Initialize Lucide icons
-       if (window.lucide) {
-           lucide.createIcons();
-       }
-    </script>
+    <nav class="sidebar-nav">
+      <a href="#dashboard" class="nav-item active" data-section="dashboard">
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#pickups" class="nav-item" data-section="pickups">
+        <i class="fas fa-truck"></i>
+        <span>Pickups</span>
+      </a>
+      <a href="#users" class="nav-item" data-section="users">
+        <i class="fas fa-users"></i>
+        <span>Users</span>
+      </a>
+      <a href="#centers" class="nav-item" data-section="centers">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Centers</span>
+      </a>
+      <a href="#reports" class="nav-item" data-section="reports">
+        <i class="fas fa-file-alt"></i>
+        <span>Reports</span>
+      </a>
+      <a href="#settings" class="nav-item" data-section="settings">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Website</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebar-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      
+      <div class="topbar-right">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button class="notification-btn" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-menu">
+          <div class="avatar">AD</div>
+          <div class="user-info">
+            <span class="user-name">Admin User</span>
+            <span class="user-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Section -->
+    <section class="content-section active" id="section-dashboard">
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-truck"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-pickups">1,247</h3>
+            <p>Total Pickups</p>
+            <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 12% this month</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-users">8,432</h3>
+            <p>Registered Users</p>
+            <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 8% this month</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="fas fa-recycle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-recycled">45.2T</h3>
+            <p>E-Waste Recycled</p>
+            <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 15% this month</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-revenue">₹2.4L</h3>
+            <p>Revenue</p>
+            <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 18% this month</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fas fa-chart-line"></i> Pickup Trends</h3>
+            <select class="chart-filter" id="pickup-chart-filter">
+              <option value="week">This Week</option>
+              <option value="month" selected>This Month</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+          <div class="chart-container">
+            <canvas id="pickup-trend-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fas fa-chart-pie"></i> Item Categories</h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="category-distribution-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="activity-section">
+        <div class="card-header">
+          <h3><i class="fas fa-history"></i> Recent Pickups</h3>
+          <a href="#pickups" class="view-all" data-section="pickups">View All</a>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recent-pickups">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pickups Section -->
+    <section class="content-section" id="section-pickups">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Pickup Management</h2>
+          <p>Manage and track all pickup requests</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-secondary">
+            <i class="fas fa-download"></i> Export
+          </button>
+          <button class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Pickup
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search pickups..." id="pickup-search">
+        </div>
+        <select class="filter-select" id="status-filter">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="in-transit">In Transit</option>
+          <option value="completed">Completed</option>
+        </select>
+        <input type="date" class="filter-date" id="date-filter">
+      </div>
+      
+      <!-- Pickups Table -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="select-all-pickups"></th>
+              <th>Booking ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Items</th>
+              <th>Date & Time</th>
+              <th>Address</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pickups-table-body">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination">
+        <span class="pagination-info">Showing 1-10 of 247 entries</span>
+        <div class="pagination-controls">
+          <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span class="page-dots">...</span>
+          <button class="page-btn">25</button>
+          <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Users Section -->
+    <section class="content-section" id="section-users">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>User Management</h2>
+          <p>Manage registered users and their activity</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-secondary">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+      
+      <!-- User Stats -->
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <span class="mini-stat-value">8,432</span>
+          <span class="mini-stat-label">Total Users</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-value">1,247</span>
+          <span class="mini-stat-label">Active This Month</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-value">342</span>
+          <span class="mini-stat-label">New This Week</span>
+        </div>
+      </div>
+      
+      <!-- Users Table -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Points</th>
+              <th>Level</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Centers Section -->
+    <section class="content-section" id="section-centers">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Recycling Centers</h2>
+          <p>Manage collection center locations</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Center
+          </button>
+        </div>
+      </div>
+      
+      <div class="centers-grid" id="centers-management-grid">
+        <!-- Populated by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section class="content-section" id="section-reports">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Reports & Analytics</h2>
+          <p>Generate and view detailed reports</p>
+        </div>
+      </div>
+      
+      <div class="reports-grid">
+        <div class="report-card" onclick="generateReport('pickup')">
+          <div class="report-icon green">
+            <i class="fas fa-truck"></i>
+          </div>
+          <h3>Pickup Report</h3>
+          <p>Summary of all pickup activities</p>
+          <button class="btn btn-sm btn-secondary">Generate</button>
+        </div>
+        
+        <div class="report-card" onclick="generateReport('user')">
+          <div class="report-icon blue">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>User Report</h3>
+          <p>User registration and activity</p>
+          <button class="btn btn-sm btn-secondary">Generate</button>
+        </div>
+        
+        <div class="report-card" onclick="generateReport('revenue')">
+          <div class="report-icon orange">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <h3>Revenue Report</h3>
+          <p>Financial summary and trends</p>
+          <button class="btn btn-sm btn-secondary">Generate</button>
+        </div>
+        
+        <div class="report-card" onclick="generateReport('environmental')">
+          <div class="report-icon purple">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3>Environmental Impact</h3>
+          <p>CO₂ saved and recycling metrics</p>
+          <button class="btn btn-sm btn-secondary">Generate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="content-section" id="section-settings">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Settings</h2>
+          <p>Configure system settings</p>
+        </div>
+      </div>
+      
+      <div class="settings-container">
+        <div class="settings-card">
+          <h3><i class="fas fa-bell"></i> Notifications</h3>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Email Notifications</span>
+              <span class="setting-desc">Receive email alerts for new pickups</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">SMS Alerts</span>
+              <span class="setting-desc">Get SMS for urgent updates</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-card">
+          <h3><i class="fas fa-palette"></i> Appearance</h3>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Dark Mode</span>
+              <span class="setting-desc">Use dark theme</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="dark-mode-toggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-card">
+          <h3><i class="fas fa-shield-alt"></i> Security</h3>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Two-Factor Auth</span>
+              <span class="setting-desc">Add extra security</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <button class="btn btn-secondary mt-4">
+            <i class="fas fa-key"></i> Change Password
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Admin Script -->
+  <script src="js/admin.js"></script>
 </body>
 </html>
