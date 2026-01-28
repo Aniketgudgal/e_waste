@@ -1,0 +1,102 @@
+/* Admin Dashboard Styles */
+body {
+  font-family: "Inter", sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  color: #e2e8f0;
+}
+body.light {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  color: #1e293b;
+}
+.glass-card {
+  transition: background 0.3s, border 0.3s;
+}
+body.dark .glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+body.light .glass-card {
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+.neon-border {
+  transition: border 0.3s, box-shadow 0.3s;
+}
+body.dark .neon-border {
+  border: 2px solid #00ff88;
+  box-shadow: 0 0 10px #00ff88;
+}
+body.light .neon-border {
+  border: 2px solid #00d4aa;
+  box-shadow: 0 0 10px #00d4aa;
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.sidebar {
+  transition: background 0.3s, transform 0.3s;
+}
+body.dark .sidebar {
+  background: linear-gradient(180deg, #16213e 0%, #0f0f23 100%);
+}
+body.light .sidebar {
+  background: linear-gradient(180deg, #e2e8f0 0%, #f8fafc 100%);
+}
+.main-content {
+  transition: background 0.3s;
+}
+body.dark .main-content {
+  background: rgba(26, 26, 46, 0.8);
+}
+body.light .main-content {
+  background: rgba(248, 250, 252, 0.8);
+}
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+  display: none;
+}
+.overlay.show {
+  display: block;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}
+.menu-toggle {
+  display: none;
+}
