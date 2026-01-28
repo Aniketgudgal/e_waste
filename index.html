@@ -60,9 +60,9 @@
             <i class="fas fa-phone"></i>
             <span>+91 98765 43210</span>
           </a>
-          <button class="btn btn-primary btn-sm" onclick="scrollToSection('contact')">
-            <i class="fas fa-calendar-check"></i>
-            <span>Get Free Quote</span>
+          <button class="btn btn-primary btn-sm" onclick="openPickupModal()">
+            <i class="fas fa-truck"></i>
+            <span>Schedule Pickup</span>
           </button>
           <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
@@ -131,8 +131,8 @@
             </div>
             
             <div class="hero-buttons">
-              <button class="btn btn-primary btn-lg" onclick="scrollToSection('contact')">
-                <i class="fas fa-phone-alt"></i>
+              <button class="btn btn-primary btn-lg" onclick="openPickupModal()">
+                <i class="fas fa-truck"></i>
                 Schedule Free Pickup
               </button>
               <button class="btn btn-secondary btn-lg" onclick="scrollToSection('services')">
@@ -948,11 +948,330 @@
   </footer>
 
   <!-- ============================================
+       PICKUP SCHEDULING MODAL
+       ============================================ -->
+  <div class="modal-overlay" id="pickup-modal">
+    <div class="modal">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-truck"></i>
+          <h2>Schedule E-Waste Pickup</h2>
+        </div>
+        <button class="modal-close" onclick="closePickupModal()">&times;</button>
+      </div>
+      
+      <!-- Progress Steps -->
+      <div class="modal-progress">
+        <div class="progress-step active" data-step="1">
+          <div class="step-number">1</div>
+          <span>Your Info</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-number">2</div>
+          <span>Select Items</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-number">3</div>
+          <span>Schedule</span>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-number">4</div>
+          <span>Confirm</span>
+        </div>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Step 1: Personal Info -->
+        <div class="form-step active" id="step-1">
+          <h3><i class="fas fa-user"></i> Your Information</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="pickup-name" class="form-input" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number *</label>
+              <input type="tel" id="pickup-phone" class="form-input" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <input type="email" id="pickup-email" class="form-input" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company Name (Optional)</label>
+              <input type="text" id="pickup-company" class="form-input" placeholder="Company name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pickup Address *</label>
+            <textarea id="pickup-address" class="form-input form-textarea" placeholder="Enter complete pickup address with landmark" required></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City *</label>
+              <input type="text" id="pickup-city" class="form-input" placeholder="City" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pincode *</label>
+              <input type="text" id="pickup-pincode" class="form-input" placeholder="411001" required>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 2: Select Items -->
+        <div class="form-step" id="step-2">
+          <h3><i class="fas fa-box"></i> Select E-Waste Items</h3>
+          <p class="step-description">Select items and specify quantities. Higher quantities may earn bonus points!</p>
+          
+          <div class="items-grid" id="items-grid">
+            <div class="item-select-card" data-item="laptops">
+              <div class="item-icon"><i class="fas fa-laptop"></i></div>
+              <div class="item-name">Laptops</div>
+              <div class="item-points">+50 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('laptops', -1)">-</button>
+                <span class="qty-value" id="qty-laptops">0</span>
+                <button class="qty-btn" onclick="updateQty('laptops', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="phones">
+              <div class="item-icon"><i class="fas fa-mobile-alt"></i></div>
+              <div class="item-name">Phones</div>
+              <div class="item-points">+30 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('phones', -1)">-</button>
+                <span class="qty-value" id="qty-phones">0</span>
+                <button class="qty-btn" onclick="updateQty('phones', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="monitors">
+              <div class="item-icon"><i class="fas fa-desktop"></i></div>
+              <div class="item-name">Monitors</div>
+              <div class="item-points">+40 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('monitors', -1)">-</button>
+                <span class="qty-value" id="qty-monitors">0</span>
+                <button class="qty-btn" onclick="updateQty('monitors', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="printers">
+              <div class="item-icon"><i class="fas fa-print"></i></div>
+              <div class="item-name">Printers</div>
+              <div class="item-points">+35 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('printers', -1)">-</button>
+                <span class="qty-value" id="qty-printers">0</span>
+                <button class="qty-btn" onclick="updateQty('printers', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="keyboards">
+              <div class="item-icon"><i class="fas fa-keyboard"></i></div>
+              <div class="item-name">Keyboards/Mouse</div>
+              <div class="item-points">+10 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('keyboards', -1)">-</button>
+                <span class="qty-value" id="qty-keyboards">0</span>
+                <button class="qty-btn" onclick="updateQty('keyboards', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="batteries">
+              <div class="item-icon"><i class="fas fa-battery-full"></i></div>
+              <div class="item-name">Batteries/UPS</div>
+              <div class="item-points">+25 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('batteries', -1)">-</button>
+                <span class="qty-value" id="qty-batteries">0</span>
+                <button class="qty-btn" onclick="updateQty('batteries', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="cables">
+              <div class="item-icon"><i class="fas fa-plug"></i></div>
+              <div class="item-name">Cables/Chargers</div>
+              <div class="item-points">+5 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('cables', -1)">-</button>
+                <span class="qty-value" id="qty-cables">0</span>
+                <button class="qty-btn" onclick="updateQty('cables', 1)">+</button>
+              </div>
+            </div>
+            <div class="item-select-card" data-item="other">
+              <div class="item-icon"><i class="fas fa-microchip"></i></div>
+              <div class="item-name">Other Electronics</div>
+              <div class="item-points">+15 pts each</div>
+              <div class="item-qty-control">
+                <button class="qty-btn" onclick="updateQty('other', -1)">-</button>
+                <span class="qty-value" id="qty-other">0</span>
+                <button class="qty-btn" onclick="updateQty('other', 1)">+</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="selected-summary" id="selected-summary">
+            <div class="summary-label">Selected Items:</div>
+            <div class="summary-value" id="total-items">0 items</div>
+            <div class="summary-points">Est. Points: <span id="total-points">0</span></div>
+          </div>
+          
+          <!-- Image Upload (Optional) -->
+          <div class="upload-section">
+            <h4><i class="fas fa-camera"></i> Upload Photos (Optional)</h4>
+            <p class="upload-hint">Upload photos of your e-waste for better assessment</p>
+            <div class="upload-area" id="upload-area">
+              <input type="file" id="image-upload" multiple accept="image/*" hidden>
+              <div class="upload-placeholder" onclick="document.getElementById('image-upload').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Click to upload images</span>
+                <small>JPG, PNG up to 5MB each</small>
+              </div>
+              <div class="upload-preview" id="upload-preview"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 3: Schedule -->
+        <div class="form-step" id="step-3">
+          <h3><i class="fas fa-calendar-alt"></i> Select Pickup Date & Time</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Preferred Date *</label>
+              <input type="date" id="pickup-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Time Slot *</label>
+              <select id="pickup-time" class="form-input form-select" required>
+                <option value="">Select time slot</option>
+                <option value="09:00-11:00">09:00 AM - 11:00 AM</option>
+                <option value="11:00-13:00">11:00 AM - 01:00 PM</option>
+                <option value="14:00-16:00">02:00 PM - 04:00 PM</option>
+                <option value="16:00-18:00">04:00 PM - 06:00 PM</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Special Instructions (Optional)</label>
+            <textarea id="pickup-instructions" class="form-input form-textarea" placeholder="Any special instructions for pickup..."></textarea>
+          </div>
+          
+          <div class="service-options">
+            <h4>Additional Services</h4>
+            <label class="checkbox-item">
+              <input type="checkbox" id="service-data">
+              <span class="checkmark"></span>
+              <span class="checkbox-label">
+                <strong>Secure Data Destruction</strong>
+                <small>Certificate provided</small>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="service-certificate">
+              <span class="checkmark"></span>
+              <span class="checkbox-label">
+                <strong>Environmental Compliance Certificate</strong>
+                <small>For corporate records</small>
+              </span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Step 4: Confirmation / Invoice -->
+        <div class="form-step" id="step-4">
+          <div class="confirmation-content">
+            <div class="confirmation-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Review Your Booking</h3>
+            
+            <div class="invoice-preview" id="invoice-preview">
+              <div class="invoice-header">
+                <div class="invoice-logo">
+                  <i class="fas fa-recycle"></i>
+                  <span>E-Zero</span>
+                </div>
+                <div class="invoice-meta">
+                  <div class="invoice-id">Booking #<span id="booking-id">EZ-000000</span></div>
+                  <div class="invoice-date" id="invoice-date"></div>
+                </div>
+              </div>
+              
+              <div class="invoice-section">
+                <h4>Customer Details</h4>
+                <div class="invoice-details" id="customer-details"></div>
+              </div>
+              
+              <div class="invoice-section">
+                <h4>Pickup Details</h4>
+                <div class="invoice-details" id="pickup-details"></div>
+              </div>
+              
+              <div class="invoice-section">
+                <h4>Items Summary</h4>
+                <table class="invoice-table">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Quantity</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody id="invoice-items"></tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2"><strong>Total Estimated Points</strong></td>
+                      <td><strong id="invoice-total-points">0</strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              
+              <div class="invoice-footer">
+                <p>Thank you for choosing E-Zero for responsible e-waste recycling!</p>
+                <small>A confirmation email will be sent to your registered email address.</small>
+              </div>
+            </div>
+            
+            <div class="print-actions">
+              <button class="btn btn-secondary" onclick="printInvoice()">
+                <i class="fas fa-print"></i> Print Invoice
+              </button>
+              <button class="btn btn-secondary" onclick="downloadInvoice()">
+                <i class="fas fa-download"></i> Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="prev-btn" onclick="prevStep()" style="display:none;">
+          <i class="fas fa-arrow-left"></i> Previous
+        </button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextStep()">
+          Next <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="btn btn-primary btn-success" id="submit-btn" onclick="submitBooking()" style="display:none;">
+          <i class="fas fa-check"></i> Confirm Booking
+        </button>
+        <button class="btn btn-primary" id="done-btn" onclick="closePickupModal()" style="display:none;">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
        SCRIPTS
        ============================================ -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/map.js"></script>
+  <script src="js/booking.js"></script>
 </body>
 </html>
