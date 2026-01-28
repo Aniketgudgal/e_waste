@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="E-Zero - AI-powered e-waste recycling platform. Schedule pickups, earn rewards, and make a positive environmental impact.">
-  <meta name="keywords" content="e-waste, recycling, electronics, environment, sustainability">
+  <meta name="description" content="E-Zero - India's leading e-waste recycling company. We provide certified, secure, and eco-friendly electronic waste disposal services for businesses and individuals.">
+  <meta name="keywords" content="e-waste recycling, electronic waste disposal, IT asset disposal, certified recycling, data destruction, green recycling India">
+  <meta name="author" content="E-Zero Technologies">
   <meta name="theme-color" content="#10B981">
   
-  <title>E-Zero | Smart E-Waste Recycling Platform</title>
+  <title>E-Zero | Certified E-Waste Recycling & IT Asset Disposal Services</title>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
@@ -15,6 +16,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,9 +25,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
-  
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <!-- Main Styles -->
   <link rel="stylesheet" href="css/styles.css">
@@ -48,22 +47,22 @@
         <!-- Desktop Navigation -->
         <nav class="nav">
           <a href="#home" class="nav-link active">Home</a>
-          <a href="#how-it-works" class="nav-link">How It Works</a>
-          <a href="#centers" class="nav-link">Find Centers</a>
-          <a href="#pickup" class="nav-link">Schedule Pickup</a>
-          <a href="#rewards" class="nav-link">Rewards</a>
-          <a href="#impact" class="nav-link">Your Impact</a>
+          <a href="#services" class="nav-link">Services</a>
+          <a href="#process" class="nav-link">Our Process</a>
+          <a href="#why-us" class="nav-link">Why E-Zero</a>
+          <a href="#centers" class="nav-link">Locations</a>
+          <a href="#contact" class="nav-link">Contact</a>
         </nav>
         
         <!-- Header Actions -->
         <div class="header-actions">
-          <a href="admin.html" class="btn btn-secondary btn-sm">
-            <i class="fas fa-user-shield"></i>
-            <span class="hidden md:inline-block">Admin</span>
+          <a href="tel:+919876543210" class="header-phone">
+            <i class="fas fa-phone"></i>
+            <span>+91 98765 43210</span>
           </a>
-          <button class="btn btn-primary btn-sm" onclick="scrollToSection('pickup')">
-            <i class="fas fa-truck"></i>
-            <span>Book Pickup</span>
+          <button class="btn btn-primary btn-sm" onclick="scrollToSection('contact')">
+            <i class="fas fa-calendar-check"></i>
+            <span>Get Free Quote</span>
           </button>
           <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
             <i class="fas fa-bars"></i>
@@ -77,12 +76,11 @@
   <div class="mobile-menu" id="mobile-menu">
     <nav class="mobile-nav">
       <a href="#home" class="mobile-nav-link">Home</a>
-      <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
-      <a href="#centers" class="mobile-nav-link">Find Centers</a>
-      <a href="#pickup" class="mobile-nav-link">Schedule Pickup</a>
-      <a href="#rewards" class="mobile-nav-link">Rewards</a>
-      <a href="#impact" class="mobile-nav-link">Your Impact</a>
-      <a href="admin.html" class="mobile-nav-link">Admin Dashboard</a>
+      <a href="#services" class="mobile-nav-link">Services</a>
+      <a href="#process" class="mobile-nav-link">Our Process</a>
+      <a href="#why-us" class="mobile-nav-link">Why E-Zero</a>
+      <a href="#centers" class="mobile-nav-link">Locations</a>
+      <a href="#contact" class="mobile-nav-link">Contact</a>
     </nav>
   </div>
 
@@ -91,7 +89,7 @@
          HERO SECTION
          ============================================ -->
     <section class="hero" id="home">
-      <!-- Background Shapes -->
+      <!-- Background -->
       <div class="hero-bg">
         <div class="hero-bg-shape hero-bg-shape-1"></div>
         <div class="hero-bg-shape hero-bg-shape-2"></div>
@@ -103,43 +101,54 @@
           <!-- Text Content -->
           <div class="hero-text">
             <div class="hero-badge">
-              <i class="fas fa-bolt"></i>
-              <span>AI-Powered Recycling</span>
+              <i class="fas fa-shield-alt"></i>
+              <span>Government Certified • ISO 14001 Compliant</span>
             </div>
             
             <h1 class="hero-title">
-              Transform Your <span class="highlight">E-Waste</span> Into Rewards
+              India's Most Trusted <span class="highlight">E-Waste Recycling</span> Partner
             </h1>
             
             <p class="hero-description">
-              Join thousands of eco-warriors making a difference. Schedule free pickups, 
-              earn rewards for every item recycled, and track your environmental impact 
-              in real-time.
+              Secure, certified, and environmentally responsible disposal of electronic waste. 
+              We help businesses and individuals dispose of IT assets safely while ensuring 
+              complete data security and regulatory compliance.
             </p>
             
+            <div class="hero-features">
+              <div class="hero-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Free Pickup Service</span>
+              </div>
+              <div class="hero-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Secure Data Destruction</span>
+              </div>
+              <div class="hero-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Compliance Certificate</span>
+              </div>
+            </div>
+            
             <div class="hero-buttons">
-              <button class="btn btn-primary btn-lg" onclick="scrollToSection('pickup')">
-                <i class="fas fa-truck"></i>
+              <button class="btn btn-primary btn-lg" onclick="scrollToSection('contact')">
+                <i class="fas fa-phone-alt"></i>
                 Schedule Free Pickup
               </button>
-              <button class="btn btn-secondary btn-lg" onclick="scrollToSection('how-it-works')">
-                <i class="fas fa-play-circle"></i>
-                See How It Works
+              <button class="btn btn-secondary btn-lg" onclick="scrollToSection('services')">
+                <i class="fas fa-briefcase"></i>
+                Our Services
               </button>
             </div>
             
-            <div class="hero-stats">
-              <div class="hero-stat">
-                <div class="hero-stat-value" id="stat-waste">50K+</div>
-                <div class="hero-stat-label">Items Recycled</div>
-              </div>
-              <div class="hero-stat">
-                <div class="hero-stat-value" id="stat-users">10K+</div>
-                <div class="hero-stat-label">Active Users</div>
-              </div>
-              <div class="hero-stat">
-                <div class="hero-stat-value" id="stat-co2">25T</div>
-                <div class="hero-stat-label">CO₂ Saved</div>
+            <div class="hero-trust">
+              <span class="trust-label">Trusted by 500+ Companies</span>
+              <div class="trust-logos">
+                <div class="trust-logo">TCS</div>
+                <div class="trust-logo">Infosys</div>
+                <div class="trust-logo">Wipro</div>
+                <div class="trust-logo">HCL</div>
+                <div class="trust-logo">+150</div>
               </div>
             </div>
           </div>
@@ -147,43 +156,43 @@
           <!-- Visual Content -->
           <div class="hero-visual">
             <div class="hero-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&q=80" 
-                   alt="E-waste recycling" 
+              <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=600&q=80" 
+                   alt="Professional e-waste recycling facility" 
                    class="hero-image">
               
-              <!-- Floating Cards -->
+              <!-- Stats Cards -->
               <div class="hero-floating-card hero-floating-card-1">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white">
-                    <i class="fas fa-leaf"></i>
+                <div class="floating-stat">
+                  <div class="floating-stat-icon green">
+                    <i class="fas fa-recycle"></i>
                   </div>
                   <div>
-                    <div class="text-sm font-semibold text-gray-900">Eco Points</div>
-                    <div class="text-xs text-gray-500">+250 earned today</div>
+                    <div class="floating-stat-value">50,000+</div>
+                    <div class="floating-stat-label">Tons Recycled</div>
                   </div>
                 </div>
               </div>
               
               <div class="hero-floating-card hero-floating-card-2">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg bg-accent-cyan flex items-center justify-center text-white">
-                    <i class="fas fa-truck"></i>
+                <div class="floating-stat">
+                  <div class="floating-stat-icon blue">
+                    <i class="fas fa-building"></i>
                   </div>
                   <div>
-                    <div class="text-sm font-semibold text-gray-900">Pickup Today</div>
-                    <div class="text-xs text-gray-500">2:00 PM - 4:00 PM</div>
+                    <div class="floating-stat-value">500+</div>
+                    <div class="floating-stat-label">Corporate Clients</div>
                   </div>
                 </div>
               </div>
               
               <div class="hero-floating-card hero-floating-card-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg bg-accent-purple flex items-center justify-center text-white">
-                    <i class="fas fa-trophy"></i>
+                <div class="floating-stat">
+                  <div class="floating-stat-icon purple">
+                    <i class="fas fa-certificate"></i>
                   </div>
                   <div>
-                    <div class="text-sm font-semibold text-gray-900">Level 7</div>
-                    <div class="text-xs text-gray-500">Eco Warrior</div>
+                    <div class="floating-stat-value">100%</div>
+                    <div class="floating-stat-label">Compliance Rate</div>
                   </div>
                 </div>
               </div>
@@ -194,7 +203,7 @@
     </section>
 
     <!-- ============================================
-         STATS SECTION
+         STATS BANNER
          ============================================ -->
     <section class="stats-section">
       <div class="container">
@@ -203,108 +212,489 @@
             <div class="stat-icon">
               <i class="fas fa-recycle"></i>
             </div>
-            <div class="stat-value counter" data-target="1200000">1.2M</div>
-            <div class="stat-label">KG E-Waste Recycled</div>
+            <div class="stat-value">50,000+</div>
+            <div class="stat-label">Tons E-Waste Recycled</div>
           </div>
           <div class="stat-item scroll-animate">
             <div class="stat-icon">
-              <i class="fas fa-users"></i>
+              <i class="fas fa-building"></i>
             </div>
-            <div class="stat-value counter" data-target="50000">50K+</div>
-            <div class="stat-label">Active Users</div>
+            <div class="stat-value">500+</div>
+            <div class="stat-label">Corporate Clients</div>
           </div>
           <div class="stat-item scroll-animate">
             <div class="stat-icon">
               <i class="fas fa-map-marker-alt"></i>
             </div>
-            <div class="stat-value counter" data-target="500">500+</div>
-            <div class="stat-label">Collection Centers</div>
+            <div class="stat-value">25+</div>
+            <div class="stat-label">Processing Facilities</div>
           </div>
           <div class="stat-item scroll-animate">
             <div class="stat-icon">
-              <i class="fas fa-cloud"></i>
+              <i class="fas fa-award"></i>
             </div>
-            <div class="stat-value counter" data-target="250">250T</div>
-            <div class="stat-label">CO₂ Emissions Saved</div>
+            <div class="stat-value">15+</div>
+            <div class="stat-label">Years Experience</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ============================================
-         HOW IT WORKS SECTION
+         SERVICES SECTION
          ============================================ -->
-    <section class="how-it-works" id="how-it-works">
+    <section class="services-section" id="services">
       <div class="container">
         <div class="section-title">
           <span class="section-badge">
-            <i class="fas fa-lightbulb"></i>
-            Simple Process
+            <i class="fas fa-briefcase"></i>
+            Our Services
           </span>
-          <h2>How It Works</h2>
-          <p>Recycling e-waste has never been easier. Follow these simple steps to start making a difference.</p>
+          <h2>Comprehensive E-Waste Management Solutions</h2>
+          <p>End-to-end recycling services for businesses and individuals with complete documentation and compliance.</p>
         </div>
         
-        <div class="steps-grid">
-          <div class="step-card scroll-animate">
-            <span class="step-number">1</span>
-            <div class="step-icon">
-              <i class="fas fa-laptop"></i>
+        <div class="services-grid">
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-server"></i>
             </div>
-            <h3 class="step-title">List Your Items</h3>
-            <p class="step-description">
-              Select the electronics you want to recycle from our comprehensive list of accepted items.
+            <h3 class="service-title">IT Asset Disposal</h3>
+            <p class="service-description">
+              Secure disposal of computers, servers, network equipment, and data storage devices 
+              with certified data destruction and asset tracking.
             </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Complete asset inventory</li>
+              <li><i class="fas fa-check"></i> Secure data wiping</li>
+              <li><i class="fas fa-check"></i> Certificate of destruction</li>
+            </ul>
           </div>
           
-          <div class="step-card scroll-animate">
-            <span class="step-number">2</span>
-            <div class="step-icon">
-              <i class="fas fa-calendar-check"></i>
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-shield-alt"></i>
             </div>
-            <h3 class="step-title">Schedule Pickup</h3>
-            <p class="step-description">
-              Choose a convenient date and time slot for free doorstep collection of your e-waste.
+            <h3 class="service-title">Data Destruction</h3>
+            <p class="service-description">
+              NIST-compliant data sanitization and physical destruction services ensuring 
+              your sensitive data is completely irrecoverable.
             </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> On-site shredding available</li>
+              <li><i class="fas fa-check"></i> Video documentation</li>
+              <li><i class="fas fa-check"></i> Destruction certificate</li>
+            </ul>
           </div>
           
-          <div class="step-card scroll-animate">
-            <span class="step-number">3</span>
-            <div class="step-icon">
-              <i class="fas fa-truck-loading"></i>
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-industry"></i>
             </div>
-            <h3 class="step-title">We Collect</h3>
-            <p class="step-description">
-              Our verified team arrives at your doorstep to safely collect and transport your items.
+            <h3 class="service-title">Corporate Recycling</h3>
+            <p class="service-description">
+              Tailored recycling programs for enterprises with scheduled pickups, 
+              dedicated account management, and ESG reporting.
             </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Customized pickup schedule</li>
+              <li><i class="fas fa-check"></i> Dedicated account manager</li>
+              <li><i class="fas fa-check"></i> Quarterly sustainability reports</li>
+            </ul>
           </div>
           
-          <div class="step-card scroll-animate">
-            <span class="step-number">4</span>
-            <div class="step-icon">
-              <i class="fas fa-gift"></i>
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-home"></i>
             </div>
-            <h3 class="step-title">Earn Rewards</h3>
-            <p class="step-description">
-              Get instant reward points for every item recycled. Redeem for exciting offers and discounts.
+            <h3 class="service-title">Residential Pickup</h3>
+            <p class="service-description">
+              Free doorstep collection for households. Responsibly recycle your old 
+              phones, laptops, TVs, and household electronics.
             </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Free doorstep pickup</li>
+              <li><i class="fas fa-check"></i> All electronics accepted</li>
+              <li><i class="fas fa-check"></i> Same-day scheduling</li>
+            </ul>
+          </div>
+          
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-battery-half"></i>
+            </div>
+            <h3 class="service-title">Battery Recycling</h3>
+            <p class="service-description">
+              Specialized handling of lithium-ion, lead-acid, and other battery types 
+              with safe processing and material recovery.
+            </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> All battery types accepted</li>
+              <li><i class="fas fa-check"></i> Hazmat certified handling</li>
+              <li><i class="fas fa-check"></i> Material recovery report</li>
+            </ul>
+          </div>
+          
+          <div class="service-card scroll-animate">
+            <div class="service-icon">
+              <i class="fas fa-file-certificate"></i>
+            </div>
+            <h3 class="service-title">Compliance Services</h3>
+            <p class="service-description">
+              Complete documentation for E-Waste Management Rules compliance, 
+              EPR fulfillment, and CSR reporting requirements.
+            </p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> E-waste certificates</li>
+              <li><i class="fas fa-check"></i> EPR compliance support</li>
+              <li><i class="fas fa-check"></i> Audit-ready documentation</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ============================================
-         CENTERS SECTION
+         PROCESS SECTION
+         ============================================ -->
+    <section class="process-section" id="process">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-badge">
+            <i class="fas fa-cogs"></i>
+            Our Process
+          </span>
+          <h2>How We Handle Your E-Waste</h2>
+          <p>A transparent, documented process from collection to certified recycling.</p>
+        </div>
+        
+        <div class="process-timeline">
+          <div class="process-step scroll-animate">
+            <div class="process-step-number">01</div>
+            <div class="process-step-content">
+              <div class="process-step-icon">
+                <i class="fas fa-phone-alt"></i>
+              </div>
+              <h3>Request & Assessment</h3>
+              <p>Contact us with your requirements. Our team assesses the volume, type of e-waste, and provides a tailored quote.</p>
+            </div>
+          </div>
+          
+          <div class="process-step scroll-animate">
+            <div class="process-step-number">02</div>
+            <div class="process-step-content">
+              <div class="process-step-icon">
+                <i class="fas fa-truck"></i>
+              </div>
+              <h3>Scheduled Collection</h3>
+              <p>Our certified team arrives at your location with proper documentation. All items are inventoried and packed securely.</p>
+            </div>
+          </div>
+          
+          <div class="process-step scroll-animate">
+            <div class="process-step-number">03</div>
+            <div class="process-step-content">
+              <div class="process-step-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3>Data Destruction</h3>
+              <p>All data-bearing devices undergo secure data sanitization or physical destruction as per your requirements.</p>
+            </div>
+          </div>
+          
+          <div class="process-step scroll-animate">
+            <div class="process-step-number">04</div>
+            <div class="process-step-content">
+              <div class="process-step-icon">
+                <i class="fas fa-recycle"></i>
+              </div>
+              <h3>Certified Processing</h3>
+              <p>E-waste is dismantled, segregated, and processed at our government-authorized facilities with zero landfill policy.</p>
+            </div>
+          </div>
+          
+          <div class="process-step scroll-animate">
+            <div class="process-step-number">05</div>
+            <div class="process-step-content">
+              <div class="process-step-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <h3>Documentation</h3>
+              <p>Receive comprehensive compliance certificates, destruction certificates, and sustainability impact reports.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         WHY CHOOSE US
+         ============================================ -->
+    <section class="why-us-section" id="why-us">
+      <div class="container">
+        <div class="why-us-grid">
+          <div class="why-us-content">
+            <span class="section-badge">
+              <i class="fas fa-star"></i>
+              Why E-Zero
+            </span>
+            <h2>The E-Zero Advantage</h2>
+            <p class="why-us-description">
+              We're not just recyclers – we're your trusted partner in sustainable IT asset management. 
+              Here's why leading companies choose E-Zero for their e-waste disposal needs.
+            </p>
+            
+            <div class="advantage-list">
+              <div class="advantage-item scroll-animate">
+                <div class="advantage-icon">
+                  <i class="fas fa-certificate"></i>
+                </div>
+                <div class="advantage-content">
+                  <h4>Government Certified</h4>
+                  <p>Authorized by CPCB and state pollution control boards with all required licenses and permits.</p>
+                </div>
+              </div>
+              
+              <div class="advantage-item scroll-animate">
+                <div class="advantage-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <div class="advantage-content">
+                  <h4>100% Data Security</h4>
+                  <p>NIST 800-88 compliant data destruction with video proof and destruction certificates.</p>
+                </div>
+              </div>
+              
+              <div class="advantage-item scroll-animate">
+                <div class="advantage-icon">
+                  <i class="fas fa-leaf"></i>
+                </div>
+                <div class="advantage-content">
+                  <h4>Zero Landfill Policy</h4>
+                  <p>Every component is responsibly processed. Nothing ends up in landfills or informal sectors.</p>
+                </div>
+              </div>
+              
+              <div class="advantage-item scroll-animate">
+                <div class="advantage-icon">
+                  <i class="fas fa-truck"></i>
+                </div>
+                <div class="advantage-content">
+                  <h4>Pan-India Coverage</h4>
+                  <p>Pickup services available across all major cities with our network of 25+ processing facilities.</p>
+                </div>
+              </div>
+              
+              <div class="advantage-item scroll-animate">
+                <div class="advantage-icon">
+                  <i class="fas fa-file-invoice"></i>
+                </div>
+                <div class="advantage-content">
+                  <h4>Complete Compliance</h4>
+                  <p>All documentation for E-Waste Rules 2016, EPR obligations, and CSR requirements.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="why-us-visual scroll-animate">
+            <div class="certification-cards">
+              <div class="cert-card">
+                <img src="https://via.placeholder.com/80x80?text=ISO" alt="ISO 14001">
+                <span>ISO 14001:2015</span>
+              </div>
+              <div class="cert-card">
+                <img src="https://via.placeholder.com/80x80?text=CPCB" alt="CPCB Authorized">
+                <span>CPCB Authorized</span>
+              </div>
+              <div class="cert-card">
+                <img src="https://via.placeholder.com/80x80?text=R2" alt="R2 Certified">
+                <span>R2 Certified</span>
+              </div>
+              <div class="cert-card">
+                <img src="https://via.placeholder.com/80x80?text=OHSAS" alt="OHSAS 18001">
+                <span>OHSAS 18001</span>
+              </div>
+            </div>
+            
+            <div class="impact-highlight">
+              <h3>Our Environmental Impact</h3>
+              <div class="impact-stats">
+                <div class="impact-stat">
+                  <span class="impact-value">50,000+</span>
+                  <span class="impact-label">Tons Recycled</span>
+                </div>
+                <div class="impact-stat">
+                  <span class="impact-value">75,000</span>
+                  <span class="impact-label">Tons CO₂ Saved</span>
+                </div>
+                <div class="impact-stat">
+                  <span class="impact-value">98%</span>
+                  <span class="impact-label">Material Recovery</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         ACCEPTED ITEMS
+         ============================================ -->
+    <section class="items-section">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-badge">
+            <i class="fas fa-check-circle"></i>
+            What We Accept
+          </span>
+          <h2>Electronics We Recycle</h2>
+          <p>We accept all types of electronic waste from businesses and households.</p>
+        </div>
+        
+        <div class="items-grid">
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-desktop"></i>
+            </div>
+            <h4>Computers & IT</h4>
+            <p>Desktops, laptops, servers, monitors, keyboards, mice, and all peripherals</p>
+          </div>
+          
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h4>Mobile Devices</h4>
+            <p>Smartphones, tablets, smartwatches, and all accessories including chargers</p>
+          </div>
+          
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-network-wired"></i>
+            </div>
+            <h4>Networking Equipment</h4>
+            <p>Routers, switches, modems, cables, patch panels, and server racks</p>
+          </div>
+          
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-print"></i>
+            </div>
+            <h4>Office Equipment</h4>
+            <p>Printers, scanners, copiers, fax machines, projectors, and shredders</p>
+          </div>
+          
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-tv"></i>
+            </div>
+            <h4>Consumer Electronics</h4>
+            <p>TVs, audio systems, gaming consoles, cameras, and home appliances</p>
+          </div>
+          
+          <div class="item-category scroll-animate">
+            <div class="item-category-icon">
+              <i class="fas fa-battery-full"></i>
+            </div>
+            <h4>Batteries & UPS</h4>
+            <p>All battery types, UPS systems, inverters, and power backup equipment</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         TESTIMONIALS
+         ============================================ -->
+    <section class="testimonials-section">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-badge">
+            <i class="fas fa-quote-left"></i>
+            Testimonials
+          </span>
+          <h2>What Our Clients Say</h2>
+          <p>Trusted by leading organizations across India for their e-waste management needs.</p>
+        </div>
+        
+        <div class="testimonials-grid">
+          <div class="testimonial-card scroll-animate">
+            <div class="testimonial-content">
+              <div class="testimonial-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"E-Zero has been our trusted partner for IT asset disposal for over 5 years. Their professionalism, documentation, and commitment to data security is unmatched."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">RS</div>
+              <div class="author-info">
+                <h4>Rajesh Sharma</h4>
+                <p>IT Director, Fortune 500 Company</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card scroll-animate">
+            <div class="testimonial-content">
+              <div class="testimonial-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"The compliance documentation they provide is incredibly thorough. It made our audit process seamless. Highly recommended for any organization."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">PM</div>
+              <div class="author-info">
+                <h4>Priya Mehta</h4>
+                <p>Compliance Manager, Banking Sector</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card scroll-animate">
+            <div class="testimonial-content">
+              <div class="testimonial-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"Their pan-India presence and quick response time helped us manage e-waste across all our 50+ branches efficiently. Outstanding service!"</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">AK</div>
+              <div class="author-info">
+                <h4>Amit Kumar</h4>
+                <p>Operations Head, Retail Chain</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         CENTERS / LOCATIONS
          ============================================ -->
     <section class="centers-section" id="centers">
       <div class="container">
         <div class="section-title">
           <span class="section-badge">
             <i class="fas fa-map-marker-alt"></i>
-            Find Nearby
+            Our Locations
           </span>
-          <h2>Recycling Centers Near You</h2>
-          <p>Locate verified e-waste collection centers in your area with real-time availability.</p>
+          <h2>Processing Facilities Near You</h2>
+          <p>Find our authorized collection and processing centers across India.</p>
         </div>
         
         <div class="centers-container">
@@ -315,34 +705,20 @@
           
           <!-- Sidebar -->
           <div class="centers-sidebar">
-            <!-- Search & Filters -->
             <div class="search-filters">
               <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" 
                        id="location-search" 
                        class="form-input" 
-                       placeholder="Search by location or center name">
-              </div>
-              <div class="filter-row">
-                <div class="form-group">
-                  <select id="item-filter" class="form-input form-select">
-                    <option value="all">All Items</option>
-                    <option value="phones">Phones</option>
-                    <option value="laptops">Laptops</option>
-                    <option value="batteries">Batteries</option>
-                    <option value="appliances">Appliances</option>
-                  </select>
-                </div>
+                       placeholder="Search by city or pincode">
               </div>
             </div>
             
-            <!-- Centers List -->
             <div class="centers-list" id="centers-grid">
-              <!-- Centers will be populated by JavaScript -->
-              <div class="center-card skeleton" style="height: 150px;"></div>
-              <div class="center-card skeleton" style="height: 150px;"></div>
-              <div class="center-card skeleton" style="height: 150px;"></div>
+              <div class="center-card skeleton" style="height: 120px;"></div>
+              <div class="center-card skeleton" style="height: 120px;"></div>
+              <div class="center-card skeleton" style="height: 120px;"></div>
             </div>
           </div>
         </div>
@@ -350,409 +726,137 @@
     </section>
 
     <!-- ============================================
-         PICKUP SECTION
+         CONTACT / CTA SECTION
          ============================================ -->
-    <section class="pickup-section" id="pickup">
+    <section class="contact-section" id="contact">
       <div class="container">
-        <div class="section-title">
-          <span class="section-badge">
-            <i class="fas fa-truck"></i>
-            Free Service
-          </span>
-          <h2>Schedule a Free Pickup</h2>
-          <p>Book a convenient time slot and our team will collect your e-waste from your doorstep.</p>
-        </div>
-        
-        <div class="pickup-container">
-          <!-- Pickup Form -->
-          <div class="pickup-form-card">
-            <div class="pickup-form-header">
-              <h3>Book Your Pickup</h3>
-              <p>Fill in the details below to schedule your free e-waste collection.</p>
-            </div>
+        <div class="contact-grid">
+          <!-- Contact Form -->
+          <div class="contact-form-card">
+            <h3>Request a Free Quote</h3>
+            <p>Fill in your details and our team will get back to you within 24 hours.</p>
             
-            <!-- Progress Steps -->
-            <div class="form-progress" id="booking-progress">
-              <div class="progress-step active" data-step="1">
-                <div class="progress-step-icon">1</div>
-                <span class="progress-step-label">Items</span>
-              </div>
-              <div class="progress-step" data-step="2">
-                <div class="progress-step-icon">2</div>
-                <span class="progress-step-label">Schedule</span>
-              </div>
-              <div class="progress-step" data-step="3">
-                <div class="progress-step-icon">3</div>
-                <span class="progress-step-label">Address</span>
-              </div>
-              <div class="progress-step" data-step="4">
-                <div class="progress-step-icon">4</div>
-                <span class="progress-step-label">Confirm</span>
-              </div>
-            </div>
-            
-            <form id="pickup-form">
-              <!-- Step 1: Items Selection -->
-              <div class="form-step" id="step-1">
-                <h4 class="mb-4 font-semibold">Select Items to Recycle</h4>
-                <div class="items-grid" id="items-selection">
-                  <div class="item-card" data-item="phones">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>Phones</span>
-                  </div>
-                  <div class="item-card" data-item="laptops">
-                    <i class="fas fa-laptop"></i>
-                    <span>Laptops</span>
-                  </div>
-                  <div class="item-card" data-item="tablets">
-                    <i class="fas fa-tablet-alt"></i>
-                    <span>Tablets</span>
-                  </div>
-                  <div class="item-card" data-item="batteries">
-                    <i class="fas fa-battery-half"></i>
-                    <span>Batteries</span>
-                  </div>
-                  <div class="item-card" data-item="chargers">
-                    <i class="fas fa-plug"></i>
-                    <span>Chargers</span>
-                  </div>
-                  <div class="item-card" data-item="monitors">
-                    <i class="fas fa-desktop"></i>
-                    <span>Monitors</span>
-                  </div>
-                  <div class="item-card" data-item="printers">
-                    <i class="fas fa-print"></i>
-                    <span>Printers</span>
-                  </div>
-                  <div class="item-card" data-item="other">
-                    <i class="fas fa-ellipsis-h"></i>
-                    <span>Other</span>
-                  </div>
+            <form id="contact-form" class="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" name="name" class="form-input" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Company Name</label>
+                  <input type="text" name="company" class="form-input" placeholder="Company name (optional)">
                 </div>
               </div>
               
-              <!-- Step 2: Date & Time -->
-              <div class="form-step hidden" id="step-2">
-                <h4 class="mb-4 font-semibold">Choose Date & Time</h4>
+              <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">Pickup Date</label>
-                  <input type="date" id="pickup-date" name="pickup-date" class="form-input" required>
+                  <label class="form-label">Email Address *</label>
+                  <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Preferred Time Slot</label>
-                  <div class="time-slots" id="time-slots">
-                    <div class="time-slot" data-slot="9-11">
-                      <div class="time-slot-time">9:00 - 11:00</div>
-                      <div class="time-slot-status">Available</div>
-                    </div>
-                    <div class="time-slot" data-slot="11-13">
-                      <div class="time-slot-time">11:00 - 13:00</div>
-                      <div class="time-slot-status">Available</div>
-                    </div>
-                    <div class="time-slot" data-slot="13-15">
-                      <div class="time-slot-time">13:00 - 15:00</div>
-                      <div class="time-slot-status">Available</div>
-                    </div>
-                    <div class="time-slot" data-slot="15-17">
-                      <div class="time-slot-time">15:00 - 17:00</div>
-                      <div class="time-slot-status">Available</div>
-                    </div>
-                    <div class="time-slot" data-slot="17-19">
-                      <div class="time-slot-time">17:00 - 19:00</div>
-                      <div class="time-slot-status">Available</div>
-                    </div>
-                    <div class="time-slot unavailable" data-slot="19-21">
-                      <div class="time-slot-time">19:00 - 21:00</div>
-                      <div class="time-slot-status">Unavailable</div>
-                    </div>
-                  </div>
+                  <label class="form-label">Phone Number *</label>
+                  <input type="tel" name="phone" class="form-input" placeholder="+91 98765 43210" required>
                 </div>
               </div>
               
-              <!-- Step 3: Address -->
-              <div class="form-step hidden" id="step-3">
-                <h4 class="mb-4 font-semibold">Pickup Address</h4>
-                <div class="form-group">
-                  <label class="form-label">Full Name</label>
-                  <input type="text" id="contact-name" name="contact-name" class="form-input" placeholder="Your full name" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Phone Number</label>
-                  <input type="tel" id="contact-phone" name="contact-phone" class="form-input" placeholder="10-digit mobile number" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Email Address</label>
-                  <input type="email" id="contact-email" name="contact-email" class="form-input" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Pickup Address</label>
-                  <textarea id="pickup-address" name="pickup-address" class="form-input form-textarea" placeholder="Complete address with landmark" required></textarea>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Special Instructions (Optional)</label>
-                  <textarea id="special-instructions" name="special-instructions" class="form-input form-textarea" placeholder="Any specific instructions for pickup"></textarea>
-                </div>
+              <div class="form-group">
+                <label class="form-label">City / Location *</label>
+                <input type="text" name="city" class="form-input" placeholder="Your city" required>
               </div>
               
-              <!-- Step 4: Confirmation -->
-              <div class="form-step hidden" id="step-4">
-                <h4 class="mb-4 font-semibold">Confirm Your Booking</h4>
-                <div id="booking-summary" class="card card-bordered mb-6">
-                  <!-- Summary will be populated by JavaScript -->
-                </div>
+              <div class="form-group">
+                <label class="form-label">Type of Service Needed</label>
+                <select name="service" class="form-input form-select">
+                  <option value="">Select service type</option>
+                  <option value="corporate">Corporate IT Asset Disposal</option>
+                  <option value="data">Data Destruction Service</option>
+                  <option value="residential">Residential Pickup</option>
+                  <option value="battery">Battery Recycling</option>
+                  <option value="other">Other / Multiple Services</option>
+                </select>
               </div>
               
-              <!-- Navigation Buttons -->
-              <div class="flex justify-between mt-6">
-                <button type="button" class="btn btn-secondary prev-step-btn hidden" id="prev-btn">
-                  <i class="fas fa-arrow-left"></i>
-                  Previous
-                </button>
-                <button type="button" class="btn btn-primary next-step-btn" id="next-btn">
-                  Next Step
-                  <i class="fas fa-arrow-right"></i>
-                </button>
-                <button type="submit" class="btn btn-primary submit-booking-btn hidden" id="submit-btn">
-                  <i class="fas fa-check"></i>
-                  Confirm Booking
-                </button>
+              <div class="form-group">
+                <label class="form-label">Approximate Quantity</label>
+                <select name="quantity" class="form-input form-select">
+                  <option value="">Select quantity range</option>
+                  <option value="1-10">1-10 items</option>
+                  <option value="10-50">10-50 items</option>
+                  <option value="50-200">50-200 items</option>
+                  <option value="200+">200+ items</option>
+                  <option value="bulk">Bulk / Ongoing requirement</option>
+                </select>
               </div>
+              
+              <div class="form-group">
+                <label class="form-label">Message / Additional Details</label>
+                <textarea name="message" class="form-input form-textarea" placeholder="Tell us about your requirements..."></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn-primary btn-lg btn-block">
+                <i class="fas fa-paper-plane"></i>
+                Submit Request
+              </button>
             </form>
+          </div>
+          
+          <!-- Contact Info -->
+          <div class="contact-info">
+            <h3>Get in Touch</h3>
+            <p>Have questions? Our team is here to help you with all your e-waste management needs.</p>
             
-            <!-- Confirmation Message -->
-            <div id="booking-confirmation" class="hidden">
-              <div class="text-center py-8">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-primary flex items-center justify-center text-white text-4xl">
-                  <i class="fas fa-check"></i>
+            <div class="contact-methods">
+              <div class="contact-method">
+                <div class="contact-method-icon">
+                  <i class="fas fa-phone-alt"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">Booking Confirmed!</h3>
-                <p class="text-gray-600 mb-6">Your pickup has been scheduled successfully.</p>
-                <div id="confirmation-details" class="text-left card card-bordered p-6 mb-6">
-                  <!-- Details populated by JS -->
-                </div>
-                <div class="flex gap-4 justify-center">
-                  <button class="btn btn-secondary" onclick="window.print()">
-                    <i class="fas fa-print"></i>
-                    Print Receipt
-                  </button>
-                  <button class="btn btn-primary" onclick="location.reload()">
-                    <i class="fas fa-plus"></i>
-                    New Booking
-                  </button>
+                <div class="contact-method-content">
+                  <h4>Call Us</h4>
+                  <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                  <p><a href="tel:+911234567890">+91 12345 67890</a></p>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <!-- Info Panel -->
-          <div class="pickup-info">
-            <h3>Why Choose E-Zero?</h3>
-            
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="fas fa-truck"></i>
+              
+              <div class="contact-method">
+                <div class="contact-method-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-method-content">
+                  <h4>Email Us</h4>
+                  <p><a href="mailto:info@ezero.in">info@ezero.in</a></p>
+                  <p><a href="mailto:pickup@ezero.in">pickup@ezero.in</a></p>
+                </div>
               </div>
-              <div class="info-content">
-                <h4>Free Doorstep Pickup</h4>
-                <p>No charges for collection. We come to your location at your preferred time.</p>
+              
+              <div class="contact-method">
+                <div class="contact-method-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-method-content">
+                  <h4>Head Office</h4>
+                  <p>E-Zero Technologies Pvt. Ltd.</p>
+                  <p>123 Green Business Park, Pune 411001</p>
+                </div>
               </div>
-            </div>
-            
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="fas fa-shield-alt"></i>
-              </div>
-              <div class="info-content">
-                <h4>Secure Data Destruction</h4>
-                <p>Your data is securely wiped from all devices before recycling.</p>
-              </div>
-            </div>
-            
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="fas fa-certificate"></i>
-              </div>
-              <div class="info-content">
-                <h4>Certified Recycling</h4>
-                <p>All items are processed at government-certified recycling facilities.</p>
+              
+              <div class="contact-method">
+                <div class="contact-method-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="contact-method-content">
+                  <h4>Working Hours</h4>
+                  <p>Mon - Sat: 9:00 AM - 6:00 PM</p>
+                  <p>Sunday: Closed</p>
+                </div>
               </div>
             </div>
             
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="fas fa-gift"></i>
+            <div class="emergency-contact">
+              <i class="fas fa-exclamation-triangle"></i>
+              <div>
+                <h4>Urgent Pickup Required?</h4>
+                <p>Call our 24/7 hotline: <strong>1800-XXX-XXXX</strong> (Toll Free)</p>
               </div>
-              <div class="info-content">
-                <h4>Instant Rewards</h4>
-                <p>Earn points for every item recycled. Redeem for exciting rewards.</p>
-              </div>
-            </div>
-            
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="fas fa-headset"></i>
-              </div>
-              <div class="info-content">
-                <h4>24/7 Support</h4>
-                <p>Our team is always here to help with any questions or concerns.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================
-         REWARDS SECTION
-         ============================================ -->
-    <section class="rewards-section" id="rewards">
-      <div class="container">
-        <div class="section-title">
-          <span class="section-badge">
-            <i class="fas fa-gift"></i>
-            Earn & Redeem
-          </span>
-          <h2>Rewards Program</h2>
-          <p>Turn your e-waste into exciting rewards. The more you recycle, the more you earn!</p>
-        </div>
-        
-        <div class="rewards-header">
-          <div>
-            <h3 class="text-2xl font-bold mb-2">Your Rewards Dashboard</h3>
-            <p class="text-gray-600">Track your points, level up, and redeem exclusive rewards.</p>
-          </div>
-          
-          <div class="points-display">
-            <div class="points-value" id="user-points">2,450</div>
-            <div class="points-label">Eco Points Available</div>
-            <div class="level-progress">
-              <div class="level-bar">
-                <div class="level-fill" style="width: 70%"></div>
-              </div>
-              <div class="level-text">
-                <span>Level 7: Eco Warrior</span>
-                <span>550 pts to Level 8</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="rewards-grid">
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">🎁</div>
-            <h4 class="reward-title">₹100 Amazon Voucher</h4>
-            <p class="reward-description">Redeem your points for Amazon gift card balance.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 500 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-          
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">☕</div>
-            <h4 class="reward-title">Starbucks Gift Card</h4>
-            <p class="reward-description">Enjoy a free coffee on us as a thank you.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 300 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-          
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">🌳</div>
-            <h4 class="reward-title">Plant a Tree</h4>
-            <p class="reward-description">We'll plant a tree in your name to offset carbon.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 200 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-          
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">📱</div>
-            <h4 class="reward-title">Mobile Recharge</h4>
-            <p class="reward-description">Get ₹50 mobile recharge for any network.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 250 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-          
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">🎬</div>
-            <h4 class="reward-title">Movie Ticket</h4>
-            <p class="reward-description">Free movie ticket at select theaters.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 400 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-          
-          <div class="reward-card scroll-animate">
-            <div class="reward-image">🏅</div>
-            <h4 class="reward-title">Eco Badge</h4>
-            <p class="reward-description">Exclusive digital badge for your profile.</p>
-            <div class="reward-footer">
-              <span class="reward-points"><i class="fas fa-star"></i> 100 points</span>
-              <button class="btn btn-sm btn-primary">Redeem</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================
-         IMPACT SECTION
-         ============================================ -->
-    <section class="impact-section" id="impact">
-      <div class="container">
-        <div class="section-title">
-          <span class="section-badge" style="background: rgba(255,255,255,0.1); color: var(--primary-light);">
-            <i class="fas fa-chart-line"></i>
-            Track Progress
-          </span>
-          <h2>Your Environmental Impact</h2>
-          <p style="color: var(--gray-400);">See how your recycling efforts are making a real difference to the planet.</p>
-        </div>
-        
-        <div class="impact-grid">
-          <div class="impact-card scroll-animate">
-            <div class="impact-icon">
-              <i class="fas fa-recycle"></i>
-            </div>
-            <div class="impact-value" id="impact-recycled">156</div>
-            <div class="impact-label">KG E-Waste Recycled</div>
-          </div>
-          
-          <div class="impact-card scroll-animate">
-            <div class="impact-icon">
-              <i class="fas fa-cloud"></i>
-            </div>
-            <div class="impact-value" id="impact-co2">89</div>
-            <div class="impact-label">KG CO₂ Prevented</div>
-          </div>
-          
-          <div class="impact-card scroll-animate">
-            <div class="impact-icon">
-              <i class="fas fa-tree"></i>
-            </div>
-            <div class="impact-value" id="impact-trees">12</div>
-            <div class="impact-label">Trees Equivalent</div>
-          </div>
-        </div>
-        
-        <div class="charts-container">
-          <div class="chart-card scroll-animate">
-            <h4><i class="fas fa-chart-bar mr-2"></i> Monthly Recycling Activity</h4>
-            <div class="chart-wrapper">
-              <canvas id="recycling-chart"></canvas>
-            </div>
-          </div>
-          
-          <div class="chart-card scroll-animate">
-            <h4><i class="fas fa-chart-pie mr-2"></i> Items by Category</h4>
-            <div class="chart-wrapper">
-              <canvas id="category-chart"></canvas>
             </div>
           </div>
         </div>
@@ -775,45 +879,37 @@
             <span class="logo-text">E-<span>Zero</span></span>
           </a>
           <p>
-            Transforming e-waste into rewards with AI-powered recycling solutions. 
-            Join thousands of eco-warriors making a positive environmental impact.
+            India's leading certified e-waste recycling company. We provide secure, 
+            compliant, and environmentally responsible electronic waste disposal solutions.
           </p>
-          <div class="social-links">
-            <a href="#" class="social-link" aria-label="Facebook">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-link" aria-label="Twitter">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-link" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="social-link" aria-label="LinkedIn">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
+          <div class="footer-certifications">
+            <span class="cert-badge">ISO 14001</span>
+            <span class="cert-badge">CPCB Certified</span>
+            <span class="cert-badge">R2 Certified</span>
           </div>
         </div>
         
-        <!-- Quick Links -->
+        <!-- Services -->
         <div class="footer-column">
-          <h4>Quick Links</h4>
+          <h4>Services</h4>
           <nav class="footer-links">
-            <a href="#home" class="footer-link">Home</a>
-            <a href="#how-it-works" class="footer-link">How It Works</a>
-            <a href="#centers" class="footer-link">Find Centers</a>
-            <a href="#pickup" class="footer-link">Schedule Pickup</a>
-            <a href="#rewards" class="footer-link">Rewards</a>
+            <a href="#services" class="footer-link">IT Asset Disposal</a>
+            <a href="#services" class="footer-link">Data Destruction</a>
+            <a href="#services" class="footer-link">Corporate Recycling</a>
+            <a href="#services" class="footer-link">Residential Pickup</a>
+            <a href="#services" class="footer-link">Battery Recycling</a>
           </nav>
         </div>
         
-        <!-- Support -->
+        <!-- Company -->
         <div class="footer-column">
-          <h4>Support</h4>
+          <h4>Company</h4>
           <nav class="footer-links">
-            <a href="#" class="footer-link">Help Center</a>
-            <a href="#" class="footer-link">Contact Us</a>
-            <a href="#" class="footer-link">FAQs</a>
-            <a href="#" class="footer-link">Report Issue</a>
+            <a href="#" class="footer-link">About Us</a>
+            <a href="#centers" class="footer-link">Our Facilities</a>
+            <a href="#" class="footer-link">Certifications</a>
+            <a href="#" class="footer-link">Careers</a>
+            <a href="#contact" class="footer-link">Contact Us</a>
           </nav>
         </div>
         
@@ -823,29 +919,29 @@
           <nav class="footer-links">
             <a href="#" class="footer-link">Privacy Policy</a>
             <a href="#" class="footer-link">Terms of Service</a>
-            <a href="#" class="footer-link">Cookie Policy</a>
-            <a href="#" class="footer-link">Refund Policy</a>
+            <a href="#" class="footer-link">E-Waste Guidelines</a>
+            <a href="#" class="footer-link">Compliance</a>
           </nav>
         </div>
       </div>
       
       <div class="footer-bottom">
         <p class="footer-copyright">
-          © 2024 E-Zero. All rights reserved. Powered by AI for a sustainable future.
+          © 2024 E-Zero Technologies Pvt. Ltd. All rights reserved. CIN: UXXXXXXXXXXXXX
         </p>
-        <div class="footer-badges">
-          <div class="footer-badge">
-            <i class="fas fa-shield-alt"></i>
-            <span>Secure</span>
-          </div>
-          <div class="footer-badge">
-            <i class="fas fa-leaf"></i>
-            <span>Eco-Certified</span>
-          </div>
-          <div class="footer-badge">
-            <i class="fas fa-headset"></i>
-            <span>24/7 Support</span>
-          </div>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="#" class="social-link" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -854,15 +950,9 @@
   <!-- ============================================
        SCRIPTS
        ============================================ -->
-  <!-- Leaflet Map -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-  
-  <!-- Application Scripts -->
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/map.js"></script>
-  <script type="module" src="js/booking.js"></script>
-  <script type="module" src="js/rewards.js"></script>
-  <script type="module" src="js/charts.js"></script>
 </body>
 </html>
