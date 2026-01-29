@@ -1215,11 +1215,53 @@
           </article>
         </div>
         
-        <div class="blog-cta">
-          <button class="btn btn-secondary" onclick="showToast('More articles coming soon!', 'info')">
-            <i class="fas fa-th-large"></i>
-            View All Articles
-          </button>
+          <article class="blog-card scroll-animate" onclick="openArticleModal('batteries')">
+            <div class="blog-image">
+              <img src="https://images.unsplash.com/photo-1619641459422-5a3d7515e022?w=400&q=80" alt="Battery Disposal">
+              <span class="blog-category">Safety</span>
+            </div>
+            <div class="blog-content">
+              <div class="blog-meta">
+                <span><i class="fas fa-calendar"></i> Feb 2, 2026</span>
+                <span><i class="fas fa-clock"></i> 5 min read</span>
+              </div>
+              <h3>The Ticking Time Bomb: Safe Disposal of Lithium-Ion Batteries</h3>
+              <p>Why improper battery disposal causes fires and how to handle them safely.</p>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="blog-card scroll-animate" onclick="openArticleModal('laptops')">
+            <div class="blog-image">
+              <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80" alt="Laptop Recycling">
+              <span class="blog-category">Guides</span>
+            </div>
+            <div class="blog-content">
+              <div class="blog-meta">
+                <span><i class="fas fa-calendar"></i> Jan 28, 2026</span>
+                <span><i class="fas fa-clock"></i> 4 min read</span>
+              </div>
+              <h3>Ultimate Guide: How to Prepare Your Old Laptop for Recycling</h3>
+              <p>Data backup, deauthorization, and factory reset steps before you recycle.</p>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
+
+          <article class="blog-card scroll-animate" onclick="openArticleModal('health')">
+            <div class="blog-image">
+              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="Health Hazards">
+              <span class="blog-category">Health</span>
+            </div>
+            <div class="blog-content">
+              <div class="blog-meta">
+                <span><i class="fas fa-calendar"></i> Jan 20, 2026</span>
+                <span><i class="fas fa-clock"></i> 7 min read</span>
+              </div>
+              <h3>Hidden Health Hazards: The Human Cost of Informal Recycling</h3>
+              <p>The dangers of lead, mercury, and cadmium exposure in informal e-waste sectors.</p>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -1256,7 +1298,7 @@
               </div>
             </div>
             
-            <div class="centers-list" id="centers-grid">
+            <div class="centers-list" id="centers-list">
               <div class="center-card skeleton" style="height: 120px;"></div>
               <div class="center-card skeleton" style="height: 120px;"></div>
               <div class="center-card skeleton" style="height: 120px;"></div>

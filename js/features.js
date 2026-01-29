@@ -155,233 +155,173 @@
   }
 
   // ============================================
-  // ARTICLE MODAL
+  // ARTICLE MODAL (SEO Optimized Content)
   // ============================================
   const articles = {
     regulations: {
-      title: 'E-Waste Management Rules 2022: Complete Compliance Guide',
+      title: 'E-Waste Management Rules 2022: Complete Compliance Guide for Indian Businesses',
       category: 'Regulations',
       date: 'January 15, 2026',
-      readTime: '5 min read',
+      readTime: '8 min read',
       image: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&q=80',
       content: `
-        <p><strong>The E-Waste (Management) Rules, 2022</strong> represent a significant shift in India's approach to electronic waste management. These updated regulations place greater responsibility on producers, refurbishers, and recyclers while introducing new compliance requirements for businesses of all sizes.</p>
+        <p><strong>The E-Waste (Management) Rules, 2022</strong> have revolutionized how Indian businesses handle electronic waste. With stricter Extended Producer Responsibility (EPR) targets and heavy penalties for non-compliance, understanding these regulations is crucial for every organization, from startups to MNCs.</p>
         
-        <h2>Key Changes in the 2022 Rules</h2>
+        <h2>Key Regulatory Changes Impacting Your Business</h2>
         
-        <h3>1. Extended Producer Responsibility (EPR)</h3>
-        <p>Producers are now required to collect and recycle a minimum percentage of e-waste generated from their products. The targets are:</p>
+        <h3>1. Mandatory EPR Registration</h3>
+        <p>All entities involved in the manufacture, sale, transfer, purchase, refurbishing, dismantling, recycling, and processing of e-waste must register on the Central Pollution Control Board (CPCB) portal. Unlike previous years, this is now a prerequisite for trading.</p>
+        
+        <h3>2. Specific Recycling Targets</h3>
+        <p>The 2022 rules set clear, escalating targets for recycling:</p>
         <ul>
-          <li><strong>2023-24:</strong> 60% of e-waste generated</li>
-          <li><strong>2024-25:</strong> 70% of e-waste generated</li>
-          <li><strong>2025-26 onwards:</strong> 80% of e-waste generated</li>
+          <li><strong>2024-25:</strong> 70% of e-waste generated must be recycled.</li>
+          <li><strong>2025-26:</strong> 80% of e-waste generated must be recycled.</li>
+          <li><strong>2027 onwards:</strong> 80% minimum recycling rate maintained.</li>
         </ul>
         
-        <h3>2. New Categories Added</h3>
-        <p>The rules now cover additional categories including:</p>
+        <h3>3. Environmental Compensation (EC) Charges</h3>
+        <p>The "Polluter Pays" principle is now enforced. Non-compliant companies face Environmental Compensation charges, which can be levied for:</p>
         <ul>
-          <li>Solar panels and photovoltaic modules</li>
-          <li>Micro-enterprises generating e-waste</li>
-          <li>Large household appliances</li>
+          <li>Failure to collect e-waste.</li>
+          <li>Failure to meet recycling targets.</li>
+          <li>Operating without CPCB authorization.</li>
         </ul>
         
-        <h3>3. EPR Certificate Trading</h3>
-        <p>A new framework for EPR certificate trading has been introduced, allowing producers to purchase certificates from authorized recyclers to meet their targets.</p>
-        
-        <h2>Compliance Requirements for Businesses</h2>
-        
-        <h3>Registration Requirements</h3>
-        <p>All producers, manufacturers, and refurbishers must register on the centralized portal. The registration process includes:</p>
+        <h2>How to Ensure 100% Compliance?</h2>
+        <p>Partnering with a CPCB-authorized PRO (Producer Responsibility Organization) like E-Zero is the safest route. We ensure:</p>
         <ul>
-          <li>Submission of business PAN and GST details</li>
-          <li>Declaration of product categories</li>
-          <li>Annual compliance plan submission</li>
+          <li>End-to-end traceability of your e-waste.</li>
+          <li>Issuance of digital EPR credits.</li>
+          <li>Quarterly and annual return filing assistance.</li>
         </ul>
         
-        <h3>Documentation and Reporting</h3>
-        <p>Businesses must maintain detailed records of:</p>
-        <ul>
-          <li>E-waste collected and channelized</li>
-          <li>Recycling certificates obtained</li>
-          <li>Quarterly and annual returns filed</li>
-        </ul>
-        
-        <h2>Penalties for Non-Compliance</h2>
-        <p>Non-compliance can result in:</p>
-        <ul>
-          <li>Environmental Compensation up to ₹50 lakhs</li>
-          <li>Cancellation of EPR authorization</li>
-          <li>Legal proceedings under the Environment Protection Act</li>
-        </ul>
-        
-        <h2>How E-Zero Can Help</h2>
-        <p>As a CPCB-authorized e-waste recycler, E-Zero provides:</p>
-        <ul>
-          <li>EPR fulfillment services for producers</li>
-          <li>Compliant recycling with full documentation</li>
-          <li>Certificates for your audit requirements</li>
-          <li>Pan-India pickup services</li>
-        </ul>
-        
-        <p><em>Contact us today to ensure your business stays compliant with the latest e-waste regulations.</em></p>
+        <p><em>Don't risk penalties. Contact E-Zero today for a comprehensive compliance audit.</em></p>
       `
     },
     security: {
-      title: 'Why Secure Data Destruction is Critical for Your Business',
+      title: 'Data Destruction vs. Deletion: Why Formatting Hard Drives is Not Enough',
       category: 'Security',
       date: 'January 10, 2026',
-      readTime: '4 min read',
+      readTime: '6 min read',
       image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
       content: `
-        <p>In today's digital age, <strong>data breaches from improperly disposed electronics</strong> pose one of the greatest risks to businesses. A single hard drive containing sensitive information can lead to catastrophic consequences if it falls into the wrong hands.</p>
+        <p>Did you know that <strong>40% of second-hand hard drives still contain recoverable data</strong>? For businesses, this represents a massive cybersecurity risk. "Deleting" files or formatting a drive only removes the reference to the data, not the data itself.</p>
         
-        <h2>The Real Risks of Improper Data Disposal</h2>
-        
-        <h3>Data Recovery is Easier Than You Think</h3>
-        <p>Simply deleting files or formatting a drive doesn't actually remove the data. With readily available software, anyone can:</p>
+        <h2>The Dangers of Improper Data Disposal</h2>
+        <p>Leaked data from old electronics can lead to:</p>
         <ul>
-          <li>Recover "deleted" files from hard drives</li>
-          <li>Extract data from SSDs even after formatting</li>
-          <li>Access information from damaged storage devices</li>
+          <li><strong>Identity Theft:</strong> Employee and customer records (PII).</li>
+          <li><strong>Corporate Espionage:</strong> Competitors accessing trade secrets/IP.</li>
+          <li><strong>Financial Fraud:</strong> Banking credentials and financial reports.</li>
+          <li><strong>Legal Liability:</strong> Heavy fines under the DPDP Act, 2023.</li>
         </ul>
         
-        <h3>The Cost of a Data Breach</h3>
-        <p>According to IBM's 2023 Cost of a Data Breach Report:</p>
-        <ul>
-          <li><strong>Average cost:</strong> ₹17.9 crore per incident in India</li>
-          <li><strong>Detection time:</strong> 277 days average to identify a breach</li>
-          <li><strong>Reputation damage:</strong> 60% of customers lose trust after a breach</li>
-        </ul>
+        <h2>Certified Data Destruction Methods</h2>
+        <p>At E-Zero, we use industry-standard methods to guarantee data unrecoverability:</p>
         
-        <h2>Types of Sensitive Data at Risk</h2>
-        <ul>
-          <li>Customer personal information (PII)</li>
-          <li>Financial records and banking details</li>
-          <li>Employee HR records and salaries</li>
-          <li>Trade secrets and intellectual property</li>
-          <li>Email communications and contracts</li>
-          <li>Healthcare records (HIPAA compliance)</li>
-        </ul>
+        <h3>1. Degaussing</h3>
+        <p>Using a high-powered magnetic field to disrupt the magnetic domains on the drive platter, rendering the data completely unreadable. Ideal for HDDs.</p>
         
-        <h2>Secure Data Destruction Methods</h2>
+        <h3>2. Physical Shredding</h3>
+        <p>The gold standard for SSDs and flash media. The drive is mechanically shredded into tiny particles (< 10mm), ensuring 100% destruction.</p>
         
-        <h3>1. Software-Based Wiping (NIST 800-88)</h3>
-        <p>Multiple-pass overwriting that meets government standards:</p>
-        <ul>
-          <li>DoD 5220.22-M standard (3 passes)</li>
-          <li>NIST 800-88 Clear/Purge guidelines</li>
-          <li>Suitable for drives being reused</li>
-        </ul>
+        <h3>3. Software Wiping (NIST 800-88)</h3>
+        <p>For drives intended for reuse, we use certified software that overwrites every sector multiple times, verified for no residual data.</p>
         
-        <h3>2. Degaussing</h3>
-        <p>Powerful magnetic field that destroys data on magnetic media:</p>
-        <ul>
-          <li>Renders drives completely unusable</li>
-          <li>Instant and irreversible</li>
-          <li>Ideal for HDDs and magnetic tapes</li>
-        </ul>
-        
-        <h3>3. Physical Shredding</h3>
-        <p>Industrial shredding for complete destruction:</p>
-        <ul>
-          <li>Particles reduced to less than 2mm</li>
-          <li>100% guarantee of data destruction</li>
-          <li>Recommended for SSDs and flash storage</li>
-        </ul>
-        
-        <h2>E-Zero's Data Destruction Services</h2>
-        <p>Our certified data destruction process includes:</p>
-        <ul>
-          <li>Chain of custody documentation</li>
-          <li>Video recording of destruction process</li>
-          <li>Certificate of Data Destruction</li>
-          <li>Serial number tracking for each device</li>
-          <li>On-site destruction options available</li>
-        </ul>
-        
-        <p><em>Protect your business reputation. Choose certified data destruction from E-Zero.</em></p>
+        <p><em>Secure your reputation. Choose E-Zero's certified data destruction services with video proof.</em></p>
       `
     },
     sustainability: {
-      title: 'Corporate ESG Goals: Integrating E-Waste Recycling',
+      title: 'Boost Your ESG Score: The Role of E-Waste Recycling in Corporate Sustainability',
       category: 'Sustainability',
       date: 'January 5, 2026',
-      readTime: '6 min read',
+      readTime: '5 min read',
       image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80',
       content: `
-        <p><strong>Environmental, Social, and Governance (ESG)</strong> criteria have become essential metrics for businesses worldwide. Proper e-waste management is a critical component of environmental sustainability that directly impacts your ESG scores.</p>
+        <p>Investors and consumers are increasingly looking at a company's <strong>Environmental, Social, and Governance (ESG)</strong> performance. E-waste management is a tangible, high-impact metric that significantly boosts your environmental score.</p>
         
-        <h2>Why E-Waste Matters for ESG</h2>
-        
-        <h3>Environmental Impact</h3>
-        <p>E-waste contains both valuable and hazardous materials:</p>
+        <h2>Environmental Impact (The 'E' in ESG)</h2>
+        <p>Recycling one ton of laptops saves:</p>
         <ul>
-          <li><strong>Precious metals:</strong> Gold, silver, platinum, copper</li>
-          <li><strong>Hazardous substances:</strong> Lead, mercury, cadmium, brominated flame retardants</li>
-          <li><strong>Recyclable materials:</strong> Plastics, glass, aluminum</li>
+          <li><strong>10 tons of CO2</strong> emissions compared to mining virgin materials.</li>
+          <li>Equivalent energy to power <strong>3,500 homes</strong> for a year.</li>
         </ul>
         
-        <p>When improperly disposed, these materials can:</p>
+        <h2>Circular Economy Contribution</h2>
+        <p>By recycling, you return critical raw materials like Gold, Silver, Copper, and Palladium back into the supply chain, reducing the need for environmentally destructive mining.</p>
+        
+        <h2>Detailed Green Reporting</h2>
+        <p>E-Zero provides detailed "Green Certificates" for your Annual Reports, showcasing:</p>
         <ul>
-          <li>Contaminate soil and groundwater</li>
-          <li>Release toxic fumes when burned</li>
-          <li>Contribute to greenhouse gas emissions</li>
+          <li>Total weight diverted from landfills.</li>
+          <li>Carbon footprint reduction metrics.</li>
+          <li>Hazardous materials safely neutralized.</li>
         </ul>
         
-        <h2>E-Waste Recycling Contributions to ESG</h2>
+        <p><em>Make e-waste recycling a pillar of your sustainability strategy with E-Zero.</em></p>
+      `
+    },
+    batteries: {
+      title: 'The Ticking Time Bomb: Safe Disposal of Lithium-Ion Batteries',
+      category: 'Safety',
+      date: 'February 2, 2026',
+      readTime: '5 min read',
+      image: 'https://images.unsplash.com/photo-1619641459422-5a3d7515e022?w=800&q=80',
+      content: `
+        <p>Lithium-ion batteries power our world, from phones to EVs. However, when damaged or improperly disposed of, they pose a severe <strong>fire hazard</strong>. Landfills fires caused by batteries are rising globally.</p>
         
-        <h3>Environmental (E) Score Impact</h3>
+        <h2>Why You Can't Bin Batteries</h2>
         <ul>
-          <li>Reduces carbon footprint through material recovery</li>
-          <li>Decreases mining for virgin raw materials</li>
-          <li>Prevents toxic waste from reaching landfills</li>
-          <li>Supports circular economy principles</li>
+          <li><strong>Thermal Runaway:</strong> Physical damage can cause batteries to catch fire instantly.</li>
+          <li><strong>Toxic Leakage:</strong> Cobalt and ionic fluids can leach into soil and groundwater.</li>
         </ul>
         
-        <h3>Social (S) Score Impact</h3>
+        <h2>Our Battery Recycling Process</h2>
+        <p>E-Zero uses advanced hydrometallurgical processes to recover 95% of battery materials, including Lithium, Cobalt, Nickel, and Manganese, for reuse in new batteries.</p>
+        
+        <p><em>Never throw batteries in the trash. Drop them at an E-Zero partner bin or schedule a pickup.</em></p>
+      `
+    },
+    laptops: {
+      title: 'Ultimate Guide: How to Prepare Your Old Laptop for Recycling',
+      category: 'Guides',
+      date: 'January 28, 2026',
+      readTime: '4 min read',
+      image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&q=80',
+      content: `
+        <p>Ready to upgrade? Don't let your old laptop gather dust. Here is a step-by-step guide to preparing it for recycling to ensure your data is safe and the device is processed correctly.</p>
+        
+        <h2>Step-by-Step Preparation</h2>
+        <ol>
+          <li><strong>Backup Your Data:</strong> Use cloud storage or an external drive to save important files.</li>
+          <li><strong>Deauthorize Software:</strong> Sign out of iTunes, Adobe Creative Cloud, and Office 365.</li>
+          <li><strong>Remove Peripherals:</strong> Unplug USB mice, dongles, and remove SD cards.</li>
+          <li><strong>Factory Reset:</strong> Perform a full system reset to wipe user data (or let us do it securely).</li>
+        </ol>
+        
+        <p><em>We pay up to ₹25,000 for working laptops! Check our calculator above to see what yours is worth.</em></p>
+      `
+    },
+    health: {
+      title: 'Hidden Health Hazards: The Human Cost of Informal E-Waste Recycling',
+      category: 'Health',
+      date: 'January 20, 2026',
+      readTime: '7 min read',
+      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80',
+      content: `
+        <p>95% of India's e-waste is still handled by the informal sector. While it provides livelihood, the primitive methods used—like acid bathing and open burning—have devastating health consequences.</p>
+        
+        <h2>Toxic Exposure Risks</h2>
         <ul>
-          <li>Protects workers from hazardous exposure</li>
-          <li>Supports formal recycling sector employment</li>
-          <li>Demonstrates corporate responsibility</li>
-          <li>Community engagement opportunities</li>
+          <li><strong>Lead:</strong> Damages the central nervous system and kidneys. Found in CRT monitors and solder.</li>
+          <li><strong>Mercury:</strong> Impacts brain development. Found in CFL bulbs and switches.</li>
+          <li><strong>Cadmium:</strong> Carcinogenic; affects lungs and prostate. Found in batteries.</li>
+          <li><strong>BFRs:</strong> Disrupt endocrine / hormonal systems. Released when burning plastic casings.</li>
         </ul>
         
-        <h3>Governance (G) Score Impact</h3>
-        <ul>
-          <li>Compliance with environmental regulations</li>
-          <li>Transparent supply chain management</li>
-          <li>Risk management documentation</li>
-          <li>Audit-ready certifications</li>
-        </ul>
-        
-        <h2>Key Metrics to Track</h2>
-        <p>For ESG reporting, track and document:</p>
-        <ul>
-          <li>Total e-waste generated (kg/year)</li>
-          <li>Percentage recycled vs. disposed</li>
-          <li>CO2 emissions avoided through recycling</li>
-          <li>Materials recovered and reused</li>
-          <li>Compliance certifications obtained</li>
-        </ul>
-        
-        <h2>E-Zero's ESG Partnership</h2>
-        <p>We provide comprehensive documentation for your ESG reports:</p>
-        <ul>
-          <li>Annual e-waste summary reports</li>
-          <li>Carbon offset certificates</li>
-          <li>Material recovery tracking</li>
-          <li>Third-party audit support</li>
-          <li>ESG-aligned disposal certificates</li>
-        </ul>
-        
-        <h3>Our Environmental Certifications</h3>
-        <ul>
-          <li>ISO 14001:2015 - Environmental Management</li>
-          <li>R2 Certification - Responsible Recycling</li>
-          <li>CPCB Authorization - Central Pollution Control Board</li>
-        </ul>
-        
-        <p><em>Partner with E-Zero to strengthen your ESG performance and demonstrate your commitment to sustainability.</em></p>
+        <h2>Choose Formal Recycling</h2>
+        <p>By choosing E-Zero, you support a system that uses closed-loop, automated recycling technologies that protect workers and the environment.</p>
       `
     }
   };

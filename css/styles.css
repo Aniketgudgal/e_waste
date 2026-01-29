@@ -3726,3 +3726,244 @@ ul, ol {
 }
 
 
+
+/* ============================================
+   CENTERS / LOCATIONS SECTION UI
+   ============================================ */
+.centers-container {
+  display: flex;
+  height: 600px;
+  background: white;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.map-container {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+#centers-map {
+  width: 100%;
+  height: 100%;
+}
+
+.centers-sidebar {
+  width: 400px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--gray-200);
+  z-index: 2;
+}
+
+.search-filters {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+  background: white;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.search-box input {
+  padding-left: 44px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+}
+
+.search-box input:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-100);
+}
+
+/* Perfect Custom Scrollbar */
+.centers-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  scroll-behavior: smooth;
+}
+
+.centers-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.centers-list::-webkit-scrollbar-track {
+  background: var(--gray-50);
+}
+
+.centers-list::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 4px;
+  border: 2px solid var(--gray-50);
+}
+
+.centers-list::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Center Cards in List */
+.center-card {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  margin-bottom: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.center-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.center-card.active {
+  border-color: var(--primary);
+  background: var(--primary-50);
+}
+
+/* Partner Styling */
+.center-card.partner-card {
+  border-left: 4px solid #8B5CF6;
+}
+
+.center-card.partner-card:hover {
+  border-color: #7C3AED;
+}
+
+.partner-badge-sm {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  background: #8B5CF6;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+.center-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.center-address {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.center-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.center-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.center-meta .rating {
+  color: #F59E0B;
+  font-weight: 600;
+}
+
+.center-meta .status.open {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.center-features {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.center-features span {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: var(--gray-100);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.center-action .btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.center-card:hover .center-action .btn-icon {
+  background: var(--primary);
+  color: white;
+}
+
+.partner-card:hover .center-action .btn-icon {
+  background: #8B5CF6;
+}
+
+/* Responsive Map Layout */
+@media (max-width: 992px) {
+  .centers-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .map-container {
+    height: 400px;
+  }
+  
+  .centers-sidebar {
+    width: 100%;
+    height: 400px;
+    border-left: none;
+    border-top: 1px solid var(--gray-200);
+  }
+}
+
+/* Popup Styling Correction */
+.partner-badge-popup {
+  background: #8B5CF6;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}

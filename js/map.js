@@ -440,6 +440,64 @@ function filterCenters(query = '') {
 }
 
 // ============================================
+// UPDATE CENTER CARDS LIST
+// ============================================
+function updateCenterCards(centers) {
+  const container = document.getElementById('centers-list');
+  if (!container) return;
+  
+  if (centers.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 32px 16px; color: #64748B;">
+        <i class="fas fa-search-location" style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;"></i>
+        <p>No centers found matching your search.</p>
+        <button onclick="filterCenters('')" style="margin-top: 12px; color: #10B981; background: none; border: none; font-weight: 500; cursor: pointer;">
+          Clear Filters
+        </button>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = centers.map(center => {
+    const lat = center.lat || center.latitude;
+    const lng = center.lng || center.longitude;
+    const distance = userLocation ? calculateDistance(userLocation, [lat, lng]).toFixed(1) : null;
+    const isPartner = center.type === 'Partner';
+    
+    return `
+      <div class="center-card ${isPartner ? 'partner-card' : ''}" onclick="focusOnCenter(${lat}, ${lng})">
+        <div class="center-info">
+          ${isPartner ? '<span class="partner-badge-sm">Official Partner</span>' : ''}
+          <h4>${center.name}</h4>
+          <p class="center-address">${center.address}</p>
+          
+          <div class="center-meta">
+            <span class="rating">
+              <i class="fas fa-star"></i> ${center.rating} (${center.reviews})
+            </span>
+            ${distance ? `<span><i class="fas fa-route"></i> ${distance} km</span>` : ''}
+            <span class="status open">
+              <i class="far fa-clock"></i> ${center.hours ? center.hours.split('-')[0] : 'Open'}
+            </span>
+          </div>
+          
+          <div class="center-features">
+            ${(center.services || []).slice(0, 2).map(s => `<span>${s}</span>`).join('')}
+          </div>
+        </div>
+        
+        <div class="center-action">
+          <div class="btn-icon">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================
 // UTILITY FUNCTIONS
 // ============================================
 function calculateDistance(coord1, coord2) {
