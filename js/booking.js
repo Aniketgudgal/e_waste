@@ -118,6 +118,7 @@
     cacheElements();
     bindEvents();
     setDateConstraints();
+    generateItemGrid();
     console.log('📦 E-Zero Booking System v2.0 Initialized');
   }
 
@@ -179,6 +180,16 @@
 
   window.closePickupModal = function() {
     closeModal();
+  };
+
+  window.printInvoice = function() {
+    window.print();
+  };
+
+  window.downloadInvoice = function() {
+    // Print dialog allows save as PDF
+    window.print();
+    showToast('Select "Save as PDF" in the print dialog', 'info');
   };
 
   function closeModal() {
@@ -469,6 +480,25 @@
     updateItemsSummary();
   };
 
+  // Generate dynamic item grid
+  function generateItemGrid() {
+    const container = document.getElementById('items-grid');
+    if (!container) return;
+
+    container.innerHTML = Object.entries(ITEMS).map(([key, item]) => `
+      <div class="item-select-card" data-item="${key}">
+        <div class="item-icon"><i class="fas ${item.icon}"></i></div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-points" style="color:#059669; font-weight:700;">₹${item.earn} each</div>
+        <div class="item-qty-control">
+          <button class="qty-btn" type="button" onclick="updateQty('${key}', -1)">-</button>
+          <span class="qty-value" id="qty-${key}">0</span>
+          <button class="qty-btn" type="button" onclick="updateQty('${key}', 1)">+</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
   function getSelectedItems() {
     const items = {};
     Object.keys(ITEMS).forEach(item => {
@@ -485,7 +515,8 @@
   function getTotalPoints() {
     const items = getSelectedItems();
     return Object.entries(items).reduce((sum, [item, qty]) => {
-      return sum + (ITEMS[item]?.points || 0) * qty;
+      // Changed from .points to .earn to match logic
+      return sum + (ITEMS[item]?.earn || 0) * qty;
     }, 0);
   }
 
@@ -497,7 +528,7 @@
       elements.totalItems.textContent = `${total} item${total !== 1 ? 's' : ''}`;
     }
     if (elements.totalPoints) {
-      elements.totalPoints.textContent = points.toLocaleString();
+      elements.totalPoints.textContent = '₹' + points.toLocaleString();
     }
   }
 
@@ -600,12 +631,12 @@
     if (elements.invoiceItems) {
       elements.invoiceItems.innerHTML = Object.entries(state.booking.items).map(([item, qty]) => {
         const itemInfo = ITEMS[item];
-        const points = itemInfo.points * qty;
+        const earnings = itemInfo.earn * qty;
         return `
           <tr>
             <td><i class="fas ${itemInfo.icon}"></i> ${itemInfo.name}</td>
             <td>${qty}</td>
-            <td>${points.toLocaleString()}</td>
+            <td>₹${earnings.toLocaleString()}</td>
           </tr>
         `;
       }).join('');
@@ -613,7 +644,7 @@
 
     // Total points
     if (elements.invoiceTotalPoints) {
-      elements.invoiceTotalPoints.textContent = getTotalPoints().toLocaleString();
+      elements.invoiceTotalPoints.textContent = '₹' + getTotalPoints().toLocaleString();
     }
   }
 

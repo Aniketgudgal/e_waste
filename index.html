@@ -1213,7 +1213,7 @@
               <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
-        </div>
+
         
           <article class="blog-card scroll-animate" onclick="openArticleModal('batteries')">
             <div class="blog-image">
@@ -1262,6 +1262,7 @@
               <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
+        </div>
         </div>
       </div>
     </section>
@@ -1611,86 +1612,7 @@
           <p class="step-description">Select items and specify quantities. Higher quantities may earn bonus points!</p>
           
           <div class="items-grid" id="items-grid">
-            <div class="item-select-card" data-item="laptops">
-              <div class="item-icon"><i class="fas fa-laptop"></i></div>
-              <div class="item-name">Laptops</div>
-              <div class="item-points">+50 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('laptops', -1)">-</button>
-                <span class="qty-value" id="qty-laptops">0</span>
-                <button class="qty-btn" onclick="updateQty('laptops', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="phones">
-              <div class="item-icon"><i class="fas fa-mobile-alt"></i></div>
-              <div class="item-name">Phones</div>
-              <div class="item-points">+30 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('phones', -1)">-</button>
-                <span class="qty-value" id="qty-phones">0</span>
-                <button class="qty-btn" onclick="updateQty('phones', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="monitors">
-              <div class="item-icon"><i class="fas fa-desktop"></i></div>
-              <div class="item-name">Monitors</div>
-              <div class="item-points">+40 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('monitors', -1)">-</button>
-                <span class="qty-value" id="qty-monitors">0</span>
-                <button class="qty-btn" onclick="updateQty('monitors', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="printers">
-              <div class="item-icon"><i class="fas fa-print"></i></div>
-              <div class="item-name">Printers</div>
-              <div class="item-points">+35 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('printers', -1)">-</button>
-                <span class="qty-value" id="qty-printers">0</span>
-                <button class="qty-btn" onclick="updateQty('printers', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="keyboards">
-              <div class="item-icon"><i class="fas fa-keyboard"></i></div>
-              <div class="item-name">Keyboards/Mouse</div>
-              <div class="item-points">+10 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('keyboards', -1)">-</button>
-                <span class="qty-value" id="qty-keyboards">0</span>
-                <button class="qty-btn" onclick="updateQty('keyboards', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="batteries">
-              <div class="item-icon"><i class="fas fa-battery-full"></i></div>
-              <div class="item-name">Batteries/UPS</div>
-              <div class="item-points">+25 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('batteries', -1)">-</button>
-                <span class="qty-value" id="qty-batteries">0</span>
-                <button class="qty-btn" onclick="updateQty('batteries', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="cables">
-              <div class="item-icon"><i class="fas fa-plug"></i></div>
-              <div class="item-name">Cables/Chargers</div>
-              <div class="item-points">+5 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('cables', -1)">-</button>
-                <span class="qty-value" id="qty-cables">0</span>
-                <button class="qty-btn" onclick="updateQty('cables', 1)">+</button>
-              </div>
-            </div>
-            <div class="item-select-card" data-item="other">
-              <div class="item-icon"><i class="fas fa-microchip"></i></div>
-              <div class="item-name">Other Electronics</div>
-              <div class="item-points">+15 pts each</div>
-              <div class="item-qty-control">
-                <button class="qty-btn" onclick="updateQty('other', -1)">-</button>
-                <span class="qty-value" id="qty-other">0</span>
-                <button class="qty-btn" onclick="updateQty('other', 1)">+</button>
-              </div>
-            </div>
+            <!-- Items generated dynamically by booking.js -->
           </div>
           
           <div class="selected-summary" id="selected-summary">

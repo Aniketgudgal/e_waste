@@ -3967,3 +3967,90 @@ ul, ol {
   gap: 6px;
   margin-bottom: 8px;
 }
+
+/* ============================================
+   CENTERS SIDEBAR
+   ============================================ */
+.centers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--gray-100);
+}
+
+.center-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+}
+
+.center-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--primary-200);
+}
+
+.center-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.center-card:hover::before {
+  opacity: 1;
+}
+
+.center-card h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.center-card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.center-card p i {
+  color: var(--primary);
+  width: 16px;
+  text-align: center;
+}
+
+.center-card .actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--gray-200);
+}
+
+.center-card .btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
