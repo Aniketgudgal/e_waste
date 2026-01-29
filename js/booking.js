@@ -25,16 +25,20 @@
     }
   };
 
-  // Item definitions with points and display names
+  // Item definitions with earnings (matching calculator) and display names
   const ITEMS = {
-    laptops: { name: 'Laptops', points: 50, icon: 'fa-laptop' },
-    phones: { name: 'Mobile Phones', points: 30, icon: 'fa-mobile-alt' },
-    monitors: { name: 'Monitors/Displays', points: 40, icon: 'fa-desktop' },
-    printers: { name: 'Printers/Scanners', points: 35, icon: 'fa-print' },
-    keyboards: { name: 'Keyboards/Mouse', points: 10, icon: 'fa-keyboard' },
-    batteries: { name: 'Batteries/UPS', points: 25, icon: 'fa-battery-full' },
-    cables: { name: 'Cables/Chargers', points: 5, icon: 'fa-plug' },
-    other: { name: 'Other Electronics', points: 15, icon: 'fa-microchip' }
+    laptops: { name: 'Laptops', earn: 800, icon: 'fa-laptop' },
+    desktops: { name: 'Desktop Computers', earn: 600, icon: 'fa-desktop' },
+    phones: { name: 'Mobile Phones', earn: 300, icon: 'fa-mobile-alt' },
+    tablets: { name: 'Tablets/iPads', earn: 400, icon: 'fa-tablet-alt' },
+    monitors: { name: 'Monitors/TVs', earn: 350, icon: 'fa-tv' },
+    printers: { name: 'Printers/Scanners', earn: 450, icon: 'fa-print' },
+    keyboards: { name: 'Keyboards/Mouse', earn: 50, icon: 'fa-keyboard' },
+    servers: { name: 'Servers', earn: 2000, icon: 'fa-server' },
+    networking: { name: 'Routers/Switches', earn: 500, icon: 'fa-network-wired' },
+    batteries: { name: 'Batteries/UPS', earn: 200, icon: 'fa-battery-full' },
+    harddrives: { name: 'Hard Drives/SSDs', earn: 150, icon: 'fa-hdd' },
+    cables: { name: 'Cables/Chargers', earn: 20, icon: 'fa-plug' }
   };
 
   // Time slots

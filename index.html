@@ -692,21 +692,23 @@
             <i class="fas fa-calculator"></i>
             Pricing Calculator
           </span>
-          <h2>Get Instant Price Estimate</h2>
-          <p>Calculate the cost and get a quote for your e-waste recycling needs.</p>
+          <h2>Know What You'll Earn</h2>
+          <p>We pay you for your e-waste! Calculate your earnings instantly and get a quote.</p>
         </div>
         
         <div class="calculator-container">
           <div class="calculator-card">
             <div class="calculator-form">
-              <h4><i class="fas fa-box"></i> Select Your Items</h4>
+              <h4><i class="fas fa-box"></i> Select Your E-Waste Items</h4>
+              <p class="calc-subtitle">We pay you for each item based on its condition and type</p>
               
               <div class="calc-items-grid">
-                <div class="calc-item" data-item="laptops" data-price="150">
+                <!-- Computers -->
+                <div class="calc-item" data-item="laptops" data-price="800">
                   <div class="calc-item-icon"><i class="fas fa-laptop"></i></div>
                   <div class="calc-item-info">
                     <span class="calc-item-name">Laptops</span>
-                    <span class="calc-item-price">₹150/unit</span>
+                    <span class="calc-item-price earn">Earn ₹800/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('laptops', -1)">-</button>
@@ -715,11 +717,11 @@
                   </div>
                 </div>
                 
-                <div class="calc-item" data-item="desktops" data-price="200">
+                <div class="calc-item" data-item="desktops" data-price="600">
                   <div class="calc-item-icon"><i class="fas fa-desktop"></i></div>
                   <div class="calc-item-info">
-                    <span class="calc-item-name">Desktops/Monitors</span>
-                    <span class="calc-item-price">₹200/unit</span>
+                    <span class="calc-item-name">Desktop Computers</span>
+                    <span class="calc-item-price earn">Earn ₹600/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('desktops', -1)">-</button>
@@ -728,11 +730,12 @@
                   </div>
                 </div>
                 
-                <div class="calc-item" data-item="phones" data-price="50">
+                <!-- Mobile & Tablets -->
+                <div class="calc-item" data-item="phones" data-price="300">
                   <div class="calc-item-icon"><i class="fas fa-mobile-alt"></i></div>
                   <div class="calc-item-info">
                     <span class="calc-item-name">Mobile Phones</span>
-                    <span class="calc-item-price">₹50/unit</span>
+                    <span class="calc-item-price earn">Earn ₹300/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('phones', -1)">-</button>
@@ -741,11 +744,39 @@
                   </div>
                 </div>
                 
-                <div class="calc-item" data-item="printers" data-price="250">
+                <div class="calc-item" data-item="tablets" data-price="400">
+                  <div class="calc-item-icon"><i class="fas fa-tablet-alt"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Tablets/iPads</span>
+                    <span class="calc-item-price earn">Earn ₹400/unit</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('tablets', -1)">-</button>
+                    <span id="calc-qty-tablets">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('tablets', 1)">+</button>
+                  </div>
+                </div>
+                
+                <!-- Displays -->
+                <div class="calc-item" data-item="monitors" data-price="350">
+                  <div class="calc-item-icon"><i class="fas fa-tv"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Monitors/TVs</span>
+                    <span class="calc-item-price earn">Earn ₹350/unit</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('monitors', -1)">-</button>
+                    <span id="calc-qty-monitors">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('monitors', 1)">+</button>
+                  </div>
+                </div>
+                
+                <!-- Printers & Peripherals -->
+                <div class="calc-item" data-item="printers" data-price="450">
                   <div class="calc-item-icon"><i class="fas fa-print"></i></div>
                   <div class="calc-item-info">
                     <span class="calc-item-name">Printers/Scanners</span>
-                    <span class="calc-item-price">₹250/unit</span>
+                    <span class="calc-item-price earn">Earn ₹450/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('printers', -1)">-</button>
@@ -754,11 +785,25 @@
                   </div>
                 </div>
                 
-                <div class="calc-item" data-item="servers" data-price="500">
+                <div class="calc-item" data-item="keyboards" data-price="50">
+                  <div class="calc-item-icon"><i class="fas fa-keyboard"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Keyboards/Mouse</span>
+                    <span class="calc-item-price earn">Earn ₹50/unit</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('keyboards', -1)">-</button>
+                    <span id="calc-qty-keyboards">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('keyboards', 1)">+</button>
+                  </div>
+                </div>
+                
+                <!-- Enterprise Equipment -->
+                <div class="calc-item" data-item="servers" data-price="2000">
                   <div class="calc-item-icon"><i class="fas fa-server"></i></div>
                   <div class="calc-item-info">
-                    <span class="calc-item-name">Servers/Networking</span>
-                    <span class="calc-item-price">₹500/unit</span>
+                    <span class="calc-item-name">Servers</span>
+                    <span class="calc-item-price earn">Earn ₹2000/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('servers', -1)">-</button>
@@ -767,11 +812,25 @@
                   </div>
                 </div>
                 
-                <div class="calc-item" data-item="batteries" data-price="100">
+                <div class="calc-item" data-item="networking" data-price="500">
+                  <div class="calc-item-icon"><i class="fas fa-network-wired"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Routers/Switches</span>
+                    <span class="calc-item-price earn">Earn ₹500/unit</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('networking', -1)">-</button>
+                    <span id="calc-qty-networking">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('networking', 1)">+</button>
+                  </div>
+                </div>
+                
+                <!-- Power & Storage -->
+                <div class="calc-item" data-item="batteries" data-price="200">
                   <div class="calc-item-icon"><i class="fas fa-battery-full"></i></div>
                   <div class="calc-item-info">
                     <span class="calc-item-name">Batteries/UPS</span>
-                    <span class="calc-item-price">₹100/unit</span>
+                    <span class="calc-item-price earn">Earn ₹200/unit</span>
                   </div>
                   <div class="calc-item-qty">
                     <button class="calc-qty-btn" onclick="calcUpdateQty('batteries', -1)">-</button>
@@ -779,64 +838,137 @@
                     <button class="calc-qty-btn" onclick="calcUpdateQty('batteries', 1)">+</button>
                   </div>
                 </div>
+                
+                <div class="calc-item" data-item="harddrives" data-price="150">
+                  <div class="calc-item-icon"><i class="fas fa-hdd"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Hard Drives/SSDs</span>
+                    <span class="calc-item-price earn">Earn ₹150/unit</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('harddrives', -1)">-</button>
+                    <span id="calc-qty-harddrives">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('harddrives', 1)">+</button>
+                  </div>
+                </div>
+                
+                <!-- Other -->
+                <div class="calc-item" data-item="cables" data-price="20">
+                  <div class="calc-item-icon"><i class="fas fa-plug"></i></div>
+                  <div class="calc-item-info">
+                    <span class="calc-item-name">Cables/Chargers (kg)</span>
+                    <span class="calc-item-price earn">Earn ₹20/kg</span>
+                  </div>
+                  <div class="calc-item-qty">
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('cables', -1)">-</button>
+                    <span id="calc-qty-cables">0</span>
+                    <button class="calc-qty-btn" onclick="calcUpdateQty('cables', 1)">+</button>
+                  </div>
+                </div>
               </div>
               
               <div class="calc-services">
-                <h4><i class="fas fa-cog"></i> Additional Services</h4>
+                <h4><i class="fas fa-file-certificate"></i> Optional Services (You Pay)</h4>
+                <p class="calc-subtitle">These services are charged separately if you need them</p>
+                
                 <label class="calc-service-option">
                   <input type="checkbox" id="calc-data-destruction" onchange="updateCalcTotal()">
                   <span class="checkmark"></span>
-                  <span>Secure Data Destruction (+₹500)</span>
+                  <div class="service-info">
+                    <span class="service-name">Secure Data Destruction</span>
+                    <span class="service-desc">NIST-compliant wiping with certificate</span>
+                    <span class="service-charge">₹500</span>
+                  </div>
                 </label>
+                
                 <label class="calc-service-option">
                   <input type="checkbox" id="calc-certificate" onchange="updateCalcTotal()">
                   <span class="checkmark"></span>
-                  <span>Compliance Certificate (+₹300)</span>
+                  <div class="service-info">
+                    <span class="service-name">Compliance Certificate</span>
+                    <span class="service-desc">Recycling & environmental certificate</span>
+                    <span class="service-charge">₹300</span>
+                  </div>
                 </label>
+                
                 <label class="calc-service-option">
                   <input type="checkbox" id="calc-express" onchange="updateCalcTotal()">
                   <span class="checkmark"></span>
-                  <span>Express Pickup (24hrs) (+₹1000)</span>
+                  <div class="service-info">
+                    <span class="service-name">Express Pickup (24hrs)</span>
+                    <span class="service-desc">Guaranteed pickup within 24 hours</span>
+                    <span class="service-charge">₹1000</span>
+                  </div>
+                </label>
+                
+                <label class="calc-service-option">
+                  <input type="checkbox" id="calc-asset-report" onchange="updateCalcTotal()">
+                  <span class="checkmark"></span>
+                  <div class="service-info">
+                    <span class="service-name">Detailed Asset Report</span>
+                    <span class="service-desc">Serial numbers, condition & disposal report</span>
+                    <span class="service-charge">₹400</span>
+                  </div>
                 </label>
               </div>
             </div>
             
             <div class="calculator-result">
               <div class="calc-summary">
-                <h4><i class="fas fa-receipt"></i> Price Summary</h4>
-                <div class="calc-line">
-                  <span>Items Total</span>
-                  <span id="calc-items-total">₹0</span>
+                <h4><i class="fas fa-wallet"></i> Your Quote</h4>
+                
+                <div class="calc-section earnings">
+                  <h5><i class="fas fa-arrow-down"></i> You Earn</h5>
+                  <div class="calc-line">
+                    <span>E-Waste Value</span>
+                    <span id="calc-items-total" class="positive">+ ₹0</span>
+                  </div>
                 </div>
-                <div class="calc-line">
-                  <span>Services</span>
-                  <span id="calc-services-total">₹0</span>
+                
+                <div class="calc-section deductions">
+                  <h5><i class="fas fa-arrow-up"></i> Service Charges</h5>
+                  <div class="calc-line">
+                    <span>Optional Services</span>
+                    <span id="calc-services-total" class="negative">- ₹0</span>
+                  </div>
+                  <div class="calc-line">
+                    <span>Pickup Fee</span>
+                    <span id="calc-pickup-fee" class="negative">FREE</span>
+                  </div>
                 </div>
-                <div class="calc-line">
-                  <span>Pickup (Free for 10+ items)</span>
-                  <span id="calc-pickup-fee">₹0</span>
-                </div>
+                
                 <div class="calc-line calc-total">
-                  <span>Estimated Total</span>
+                  <span>Net Amount</span>
                   <span id="calc-grand-total">₹0</span>
                 </div>
+                <p class="calc-total-note" id="calc-total-note"></p>
               </div>
               
               <div class="calc-actions">
                 <button class="btn btn-primary btn-lg btn-block" onclick="openPickupModal()">
                   <i class="fas fa-calendar-check"></i>
-                  Schedule Pickup
+                  Schedule Free Pickup
                 </button>
                 <button class="btn btn-secondary btn-block" onclick="scrollToSection('contact')">
                   <i class="fas fa-phone"></i>
-                  Request Detailed Quote
+                  Get Detailed Quote
                 </button>
               </div>
               
-              <p class="calc-note">
-                <i class="fas fa-info-circle"></i>
-                Prices are indicative. Final quote depends on item condition and quantity.
-              </p>
+              <div class="calc-features">
+                <div class="calc-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Free pickup for 5+ items</span>
+                </div>
+                <div class="calc-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Same-day payment via UPI/NEFT</span>
+                </div>
+                <div class="calc-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Prices may vary by condition</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1034,7 +1166,7 @@
         </div>
         
         <div class="blog-grid">
-          <article class="blog-card scroll-animate">
+          <article class="blog-card scroll-animate" onclick="openArticleModal('regulations')">
             <div class="blog-image">
               <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&q=80" alt="E-Waste Regulations">
               <span class="blog-category">Regulations</span>
@@ -1046,11 +1178,11 @@
               </div>
               <h3>E-Waste Management Rules 2022: Complete Compliance Guide</h3>
               <p>Understanding the latest amendments to India's e-waste regulations and what they mean for businesses.</p>
-              <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
           
-          <article class="blog-card scroll-animate">
+          <article class="blog-card scroll-animate" onclick="openArticleModal('security')">
             <div class="blog-image">
               <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=80" alt="Data Security">
               <span class="blog-category">Security</span>
@@ -1062,11 +1194,11 @@
               </div>
               <h3>Why Secure Data Destruction is Critical for Your Business</h3>
               <p>Learn about the risks of improper data disposal and how to protect your sensitive information.</p>
-              <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
           
-          <article class="blog-card scroll-animate">
+          <article class="blog-card scroll-animate" onclick="openArticleModal('sustainability')">
             <div class="blog-image">
               <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&q=80" alt="Sustainability">
               <span class="blog-category">Sustainability</span>
@@ -1078,16 +1210,16 @@
               </div>
               <h3>Corporate ESG Goals: Integrating E-Waste Recycling</h3>
               <p>How proper e-waste management contributes to your organization's sustainability objectives.</p>
-              <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+              <span class="blog-link">Read More <i class="fas fa-arrow-right"></i></span>
             </div>
           </article>
         </div>
         
         <div class="blog-cta">
-          <a href="#" class="btn btn-secondary">
+          <button class="btn btn-secondary" onclick="showToast('More articles coming soon!', 'info')">
             <i class="fas fa-th-large"></i>
             View All Articles
-          </a>
+          </button>
         </div>
       </div>
     </section>
@@ -1669,6 +1801,40 @@
         </button>
         <button class="btn btn-primary" id="done-btn" onclick="closePickupModal()" style="display:none;">
           <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       ARTICLE MODAL
+       ============================================ -->
+  <div class="article-modal-overlay" id="article-modal">
+    <div class="article-modal">
+      <button class="article-modal-close" onclick="closeArticleModal()">&times;</button>
+      
+      <div class="article-modal-header" id="article-modal-header">
+        <img src="" alt="" id="article-modal-image">
+        <div class="article-modal-meta">
+          <span class="blog-category" id="article-modal-category"></span>
+          <div class="article-modal-info">
+            <span><i class="fas fa-calendar"></i> <span id="article-modal-date"></span></span>
+            <span><i class="fas fa-clock"></i> <span id="article-modal-read-time"></span></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="article-modal-content" id="article-modal-content">
+        <h1 id="article-modal-title"></h1>
+        <div id="article-modal-body"></div>
+      </div>
+      
+      <div class="article-modal-footer">
+        <button class="btn btn-primary" onclick="closeArticleModal()">
+          <i class="fas fa-arrow-left"></i> Back to Articles
+        </button>
+        <button class="btn btn-secondary" onclick="shareArticle()">
+          <i class="fas fa-share-alt"></i> Share
         </button>
       </div>
     </div>
