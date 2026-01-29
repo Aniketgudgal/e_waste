@@ -325,10 +325,12 @@ function createMarker(center) {
   
   if (!lat || !lng) return null;
   
-  const iconColor = center.verified ? '#10B981' : '#8B5CF6';
+  const isPartner = center.type === 'Partner';
+  const iconColor = isPartner ? '#8B5CF6' : '#10B981'; // Purple for partners
+  const iconClass = isPartner ? 'fa-handshake' : 'fa-recycle';
   
   const icon = L.divIcon({
-    html: `<div class="custom-marker" style="background: ${iconColor}"><i class="fas fa-recycle"></i></div>`,
+    html: `<div class="custom-marker" style="background: ${iconColor}"><i class="fas ${iconClass}"></i></div>`,
     iconSize: [40, 40],
     className: 'custom-marker-container'
   });
@@ -350,9 +352,11 @@ function createPopupContent(center) {
   const lat = center.lat || center.latitude;
   const lng = center.lng || center.longitude;
   const distance = userLocation ? calculateDistance(userLocation, [lat, lng]) : null;
+  const isPartner = center.type === 'Partner';
   
   return `
     <div class="popup-content">
+      ${isPartner ? '<div class="partner-badge-popup"><i class="fas fa-handshake"></i> Official Partner</div>' : ''}
       <h3 style="margin-bottom: 8px; font-weight: 600;">${center.name}</h3>
       <p class="address" style="font-size: 13px; color: #64748B; margin-bottom: 12px;">${center.address}</p>
       
@@ -364,72 +368,14 @@ function createPopupContent(center) {
       </div>
       
       <div class="popup-actions" style="display: flex; gap: 8px;">
-        <button onclick="getDirections(${lat}, ${lng})" 
+        <button onclick="getDirections(${lat}, ${lng})"
                 style="flex: 1; padding: 8px; background: #10B981; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px;">
           <i class="fas fa-directions"></i> Directions
         </button>
-        <button onclick="window.scrollToSection('pickup')" 
+        <button onclick="window.scrollToSection('pickup')"
                 style="flex: 1; padding: 8px; background: white; color: #10B981; border: 1px solid #10B981; border-radius: 8px; cursor: pointer; font-size: 12px;">
           <i class="fas fa-calendar"></i> Schedule
         </button>
-      </div>
-    </div>
-  `;
-}
-
-// ============================================
-// CENTER CARDS
-// ============================================
-function updateCenterCards(centers) {
-  const container = document.getElementById('centers-grid');
-  if (!container) return;
-  
-  if (!centers || centers.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8">
-        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500">No centers found</p>
-      </div>
-    `;
-    return;
-  }
-  
-  container.innerHTML = centers.map(center => createCenterCard(center)).join('');
-  
-  // Add click handlers
-  container.querySelectorAll('.center-card').forEach((card, index) => {
-    card.addEventListener('click', () => {
-      const center = centers[index];
-      const lat = center.lat || center.latitude;
-      const lng = center.lng || center.longitude;
-      if (lat && lng && map) {
-        map.setView([lat, lng], 15);
-      }
-    });
-  });
-}
-
-function createCenterCard(center) {
-  const lat = center.lat || center.latitude;
-  const lng = center.lng || center.longitude;
-  const distance = userLocation && lat && lng ? calculateDistance(userLocation, [lat, lng]) : null;
-  
-  return `
-    <div class="center-card">
-      <div class="center-card-header">
-        <div>
-          <h4 class="center-name">${center.name}</h4>
-          <p class="center-address">${center.address}</p>
-        </div>
-        ${center.verified ? '<span class="center-badge">Verified</span>' : ''}
-      </div>
-      <div class="center-meta">
-        <div class="center-rating">
-          <i class="fas fa-star"></i>
-          <span>${center.rating}</span>
-        </div>
-        ${distance ? `<span><i class="fas fa-route"></i> ${distance.toFixed(1)} km</span>` : ''}
-        <span><i class="fas fa-clock"></i> ${center.hours || '9AM-6PM'}</span>
       </div>
     </div>
   `;
