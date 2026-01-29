@@ -267,49 +267,47 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================
-// COUNTER ANIMATION (Stats)
+// IMPACT COUNTER ANIMATION
 // ============================================
-function animateCounters() {
-  const counters = document.querySelectorAll('.stat-value');
-  
-  counters.forEach(counter => {
-    const text = counter.textContent;
-    const match = text.match(/[\d,]+/);
-    if (!match) return;
-    
-    const target = parseInt(match[0].replace(/,/g, ''));
-    const suffix = text.replace(match[0], '');
-    const duration = 2000;
-    const step = target / (duration / 16);
-    let current = 0;
-    
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
-      }
-      counter.textContent = formatNumber(Math.floor(current)) + suffix;
-    }, 16);
-  });
-}
+function initImpactCounters() {
+  const impactSection = document.querySelector('.impact-section');
+  if (!impactSection) return;
 
-function formatNumber(num) {
-  return num.toLocaleString('en-IN');
-}
-
-// Trigger counter animation when stats section is visible
-const statsSection = document.querySelector('.stats-section');
-if (statsSection) {
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       animateCounters();
       observer.disconnect();
     }
-  }, { threshold: 0.5 });
+  }, { threshold: 0.3 });
   
-  observer.observe(statsSection);
+  observer.observe(impactSection);
 }
+
+function animateCounters() {
+  const counters = document.querySelectorAll('.impact-value');
+  
+  counters.forEach(counter => {
+    const target = parseInt(counter.dataset.target || 0);
+    const duration = 2500; // 2.5 seconds
+    const fps = 60;
+    const totalFrames = (duration / 1000) * fps;
+    const increment = target / totalFrames;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      // Format number (e.g. 45,000)
+      counter.textContent = Math.floor(current).toLocaleString('en-IN');
+    }, 1000 / fps);
+  });
+}
+
+// Initialize counters with other DOM ready functions
+document.addEventListener('DOMContentLoaded', initImpactCounters);
 
 // ============================================
 // GLOBAL UTILITIES

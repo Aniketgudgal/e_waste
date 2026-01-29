@@ -469,8 +469,8 @@ function updateCenterCards(centers) {
       <div class="center-card ${isPartner ? 'partner-card' : ''}" onclick="focusOnCenter(${lat}, ${lng})">
         <div class="center-info">
           ${isPartner ? '<span class="partner-badge-sm">Official Partner</span>' : ''}
-          <h4>${center.name}</h4>
-          <p class="center-address">${center.address}</p>
+          <h3>${center.name}</h3>
+          <p class="center-address"><i class="fas fa-map-marker-alt"></i> ${center.address}</p>
           
           <div class="center-meta">
             <span class="rating">
