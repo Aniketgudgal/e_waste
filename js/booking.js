@@ -1,774 +1,902 @@
-// booking.js - Advanced pickup booking functionality with real-time scheduling
+/**
+ * E-Zero - Professional Pickup Booking System
+ * Multi-step form with validation, invoice generation, and print
+ * @version 2.0.0
+ */
 
-class PickupScheduler {
-  constructor() {
-    this.form = document.getElementById('pickup-form');
-    this.timeSlots = this.generateTimeSlots();
-    this.bookedSlots = new Set();
-    this.selectedItems = new Map();
-    this.bookingData = {};
-    this.validation = {
-      isValid: false,
-      errors: {}
-    };
-    this.pricing = {
-      baseRate: 50,
-      itemRates: {
-        'electronics': 25,
-        'batteries': 30,
-        'cables': 15,
-        'computers': 40,
-        'phones': 20,
-        'appliances': 35,
-        'metal': 10,
-        'plastic': 8
-      }
-    };
-    this.init();
-  }
+(function() {
+  'use strict';
 
-  init() {
-    if (!this.form) return;
-
-    this.setupFormElements();
-    this.setupEventListeners();
-    this.setupValidation();
-    this.loadBookedSlots();
-    this.initializeGeolocation();
-    this.setupRealTimeUpdates();
-    console.log('🚚 Pickup scheduler initialized');
-  }
-
-  setupFormElements() {
-    this.setupItemSelection();
-    this.setupDatePicker();
-    this.setupTimeSlots();
-    this.setupAddressValidation();
-    this.setupPricingDisplay();
-    this.setupProgressIndicator();
-    this.setupConfirmationSystem();
-  }
-
-  setupItemSelection() {
-    const itemsContainer = document.getElementById('items-selection');
-    if (!itemsContainer) return;
-
-    const itemTypes = [
-      { id: 'electronics', name: 'Electronics', icon: 'fas fa-tv', rate: 25 },
-      { id: 'batteries', name: 'Batteries', icon: 'fas fa-battery-half', rate: 30 },
-      { id: 'cables', name: 'Cables & Wires', icon: 'fas fa-plug', rate: 15 },
-      { id: 'computers', name: 'Computers', icon: 'fas fa-desktop', rate: 40 },
-      { id: 'phones', name: 'Mobile Phones', icon: 'fas fa-mobile-alt', rate: 20 },
-      { id: 'appliances', name: 'Appliances', icon: 'fas fa-blender', rate: 35 },
-      { id: 'metal', name: 'Metal Components', icon: 'fas fa-cog', rate: 10 },
-      { id: 'plastic', name: 'Plastic Items', icon: 'fas fa-recycle', rate: 8 }
-    ];
-
-    const itemsHTML = itemTypes.map(item => 
-      '<div class="item-selection-card">' +
-        '<div class="item-header">' +
-          '<div class="item-icon">' +
-            '<i class="' + item.icon + '"></i>' +
-          '</div>' +
-          '<h4>' + item.name + '</h4>' +
-          '<span class="rate-badge">₹' + item.rate + '/kg</span>' +
-        '</div>' +
-        '<div class="quantity-controls">' +
-          '<button type="button" class="qty-btn" onclick="adjustQuantity(\'' + item.id + '\', -1)">' +
-            '<i class="fas fa-minus"></i>' +
-          '</button>' +
-          '<input type="number" id="qty-' + item.id + '" min="0" max="100" value="0" class="qty-input">' +
-          '<button type="button" class="qty-btn" onclick="adjustQuantity(\'' + item.id + '\', 1)">' +
-            '<i class="fas fa-plus"></i>' +
-          '</button>' +
-        '</div>' +
-        '<div class="weight-input">' +
-          '<input type="number" id="weight-' + item.id + '" placeholder="Estimated weight (kg)" min="0" step="0.1" class="weight-input">' +
-        '</div>' +
-      '</div>'
-    ).join('');
-
-    itemsContainer.innerHTML = itemsHTML;
-    this.attachItemEventListeners();
-  }
-
-  attachItemEventListeners() {
-    const quantityInputs = document.querySelectorAll('.qty-input, .weight-input');
-    quantityInputs.forEach(input => {
-      input.addEventListener('change', () => this.updateItemSelection());
-      input.addEventListener('input', () => this.calculatePricing());
-    });
-  }
-
-  setupDatePicker() {
-    const dateInput = document.getElementById('pickup-date');
-    if (!dateInput) return;
-
-    // Set minimum date to tomorrow
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    dateInput.min = tomorrow.toISOString().split('T')[0];
-
-    // Set maximum date to 30 days from now
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 30);
-    dateInput.max = maxDate.toISOString().split('T')[0];
-
-    dateInput.addEventListener('change', (e) => {
-      this.updateAvailableSlots(e.target.value);
-      this.validateBookingDate(e.target.value);
-    });
-  }
-
-  setupTimeSlots() {
-    const slotsContainer = document.getElementById('time-slots');
-    if (!slotsContainer) return;
-
-    const slotsHTML = this.timeSlots.map(slot =>
-      '<div class="time-slot" data-slot-id="' + slot.id + '" onclick="selectTimeSlot(\'' + slot.id + '\')">' +
-        '<div class="slot-time">' + slot.label + '</div>' +
-        '<div class="slot-status">Available</div>' +
-      '</div>'
-    ).join('');
-
-    slotsContainer.innerHTML = slotsHTML;
-  }
-
-  setupAddressValidation() {
-    const addressInput = document.getElementById('pickup-address');
-    if (!addressInput) return;
-
-    let addressTimeout;
-    addressInput.addEventListener('input', (e) => {
-      clearTimeout(addressTimeout);
-      addressTimeout = setTimeout(() => {
-        this.validateAddress(e.target.value);
-      }, 500);
-    });
-
-    // Add current location button
-    const locationBtn = document.createElement('button');
-    locationBtn.type = 'button';
-    locationBtn.className = 'current-location-btn';
-    locationBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use Current Location';
-    locationBtn.onclick = () => this.getCurrentLocation();
-    
-    addressInput.parentNode.appendChild(locationBtn);
-  }
-
-  setupPricingDisplay() {
-    const pricingContainer = document.getElementById('pricing-breakdown');
-    if (!pricingContainer) return;
-
-    pricingContainer.innerHTML = 
-      '<div class="pricing-section">' +
-        '<h4><i class="fas fa-calculator"></i> Pricing Breakdown</h4>' +
-        '<div id="pricing-details" class="pricing-details">' +
-          '<div class="pricing-row">' +
-            '<span>Base pickup fee:</span>' +
-            '<span id="base-fee">₹' + this.pricing.baseRate + '</span>' +
-          '</div>' +
-          '<div class="pricing-row">' +
-            '<span>Items fee:</span>' +
-            '<span id="items-fee">₹0</span>' +
-          '</div>' +
-          '<div class="pricing-row total-row">' +
-            '<span><strong>Total Estimated Cost:</strong></span>' +
-            '<span id="total-cost"><strong>₹' + this.pricing.baseRate + '</strong></span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="pricing-note">' +
-          '<i class="fas fa-info-circle"></i>' +
-          ' Final cost may vary based on actual weight and condition of items' +
-        '</div>' +
-      '</div>';
-  }
-
-  setupProgressIndicator() {
-    const progressContainer = document.getElementById('booking-progress');
-    if (!progressContainer) return;
-
-    progressContainer.innerHTML =
-      '<div class="progress-steps">' +
-        '<div class="step active" data-step="1">' +
-          '<div class="step-icon"><i class="fas fa-list"></i></div>' +
-          '<span>Items</span>' +
-        '</div>' +
-        '<div class="step" data-step="2">' +
-          '<div class="step-icon"><i class="fas fa-calendar"></i></div>' +
-          '<span>Schedule</span>' +
-        '</div>' +
-        '<div class="step" data-step="3">' +
-          '<div class="step-icon"><i class="fas fa-map-marker"></i></div>' +
-          '<span>Address</span>' +
-        '</div>' +
-        '<div class="step" data-step="4">' +
-          '<div class="step-icon"><i class="fas fa-check"></i></div>' +
-          '<span>Confirm</span>' +
-        '</div>' +
-      '</div>';
-  }
-
-  setupConfirmationSystem() {
-    const confirmContainer = document.getElementById('booking-confirmation');
-    if (!confirmContainer) return;
-
-    confirmContainer.innerHTML =
-      '<div class="confirmation-content hidden" id="confirmation-details">' +
-        '<div class="confirmation-icon">' +
-          '<i class="fas fa-check-circle"></i>' +
-        '</div>' +
-        '<h3>Booking Confirmed!</h3>' +
-        '<div class="booking-summary" id="booking-summary"></div>' +
-        '<div class="confirmation-actions">' +
-          '<button type="button" class="btn-primary" onclick="downloadBookingReceipt()">' +
-            '<i class="fas fa-download"></i> Download Receipt' +
-          '</button>' +
-          '<button type="button" class="btn-secondary" onclick="trackPickup()">' +
-            '<i class="fas fa-truck"></i> Track Pickup' +
-          '</button>' +
-        '</div>' +
-      '</div>';
-  }
-
-  generateTimeSlots() {
-    const slots = [];
-    const startHour = 9;
-    const endHour = 18;
-    const interval = 2;
-
-    for (let hour = startHour; hour < endHour; hour += interval) {
-      const startTime = hour.toString().padStart(2, '0') + ':00';
-      const endTime = (hour + interval).toString().padStart(2, '0') + ':00';
-      slots.push({
-        id: 'slot-' + hour,
-        label: startTime + ' - ' + endTime,
-        start: hour,
-        end: hour + interval,
-        available: true
-      });
+  // ============================================
+  // CONFIGURATION
+  // ============================================
+  const CONFIG = {
+    minPickupDate: 1, // Days from today
+    maxPickupDate: 30,
+    maxFileSize: 5 * 1024 * 1024, // 5MB
+    allowedFileTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    storageKey: 'ezero_bookings',
+    companyInfo: {
+      name: 'E-Zero Technologies Pvt. Ltd.',
+      phone: '+91 98765 43210',
+      email: 'info@ezero.in',
+      address: '123 Green Business Park, Pune 411001',
+      website: 'www.ezero.in'
     }
+  };
 
-    return slots;
+  // Item definitions with earnings (matching calculator) and display names
+  const ITEMS = {
+    laptops: { name: 'Laptops', earn: 800, icon: 'fa-laptop' },
+    desktops: { name: 'Desktop Computers', earn: 600, icon: 'fa-desktop' },
+    phones: { name: 'Mobile Phones', earn: 300, icon: 'fa-mobile-alt' },
+    tablets: { name: 'Tablets/iPads', earn: 400, icon: 'fa-tablet-alt' },
+    monitors: { name: 'Monitors/TVs', earn: 350, icon: 'fa-tv' },
+    printers: { name: 'Printers/Scanners', earn: 450, icon: 'fa-print' },
+    keyboards: { name: 'Keyboards/Mouse', earn: 50, icon: 'fa-keyboard' },
+    servers: { name: 'Servers', earn: 2000, icon: 'fa-server' },
+    networking: { name: 'Routers/Switches', earn: 500, icon: 'fa-network-wired' },
+    batteries: { name: 'Batteries/UPS', earn: 200, icon: 'fa-battery-full' },
+    harddrives: { name: 'Hard Drives/SSDs', earn: 150, icon: 'fa-hdd' },
+    cables: { name: 'Cables/Chargers', earn: 20, icon: 'fa-plug' }
+  };
+
+  // Time slots
+  const TIME_SLOTS = [
+    { value: '09:00-11:00', label: '09:00 AM - 11:00 AM' },
+    { value: '11:00-13:00', label: '11:00 AM - 01:00 PM' },
+    { value: '14:00-16:00', label: '02:00 PM - 04:00 PM' },
+    { value: '16:00-18:00', label: '04:00 PM - 06:00 PM' }
+  ];
+
+  // ============================================
+  // STATE MANAGEMENT
+  // ============================================
+  const state = {
+    currentStep: 1,
+    totalSteps: 4,
+    isSubmitting: false,
+    booking: {
+      id: null,
+      customer: {},
+      items: {},
+      schedule: {},
+      services: [],
+      images: [],
+      createdAt: null,
+      status: 'pending'
+    }
+  };
+
+  // ============================================
+  // DOM ELEMENTS CACHE
+  // ============================================
+  let elements = {};
+
+  function cacheElements() {
+    elements = {
+      modal: document.getElementById('pickup-modal'),
+      prevBtn: document.getElementById('prev-btn'),
+      nextBtn: document.getElementById('next-btn'),
+      submitBtn: document.getElementById('submit-btn'),
+      doneBtn: document.getElementById('done-btn'),
+      progressSteps: document.querySelectorAll('.progress-step'),
+      formSteps: document.querySelectorAll('.form-step'),
+      // Step 1 fields
+      name: document.getElementById('pickup-name'),
+      phone: document.getElementById('pickup-phone'),
+      email: document.getElementById('pickup-email'),
+      company: document.getElementById('pickup-company'),
+      address: document.getElementById('pickup-address'),
+      city: document.getElementById('pickup-city'),
+      pincode: document.getElementById('pickup-pincode'),
+      // Step 2
+      totalItems: document.getElementById('total-items'),
+      totalPoints: document.getElementById('total-points'),
+      uploadInput: document.getElementById('image-upload'),
+      uploadPreview: document.getElementById('upload-preview'),
+      // Step 3
+      pickupDate: document.getElementById('pickup-date'),
+      pickupTime: document.getElementById('pickup-time'),
+      instructions: document.getElementById('pickup-instructions'),
+      serviceData: document.getElementById('service-data'),
+      serviceCertificate: document.getElementById('service-certificate'),
+      // Step 4 (Invoice)
+      bookingId: document.getElementById('booking-id'),
+      invoiceDate: document.getElementById('invoice-date'),
+      customerDetails: document.getElementById('customer-details'),
+      pickupDetails: document.getElementById('pickup-details'),
+      invoiceItems: document.getElementById('invoice-items'),
+      invoiceTotalPoints: document.getElementById('invoice-total-points')
+    };
   }
 
-  setupEventListeners() {
-    if (!this.form) return;
+  // ============================================
+  // INITIALIZATION
+  // ============================================
+  function init() {
+    cacheElements();
+    bindEvents();
+    setDateConstraints();
+    generateItemGrid();
+    console.log('📦 E-Zero Booking System v2.0 Initialized');
+  }
 
-    // Form submission
-    this.form.addEventListener('submit', (e) => this.handleFormSubmission(e));
+  function bindEvents() {
+    // Close modal events
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && elements.modal?.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    // Image upload
+    if (elements.uploadInput) {
+      elements.uploadInput.addEventListener('change', handleImageUpload);
+    }
 
     // Real-time validation
-    const inputs = this.form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-      input.addEventListener('blur', () => this.validateField(input));
-      input.addEventListener('input', () => this.updateProgress());
-    });
-
-    // Navigation buttons
-    this.setupNavigationButtons();
-  }
-
-  setupNavigationButtons() {
-    const nextButtons = document.querySelectorAll('.next-step-btn');
-    const prevButtons = document.querySelectorAll('.prev-step-btn');
-
-    nextButtons.forEach(btn => {
-      btn.addEventListener('click', () => this.nextStep());
-    });
-
-    prevButtons.forEach(btn => {
-      btn.addEventListener('click', () => this.prevStep());
-    });
-  }
-
-  async validateAddress(address) {
-    if (!address || address.length < 10) {
-      this.showValidationError('pickup-address', 'Please enter a complete address');
-      return false;
-    }
-
-    try {
-      // Simulate address validation API call
-      const isValid = await this.geocodeAddress(address);
-      
-      if (isValid) {
-        this.showValidationSuccess('pickup-address', 'Address verified');
-        return true;
-      } else {
-        this.showValidationError('pickup-address', 'Unable to verify address');
-        return false;
-      }
-    } catch (error) {
-      console.warn('Address validation failed:', error);
-      return true; // Allow booking to continue
-    }
-  }
-
-  async geocodeAddress(address) {
-    // Simulate geocoding delay
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(address.length > 15);
-      }, 800);
-    });
-  }
-
-  getCurrentLocation() {
-    if (!navigator.geolocation) {
-      alert('Geolocation not supported by this browser');
-      return;
-    }
-
-    const btn = document.querySelector('.current-location-btn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting location...';
-    btn.disabled = true;
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.reverseGeocode(position.coords.latitude, position.coords.longitude)
-          .then(address => {
-            const addressInput = document.getElementById('pickup-address');
-            if (addressInput) {
-              addressInput.value = address;
-              this.validateAddress(address);
-            }
-          })
-          .finally(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-          });
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        alert('Could not get your current location');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      },
-      { timeout: 10000, enableHighAccuracy: true }
-    );
-  }
-
-  async reverseGeocode(lat, lng) {
-    // Simulate reverse geocoding
-    return 'Current Location: ' + lat.toFixed(4) + ', ' + lng.toFixed(4);
-  }
-
-  updateItemSelection() {
-    this.selectedItems.clear();
-    
-    const itemTypes = ['electronics', 'batteries', 'cables', 'computers', 'phones', 'appliances', 'metal', 'plastic'];
-    
-    itemTypes.forEach(type => {
-      const qtyInput = document.getElementById('qty-' + type);
-      const weightInput = document.getElementById('weight-' + type);
-      
-      if (qtyInput && weightInput) {
-        const quantity = parseInt(qtyInput.value) || 0;
-        const weight = parseFloat(weightInput.value) || 0;
-        
-        if (quantity > 0 || weight > 0) {
-          this.selectedItems.set(type, {
-            quantity: quantity,
-            weight: weight,
-            rate: this.pricing.itemRates[type] || 0
-          });
-        }
+    ['name', 'phone', 'email', 'address', 'city', 'pincode'].forEach(field => {
+      if (elements[field]) {
+        elements[field].addEventListener('blur', () => validateField(field));
+        elements[field].addEventListener('input', () => clearFieldError(field));
       }
     });
-
-    this.calculatePricing();
-    this.updateProgress();
   }
 
-  calculatePricing() {
-    let itemsTotal = 0;
-    
-    this.selectedItems.forEach((item, type) => {
-      const cost = (item.weight || 0) * (this.pricing.itemRates[type] || 0);
-      itemsTotal += cost;
-    });
+  function setDateConstraints() {
+    if (!elements.pickupDate) return;
 
-    const total = this.pricing.baseRate + itemsTotal;
-
-    // Update pricing display
-    const itemsFeeEl = document.getElementById('items-fee');
-    const totalCostEl = document.getElementById('total-cost');
-    
-    if (itemsFeeEl) itemsFeeEl.textContent = '₹' + itemsTotal.toFixed(2);
-    if (totalCostEl) totalCostEl.innerHTML = '<strong>₹' + total.toFixed(2) + '</strong>';
-
-    this.bookingData.pricing = {
-      baseRate: this.pricing.baseRate,
-      itemsTotal: itemsTotal,
-      total: total
-    };
-  }
-
-  updateAvailableSlots(date) {
-    const selectedDate = new Date(date);
     const today = new Date();
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() + CONFIG.minPickupDate);
     
-    // Check if selected date is today or tomorrow for slot availability
-    const isToday = selectedDate.toDateString() === today.toDateString();
-    const currentHour = today.getHours();
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + CONFIG.maxPickupDate);
 
-    this.timeSlots.forEach(slot => {
-      const slotElement = document.querySelector('[data-slot-id="' + slot.id + '"]');
-      if (!slotElement) return;
-
-      let isAvailable = true;
-      let statusText = 'Available';
-
-      // If today, disable past slots
-      if (isToday && slot.start <= currentHour) {
-        isAvailable = false;
-        statusText = 'Not Available';
-      }
-
-      // Check if slot is already booked
-      if (this.bookedSlots.has(date + '_' + slot.id)) {
-        isAvailable = false;
-        statusText = 'Booked';
-      }
-
-      slotElement.className = 'time-slot ' + (isAvailable ? 'available' : 'unavailable');
-      slotElement.querySelector('.slot-status').textContent = statusText;
-    });
+    elements.pickupDate.min = formatDateForInput(minDate);
+    elements.pickupDate.max = formatDateForInput(maxDate);
   }
 
-  loadBookedSlots() {
-    // Simulate loading booked slots from API
-    const mockBookedSlots = [
-      '2024-01-20_slot-9',
-      '2024-01-20_slot-13',
-      '2024-01-21_slot-11'
-    ];
+  // ============================================
+  // MODAL CONTROL
+  // ============================================
+  window.openPickupModal = function() {
+    if (!elements.modal) cacheElements();
     
-    mockBookedSlots.forEach(slot => {
-      this.bookedSlots.add(slot);
-    });
-  }
+    resetState();
+    elements.modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus first field
+    setTimeout(() => elements.name?.focus(), 300);
+  };
 
-  setupRealTimeUpdates() {
-    // Simulate real-time updates for slot availability
-    setInterval(() => {
-      this.refreshSlotAvailability();
-    }, 30000); // Update every 30 seconds
-  }
+  window.closePickupModal = function() {
+    closeModal();
+  };
 
-  refreshSlotAvailability() {
-    const selectedDate = document.getElementById('pickup-date')?.value;
-    if (selectedDate) {
-      this.updateAvailableSlots(selectedDate);
+  window.printInvoice = function() {
+    window.print();
+  };
+
+  window.downloadInvoice = function() {
+    // Print dialog allows save as PDF
+    window.print();
+    showToast('Select "Save as PDF" in the print dialog', 'info');
+  };
+
+  function closeModal() {
+    if (elements.modal) {
+      elements.modal.classList.remove('active');
+      document.body.style.overflow = '';
     }
   }
 
-  validateField(input) {
-    const fieldName = input.name || input.id;
-    let isValid = true;
-    let errorMessage = '';
-
-    switch (fieldName) {
-      case 'pickup-date':
-        isValid = this.validateBookingDate(input.value);
-        errorMessage = isValid ? '' : 'Please select a valid date';
-        break;
+  // ============================================
+  // STEP NAVIGATION
+  // ============================================
+  window.nextStep = function() {
+    if (state.isSubmitting) return;
+    
+    if (!validateCurrentStep()) return;
+    saveCurrentStepData();
+    
+    if (state.currentStep < state.totalSteps) {
+      state.currentStep++;
+      updateUI();
       
-      case 'pickup-address':
-        isValid = input.value.length >= 10;
-        errorMessage = isValid ? '' : 'Please enter a complete address';
-        break;
+      if (state.currentStep === 4) {
+        generateInvoice();
+      }
+    }
+  };
 
-      case 'contact-phone':
-        isValid = /^[6-9]\d{9}$/.test(input.value);
-        errorMessage = isValid ? '' : 'Please enter a valid 10-digit phone number';
-        break;
+  window.prevStep = function() {
+    if (state.currentStep > 1) {
+      state.currentStep--;
+      updateUI();
+    }
+  };
 
-      case 'contact-email':
-        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
-        errorMessage = isValid ? '' : 'Please enter a valid email address';
-        break;
+  function updateUI() {
+    // Update form steps
+    elements.formSteps.forEach((step, idx) => {
+      step.classList.toggle('active', idx + 1 === state.currentStep);
+    });
+
+    // Update progress indicators
+    elements.progressSteps.forEach((step, idx) => {
+      step.classList.remove('active', 'completed');
+      if (idx + 1 === state.currentStep) {
+        step.classList.add('active');
+      } else if (idx + 1 < state.currentStep) {
+        step.classList.add('completed');
+      }
+    });
+
+    // Update buttons
+    elements.prevBtn.style.display = state.currentStep > 1 && state.currentStep < 4 ? 'inline-flex' : 'none';
+    elements.nextBtn.style.display = state.currentStep < 3 ? 'inline-flex' : 'none';
+    elements.submitBtn.style.display = state.currentStep === 3 ? 'inline-flex' : 'none';
+    elements.doneBtn.style.display = state.currentStep === 4 ? 'inline-flex' : 'none';
+
+    // Scroll to top of modal body
+    const modalBody = document.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
+  }
+
+  // ============================================
+  // VALIDATION
+  // ============================================
+  function validateCurrentStep() {
+    switch (state.currentStep) {
+      case 1: return validateStep1();
+      case 2: return validateStep2();
+      case 3: return validateStep3();
+      default: return true;
+    }
+  }
+
+  function validateStep1() {
+    const fields = ['name', 'phone', 'email', 'address', 'city', 'pincode'];
+    let isValid = true;
+
+    fields.forEach(field => {
+      if (!validateField(field)) {
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      showToast('Please fill in all required fields correctly', 'error');
     }
 
-    if (isValid) {
-      this.showValidationSuccess(fieldName, '');
-    } else {
-      this.showValidationError(fieldName, errorMessage);
-    }
-
-    this.validation.errors[fieldName] = errorMessage;
-    this.updateValidationState();
-    
     return isValid;
   }
 
-  validateBookingDate(date) {
-    if (!date) return false;
-    
-    const selectedDate = new Date(date);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 30);
-    
-    return selectedDate >= tomorrow && selectedDate <= maxDate;
+  function validateField(field) {
+    const el = elements[field];
+    if (!el) return true;
+
+    const value = el.value.trim();
+    let isValid = true;
+    let message = '';
+
+    switch (field) {
+      case 'name':
+        isValid = value.length >= 2;
+        message = 'Name must be at least 2 characters';
+        break;
+      case 'phone':
+        isValid = /^[\d\s\-+()]{10,15}$/.test(value.replace(/\s/g, ''));
+        message = 'Please enter a valid phone number';
+        break;
+      case 'email':
+        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        message = 'Please enter a valid email address';
+        break;
+      case 'address':
+        isValid = value.length >= 10;
+        message = 'Please enter a complete address';
+        break;
+      case 'city':
+        isValid = value.length >= 2;
+        message = 'Please enter a valid city';
+        break;
+      case 'pincode':
+        isValid = /^\d{6}$/.test(value);
+        message = 'Please enter a valid 6-digit pincode';
+        break;
+    }
+
+    if (!isValid) {
+      setFieldError(el, message);
+    } else {
+      clearFieldError(field);
+    }
+
+    return isValid;
   }
 
-  showValidationError(fieldName, message) {
-    const field = document.getElementById(fieldName) || document.querySelector('[name="' + fieldName + '"]');
-    if (!field) return;
-
-    field.classList.add('error');
-    
-    let errorEl = field.parentNode.querySelector('.field-error');
+  function setFieldError(el, message) {
+    el.classList.add('error');
+    let errorEl = el.parentElement.querySelector('.field-error');
     if (!errorEl) {
-      errorEl = document.createElement('div');
+      errorEl = document.createElement('span');
       errorEl.className = 'field-error';
-      field.parentNode.appendChild(errorEl);
+      el.parentElement.appendChild(errorEl);
     }
     errorEl.textContent = message;
   }
 
-  showValidationSuccess(fieldName, message) {
-    const field = document.getElementById(fieldName) || document.querySelector('[name="' + fieldName + '"]');
-    if (!field) return;
+  function clearFieldError(field) {
+    const el = elements[field];
+    if (!el) return;
+    el.classList.remove('error');
+    const errorEl = el.parentElement.querySelector('.field-error');
+    if (errorEl) errorEl.remove();
+  }
 
-    field.classList.remove('error');
-    field.classList.add('success');
+  function validateStep2() {
+    const total = getTotalItems();
+    if (total === 0) {
+      showToast('Please select at least one item for pickup', 'error');
+      return false;
+    }
+    return true;
+  }
+
+  function validateStep3() {
+    const date = elements.pickupDate?.value;
+    const time = elements.pickupTime?.value;
+
+    if (!date) {
+      showToast('Please select a pickup date', 'error');
+      elements.pickupDate?.focus();
+      return false;
+    }
+
+    if (!time) {
+      showToast('Please select a time slot', 'error');
+      elements.pickupTime?.focus();
+      return false;
+    }
+
+    // Validate date is not in past
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    const errorEl = field.parentNode.querySelector('.field-error');
-    if (errorEl) {
-      errorEl.remove();
+    if (selectedDate < today) {
+      showToast('Please select a future date', 'error');
+      return false;
+    }
+
+    return true;
+  }
+
+  // ============================================
+  // DATA MANAGEMENT
+  // ============================================
+  function saveCurrentStepData() {
+    switch (state.currentStep) {
+      case 1:
+        state.booking.customer = {
+          name: elements.name?.value.trim() || '',
+          phone: elements.phone?.value.trim() || '',
+          email: elements.email?.value.trim() || '',
+          company: elements.company?.value.trim() || '',
+          address: elements.address?.value.trim() || '',
+          city: elements.city?.value.trim() || '',
+          pincode: elements.pincode?.value.trim() || ''
+        };
+        break;
+      case 2:
+        state.booking.items = getSelectedItems();
+        break;
+      case 3:
+        state.booking.schedule = {
+          date: elements.pickupDate?.value || '',
+          time: elements.pickupTime?.value || '',
+          instructions: elements.instructions?.value.trim() || ''
+        };
+        state.booking.services = [];
+        if (elements.serviceData?.checked) state.booking.services.push('Data Destruction');
+        if (elements.serviceCertificate?.checked) state.booking.services.push('Compliance Certificate');
+        break;
     }
   }
 
-  updateValidationState() {
-    const hasErrors = Object.values(this.validation.errors).some(error => error !== '');
-    this.validation.isValid = !hasErrors && this.selectedItems.size > 0;
-    
-    // Update submit button state
-    const submitBtn = document.querySelector('.submit-booking-btn');
-    if (submitBtn) {
-      submitBtn.disabled = !this.validation.isValid;
-    }
-  }
+  function resetState() {
+    state.currentStep = 1;
+    state.isSubmitting = false;
+    state.booking = {
+      id: null,
+      customer: {},
+      items: {},
+      schedule: {},
+      services: [],
+      images: [],
+      createdAt: null,
+      status: 'pending'
+    };
 
-  updateProgress() {
-    let completedSteps = 0;
-    
-    // Step 1: Items selected
-    if (this.selectedItems.size > 0) completedSteps++;
-    
-    // Step 2: Date and time selected
-    const dateInput = document.getElementById('pickup-date');
-    const selectedSlot = document.querySelector('.time-slot.selected');
-    if (dateInput?.value && selectedSlot) completedSteps++;
-    
-    // Step 3: Address provided
-    const addressInput = document.getElementById('pickup-address');
-    if (addressInput?.value?.length >= 10) completedSteps++;
-    
-    // Step 4: Contact details
-    const phoneInput = document.getElementById('contact-phone');
-    const emailInput = document.getElementById('contact-email');
-    if (phoneInput?.value && emailInput?.value) completedSteps++;
-
-    // Update progress indicator
-    this.updateProgressIndicator(completedSteps);
-  }
-
-  updateProgressIndicator(completedSteps) {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach((step, index) => {
-      step.classList.toggle('active', index < completedSteps);
-      step.classList.toggle('completed', index < completedSteps - 1);
-    });
-  }
-
-  async handleFormSubmission(e) {
-    e.preventDefault();
-    
-    if (!this.validation.isValid) {
-      alert('Please complete all required fields');
-      return;
-    }
-
-    try {
-      const submitBtn = e.target.querySelector('.submit-booking-btn');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-      submitBtn.disabled = true;
-
-      // Collect form data
-      this.collectBookingData();
-
-      // Simulate API call
-      const result = await this.submitBooking(this.bookingData);
-      
-      if (result.success) {
-        this.showConfirmation(result.bookingId);
+    // Reset form fields
+    document.querySelectorAll('#pickup-modal input, #pickup-modal textarea, #pickup-modal select').forEach(el => {
+      if (el.type === 'checkbox') {
+        el.checked = false;
       } else {
-        throw new Error(result.message || 'Booking failed');
+        el.value = '';
+      }
+      el.classList.remove('error');
+    });
+
+    // Reset quantities
+    Object.keys(ITEMS).forEach(item => {
+      const el = document.getElementById(`qty-${item}`);
+      if (el) el.textContent = '0';
+      document.querySelector(`[data-item="${item}"]`)?.classList.remove('selected');
+    });
+
+    // Reset summary
+    if (elements.totalItems) elements.totalItems.textContent = '0 items';
+    if (elements.totalPoints) elements.totalPoints.textContent = '0';
+
+    // Reset upload preview
+    if (elements.uploadPreview) elements.uploadPreview.innerHTML = '';
+
+    // Clear field errors
+    document.querySelectorAll('.field-error').forEach(el => el.remove());
+
+    // Update UI
+    setDateConstraints();
+    updateUI();
+  }
+
+  // ============================================
+  // ITEM QUANTITY MANAGEMENT
+  // ============================================
+  window.updateQty = function(item, delta) {
+    const el = document.getElementById(`qty-${item}`);
+    if (!el) return;
+
+    let qty = parseInt(el.textContent) || 0;
+    qty = Math.max(0, Math.min(99, qty + delta));
+    el.textContent = qty;
+
+    // Update card visual state
+    const card = el.closest('.item-select-card');
+    if (card) {
+      card.classList.toggle('selected', qty > 0);
+    }
+
+    updateItemsSummary();
+  };
+
+  // Generate dynamic item grid
+  function generateItemGrid() {
+    const container = document.getElementById('items-grid');
+    if (!container) return;
+
+    container.innerHTML = Object.entries(ITEMS).map(([key, item]) => `
+      <div class="item-select-card" data-item="${key}">
+        <div class="item-icon"><i class="fas ${item.icon}"></i></div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-points" style="color:#059669; font-weight:700;">₹${item.earn} each</div>
+        <div class="item-qty-control">
+          <button class="qty-btn" type="button" onclick="updateQty('${key}', -1)">-</button>
+          <span class="qty-value" id="qty-${key}">0</span>
+          <button class="qty-btn" type="button" onclick="updateQty('${key}', 1)">+</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getSelectedItems() {
+    const items = {};
+    Object.keys(ITEMS).forEach(item => {
+      const qty = parseInt(document.getElementById(`qty-${item}`)?.textContent) || 0;
+      if (qty > 0) items[item] = qty;
+    });
+    return items;
+  }
+
+  function getTotalItems() {
+    return Object.values(getSelectedItems()).reduce((sum, qty) => sum + qty, 0);
+  }
+
+  function getTotalPoints() {
+    const items = getSelectedItems();
+    return Object.entries(items).reduce((sum, [item, qty]) => {
+      // Changed from .points to .earn to match logic
+      return sum + (ITEMS[item]?.earn || 0) * qty;
+    }, 0);
+  }
+
+  function updateItemsSummary() {
+    const total = getTotalItems();
+    const points = getTotalPoints();
+
+    if (elements.totalItems) {
+      elements.totalItems.textContent = `${total} item${total !== 1 ? 's' : ''}`;
+    }
+    if (elements.totalPoints) {
+      elements.totalPoints.textContent = '₹' + points.toLocaleString();
+    }
+  }
+
+  // ============================================
+  // IMAGE UPLOAD
+  // ============================================
+  function handleImageUpload(e) {
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+      // Validate file type
+      if (!CONFIG.allowedFileTypes.includes(file.type)) {
+        showToast(`${file.name}: Invalid file type. Use JPG, PNG, or WebP`, 'error');
+        return;
       }
 
-    } catch (error) {
-      console.error('Booking submission failed:', error);
-      alert('Booking failed: ' + error.message);
+      // Validate file size
+      if (file.size > CONFIG.maxFileSize) {
+        showToast(`${file.name}: File too large (max 5MB)`, 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        state.booking.images.push({
+          name: file.name,
+          data: event.target.result,
+          size: file.size
+        });
+        renderImagePreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Clear input
+    e.target.value = '';
+  }
+
+  function renderImagePreviews() {
+    if (!elements.uploadPreview) return;
+
+    elements.uploadPreview.innerHTML = state.booking.images.map((img, idx) => `
+      <div class="preview-item">
+        <img src="${img.data}" alt="${img.name}" title="${img.name}">
+        <button type="button" class="remove-image" onclick="removeImage(${idx})" title="Remove">&times;</button>
+      </div>
+    `).join('');
+  }
+
+  window.removeImage = function(idx) {
+    state.booking.images.splice(idx, 1);
+    renderImagePreviews();
+  };
+
+  // ============================================
+  // INVOICE GENERATION
+  // ============================================
+  function generateInvoice() {
+    // Generate booking ID
+    state.booking.id = generateBookingId();
+    state.booking.createdAt = new Date().toISOString();
+
+    // Update invoice elements
+    if (elements.bookingId) {
+      elements.bookingId.textContent = state.booking.id;
+    }
+
+    if (elements.invoiceDate) {
+      elements.invoiceDate.textContent = formatDate(new Date(), 'long');
+    }
+
+    // Customer details
+    if (elements.customerDetails) {
+      const c = state.booking.customer;
+      elements.customerDetails.innerHTML = `
+        <p><strong>${escapeHtml(c.name)}</strong></p>
+        ${c.company ? `<p>${escapeHtml(c.company)}</p>` : ''}
+        <p><i class="fas fa-envelope"></i> ${escapeHtml(c.email)}</p>
+        <p><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</p>
+      `;
+    }
+
+    // Pickup details
+    if (elements.pickupDetails) {
+      const c = state.booking.customer;
+      const s = state.booking.schedule;
+      const timeLabel = TIME_SLOTS.find(t => t.value === s.time)?.label || s.time;
+
+      elements.pickupDetails.innerHTML = `
+        <p><i class="fas fa-map-marker-alt"></i> ${escapeHtml(c.address)}</p>
+        <p><i class="fas fa-city"></i> ${escapeHtml(c.city)} - ${escapeHtml(c.pincode)}</p>
+        <p><i class="fas fa-calendar"></i> ${formatDate(new Date(s.date), 'long')}</p>
+        <p><i class="fas fa-clock"></i> ${timeLabel}</p>
+        ${state.booking.services.length ? `<p><i class="fas fa-cog"></i> ${state.booking.services.join(', ')}</p>` : ''}
+        ${s.instructions ? `<p><i class="fas fa-sticky-note"></i> ${escapeHtml(s.instructions)}</p>` : ''}
+      `;
+    }
+
+    // Items table
+    if (elements.invoiceItems) {
+      elements.invoiceItems.innerHTML = Object.entries(state.booking.items).map(([item, qty]) => {
+        const itemInfo = ITEMS[item];
+        const earnings = itemInfo.earn * qty;
+        return `
+          <tr>
+            <td><i class="fas ${itemInfo.icon}"></i> ${itemInfo.name}</td>
+            <td>${qty}</td>
+            <td>₹${earnings.toLocaleString()}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Total points
+    if (elements.invoiceTotalPoints) {
+      elements.invoiceTotalPoints.textContent = '₹' + getTotalPoints().toLocaleString();
     }
   }
 
-  collectBookingData() {
-    const formData = new FormData(this.form);
-    const selectedSlot = document.querySelector('.time-slot.selected');
+  function generateBookingId() {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `EZ-${timestamp.slice(-4)}${random}`;
+  }
+
+  // ============================================
+  // SUBMIT BOOKING
+  // ============================================
+  window.submitBooking = function() {
+    if (state.isSubmitting) return;
     
-    this.bookingData = {
-      ...this.bookingData,
-      items: Array.from(this.selectedItems.entries()).map(([type, data]) => ({
-        type: type,
-        quantity: data.quantity,
-        weight: data.weight,
-        rate: data.rate
-      })),
-      schedule: {
-        date: formData.get('pickup-date'),
-        timeSlot: selectedSlot ? selectedSlot.dataset.slotId : null
-      },
-      address: formData.get('pickup-address'),
-      contact: {
-        name: formData.get('contact-name'),
-        phone: formData.get('contact-phone'),
-        email: formData.get('contact-email')
-      },
-      specialInstructions: formData.get('special-instructions'),
-      timestamp: new Date().toISOString()
+    state.isSubmitting = true;
+    
+    // Update button state
+    const btn = elements.submitBtn;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      try {
+        // Save to localStorage
+        saveBookingToStorage();
+
+        // Move to confirmation step
+        state.currentStep = 4;
+        updateUI();
+        generateInvoice();
+
+        showToast('Booking confirmed successfully!', 'success');
+
+      } catch (error) {
+        console.error('Booking error:', error);
+        showToast('Failed to save booking. Please try again.', 'error');
+      } finally {
+        state.isSubmitting = false;
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+      }
+    }, 1500);
+  };
+
+  function saveBookingToStorage() {
+    const bookings = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '[]');
+    
+    // Don't store image data in localStorage (too large)
+    const bookingToSave = {
+      ...state.booking,
+      images: state.booking.images.map(img => ({ name: img.name, size: img.size }))
     };
+    
+    bookings.unshift(bookingToSave);
+    
+    // Keep only last 50 bookings
+    if (bookings.length > 50) bookings.length = 50;
+    
+    localStorage.setItem(CONFIG.storageKey, JSON.stringify(bookings));
   }
 
-  async submitBooking(bookingData) {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  // ============================================
+  // PRINT & DOWNLOAD
+  // ============================================
+  window.printInvoice = function() {
+    const invoiceContent = document.getElementById('invoice-preview');
+    if (!invoiceContent) return;
+
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
     
-    // Simulate successful booking
-    return {
-      success: true,
-      bookingId: 'BK' + Date.now(),
-      message: 'Pickup scheduled successfully!'
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>E-Zero Pickup Booking - ${state.booking.id}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #333; line-height: 1.6; }
+          .invoice-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #10B981; color: white; border-radius: 10px; margin-bottom: 30px; }
+          .invoice-logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: bold; }
+          .invoice-logo i { font-size: 28px; }
+          .invoice-meta { text-align: right; }
+          .invoice-id { font-size: 18px; font-weight: bold; }
+          .invoice-section { margin-bottom: 25px; padding: 20px; background: #f8fafc; border-radius: 8px; }
+          .invoice-section h4 { color: #10B981; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+          .invoice-section p { margin-bottom: 8px; }
+          .invoice-section i { color: #10B981; width: 20px; margin-right: 8px; }
+          .invoice-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          .invoice-table th, .invoice-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+          .invoice-table th { background: #f1f5f9; font-size: 12px; text-transform: uppercase; color: #64748b; }
+          .invoice-table tfoot td { background: #ecfdf5; font-weight: bold; }
+          .invoice-footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0; }
+          .invoice-footer p { font-weight: 600; color: #10B981; }
+          .company-info { margin-top: 20px; font-size: 12px; color: #64748b; }
+          @media print {
+            body { padding: 20px; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        ${invoiceContent.innerHTML}
+        <div class="company-info">
+          <p><strong>${CONFIG.companyInfo.name}</strong></p>
+          <p>${CONFIG.companyInfo.address} | ${CONFIG.companyInfo.phone} | ${CONFIG.companyInfo.email}</p>
+        </div>
+        <script>window.onload = function() { window.print(); }</script>
+      </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+  };
+
+  window.downloadInvoice = function() {
+    // Create downloadable HTML file
+    const invoiceContent = document.getElementById('invoice-preview');
+    if (!invoiceContent) return;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>E-Zero Booking ${state.booking.id}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+          .invoice-header { display: flex; justify-content: space-between; padding: 20px; background: #10B981; color: white; border-radius: 10px; }
+          .invoice-section { margin: 20px 0; padding: 15px; background: #f8f8f8; border-radius: 8px; }
+          .invoice-section h4 { color: #10B981; margin-bottom: 10px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+          th { background: #f0f0f0; }
+        </style>
+      </head>
+      <body>${invoiceContent.innerHTML}</body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `EZero-Booking-${state.booking.id}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('Invoice downloaded successfully!', 'success');
+  };
+
+  // ============================================
+  // UTILITY FUNCTIONS
+  // ============================================
+  function formatDate(date, style = 'short') {
+    if (style === 'long') {
+      return date.toLocaleDateString('en-IN', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+    return date.toLocaleDateString('en-IN');
+  }
+
+  function formatDateForInput(date) {
+    return date.toISOString().split('T')[0];
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showToast(message, type = 'info') {
+    // Remove existing toast
+    const existing = document.querySelector('.booking-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `booking-toast booking-toast-${type}`;
+
+    const colors = {
+      success: '#22C55E',
+      error: '#EF4444',
+      warning: '#F59E0B',
+      info: '#3B82F6'
     };
+
+    const icons = {
+      success: 'check-circle',
+      error: 'times-circle',
+      warning: 'exclamation-triangle',
+      info: 'info-circle'
+    };
+
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background: ${colors[type]};
+      color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      max-width: 400px;
+      animation: toastSlideIn 0.3s ease;
+    `;
+
+    toast.innerHTML = `<i class="fas fa-${icons[type]}"></i><span>${escapeHtml(message)}</span>`;
+    document.body.appendChild(toast);
+
+    // Add animation styles if not present
+    if (!document.getElementById('booking-toast-styles')) {
+      const style = document.createElement('style');
+      style.id = 'booking-toast-styles';
+      style.textContent = `
+        @keyframes toastSlideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        .field-error { display: block; color: #EF4444; font-size: 12px; margin-top: 4px; }
+        .form-input.error { border-color: #EF4444 !important; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Auto remove
+    setTimeout(() => {
+      toast.style.animation = 'toastSlideOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
   }
 
-  showConfirmation(bookingId) {
-    const confirmationEl = document.getElementById('confirmation-details');
-    const summaryEl = document.getElementById('booking-summary');
-    
-    if (!confirmationEl || !summaryEl) return;
-
-    // Generate booking summary
-    const summary = this.generateBookingSummary(bookingId);
-    summaryEl.innerHTML = summary;
-    
-    // Show confirmation
-    confirmationEl.classList.remove('hidden');
-    this.form.classList.add('hidden');
-    
-    // Scroll to confirmation
-    confirmationEl.scrollIntoView({ behavior: 'smooth' });
-    
-    // Store booking data for tracking
-    localStorage.setItem('currentBooking', JSON.stringify({
-      ...this.bookingData,
-      bookingId: bookingId
-    }));
+  // ============================================
+  // INITIALIZE ON DOM READY
+  // ============================================
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
-  generateBookingSummary(bookingId) {
-    const itemsList = Array.from(this.selectedItems.entries())
-      .map(([type, data]) => 
-        '<li>' + type.charAt(0).toUpperCase() + type.slice(1) + 
-        ': ' + data.quantity + ' items (' + data.weight + ' kg)</li>'
-      ).join('');
-
-    const selectedSlot = document.querySelector('.time-slot.selected');
-    const slotText = selectedSlot ? selectedSlot.querySelector('.slot-time').textContent : 'Not selected';
-
-    return '<div class="booking-summary-content">' +
-      '<div class="summary-section">' +
-        '<h4><i class="fas fa-receipt"></i> Booking Details</h4>' +
-        '<p><strong>Booking ID:</strong> ' + bookingId + '</p>' +
-        '<p><strong>Date:</strong> ' + this.bookingData.schedule.date + '</p>' +
-        '<p><strong>Time:</strong> ' + slotText + '</p>' +
-      '</div>' +
-      '<div class="summary-section">' +
-        '<h4><i class="fas fa-list"></i> Items</h4>' +
-        '<ul>' + itemsList + '</ul>' +
-      '</div>' +
-      '<div class="summary-section">' +
-        '<h4><i class="fas fa-map-marker"></i> Pickup Address</h4>' +
-        '<p>' + this.bookingData.address + '</p>' +
-      '</div>' +
-      '<div class="summary-section">' +
-        '<h4><i class="fas fa-money-bill"></i> Pricing</h4>' +
-        '<p><strong>Total Estimated Cost:</strong> ₹' + this.bookingData.pricing.total.toFixed(2) + '</p>' +
-      '</div>' +
-    '</div>';
-  }
-}
-
-// Global functions for HTML onclick handlers
-window.adjustQuantity = function(itemId, change) {
-  const input = document.getElementById('qty-' + itemId);
-  if (!input) return;
-  
-  const currentValue = parseInt(input.value) || 0;
-  const newValue = Math.max(0, Math.min(100, currentValue + change));
-  input.value = newValue;
-  
-  // Trigger change event
-  input.dispatchEvent(new Event('change'));
-};
-
-window.selectTimeSlot = function(slotId) {
-  // Remove previous selection
-  document.querySelectorAll('.time-slot').forEach(slot => {
-    slot.classList.remove('selected');
-  });
-  
-  // Add selection to clicked slot
-  const selectedSlot = document.querySelector('[data-slot-id="' + slotId + '"]');
-  if (selectedSlot && !selectedSlot.classList.contains('unavailable')) {
-    selectedSlot.classList.add('selected');
-  }
-};
-
-window.downloadBookingReceipt = function() {
-  const bookingData = localStorage.getItem('currentBooking');
-  if (!bookingData) return;
-  
-  // Simulate receipt download
-  console.log('📄 Downloading receipt for booking:', JSON.parse(bookingData).bookingId);
-  alert('Receipt downloaded successfully!');
-};
-
-window.trackPickup = function() {
-  const bookingData = localStorage.getItem('currentBooking');
-  if (!bookingData) return;
-  
-  const booking = JSON.parse(bookingData);
-  console.log('🚚 Tracking pickup for booking:', booking.bookingId);
-  
-  // Simulate tracking redirection
-  alert('Redirecting to pickup tracking...');
-};
-
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('pickup-form')) {
-    window.pickupScheduler = new PickupScheduler();
-  }
-});
-
-// Export for module systems
-export { PickupScheduler };
+})();

@@ -1,350 +1,401 @@
-// map.js - Enhanced map functionality with Leaflet and clustering
-let map;
+/**
+ * E-Zero - Map Module
+ * Handles the recycling centers map with Leaflet
+ */
+
+// ============================================
+// STATE
+// ============================================
+let map = null;
 let markers = [];
 let centersData = [];
 let userLocation = null;
-let searchTimeout;
-let markerClusterGroup;
-let currentFilters = {
-  itemType: 'all',
-  searchQuery: '',
-  radius: 50
-};
+let markerClusterGroup = null;
 
-// Default center coordinates (Mumbai, India)
-const DEFAULT_CENTER = [19.0760, 72.8777];
+const DEFAULT_CENTER = [19.0760, 72.8777]; // Mumbai
 const DEFAULT_ZOOM = 11;
 
-// Initialize map when DOM is loaded
+// ============================================
+// INITIALIZATION
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('centers-map')) {
+  const mapContainer = document.getElementById('centers-map');
+  if (mapContainer) {
     initMap();
   }
 });
 
 export function initMap() {
   try {
-    console.log('🗺️ Initializing map...');
-    
-    // Check if map already exists
-    if (map) {
-      map.remove();
+    // Check if Leaflet is available
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet not loaded');
+      showMapError('Map library not available. Please refresh the page.');
+      return;
     }
     
-    // Initialize map
+    console.log('🗺️ Initializing map...');
+    
+    // Remove existing map if any
+    if (map) {
+      map.remove();
+      map = null;
+    }
+    
+    // Create map
     map = L.map('centers-map', {
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       zoomControl: true,
-      scrollWheelZoom: true,
-      tap: true
+      scrollWheelZoom: true
     });
-
-    // Add tile layers
-    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       maxZoom: 19
-    });
+    }).addTo(map);
     
-    osmLayer.addTo(map);
-
     // Initialize marker cluster
-    markerClusterGroup = L.markerClusterGroup({
-      chunkedLoading: true,
-      spiderfyOnMaxZoom: true,
-      showCoverageOnHover: false,
-      zoomToBoundsOnClick: true,
-      maxClusterRadius: 80
-    });
+    if (typeof L.markerClusterGroup !== 'undefined') {
+      markerClusterGroup = L.markerClusterGroup({
+        chunkedLoading: true,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        maxClusterRadius: 80
+      });
+      map.addLayer(markerClusterGroup);
+    }
     
-    map.addLayer(markerClusterGroup);
-
     // Get user location
     getUserLocation();
-
-    // Load centers data
+    
+    // Load centers
     loadCenters();
-
-    // Initialize search and filters
+    
+    // Setup search
     initSearch();
     initFilters();
-
-    console.log('✅ Map initialized successfully');
-
+    
+    console.log('✅ Map initialized');
+    
   } catch (error) {
-    console.error('❌ Map initialization failed:', error);
-    showMapError('Failed to initialize map. Please refresh the page.');
+    console.error('Map init error:', error);
+    showMapError('Failed to initialize map.');
   }
 }
 
+// ============================================
+// USER LOCATION
+// ============================================
 function getUserLocation() {
-  if (!('geolocation' in navigator)) {
-    console.warn('⚠️ Geolocation not supported');
+  if (!navigator.geolocation) {
+    console.warn('Geolocation not supported');
     return;
   }
-
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 300000
-  };
-
+  
   navigator.geolocation.getCurrentPosition(
     (position) => {
       userLocation = [position.coords.latitude, position.coords.longitude];
-      console.log('📍 User location found:', userLocation);
+      console.log('📍 Location found:', userLocation);
       
-      // Add user location marker
+      // Add user marker
       const userIcon = L.divIcon({
-        html: '<div class="user-marker"><i class="fas fa-user-circle"></i></div>',
+        html: '<div class="user-marker"><i class="fas fa-user"></i></div>',
         iconSize: [30, 30],
         className: 'user-location-marker'
       });
       
-      L.marker(userLocation, { 
-        icon: userIcon,
-        zIndexOffset: 1000 
-      })
-      .addTo(map)
-      .bindPopup('Your Location');
-
-      // Center map on user location
+      L.marker(userLocation, { icon: userIcon, zIndexOffset: 1000 })
+        .addTo(map)
+        .bindPopup('Your Location');
+      
+      // Center map
       map.setView(userLocation, 13);
       
       // Update distances
-      updateDistances();
-      
+      updateCenterCards(centersData);
     },
     (error) => {
-      console.warn('⚠️ Geolocation error:', error.message);
-      handleLocationError(error);
+      console.warn('Location error:', error.message);
     },
-    options
+    { timeout: 10000, enableHighAccuracy: true }
   );
 }
 
-function handleLocationError(error) {
-  let message = 'Unable to get your location. ';
-  
-  switch(error.code) {
-    case error.PERMISSION_DENIED:
-      message += 'Location access denied.';
-      break;
-    case error.POSITION_UNAVAILABLE:
-      message += 'Location information unavailable.';
-      break;
-    case error.TIMEOUT:
-      message += 'Location request timed out.';
-      break;
-    default:
-      message += 'Unknown location error.';
-  }
-  
-  console.warn(message);
-  
-  if (window.EZero?.utils?.showNotification) {
-    window.EZero.utils.showNotification(message, 'warning');
-  }
-}
-
+// ============================================
+// LOAD CENTERS
+// ============================================
 async function loadCenters() {
   try {
-    console.log('📊 Loading centers data...');
+    console.log('📊 Loading centers...');
     
-    const response = await fetch('/data/centers.json');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const response = await fetch('data/centers.json');
+    if (!response.ok) throw new Error('Failed to fetch');
     
-    centersData = await response.json();
+    const data = await response.json();
+    centersData = data.centers || data;
+    
     console.log(`✅ Loaded ${centersData.length} centers`);
     
-    // Display centers
     displayCenters(centersData);
     updateCenterCards(centersData);
     
   } catch (error) {
-    console.error('❌ Failed to load centers:', error);
-    showMapError('Failed to load recycling centers. Please try again.');
+    console.error('Failed to load centers:', error);
+    
+    // Use fallback data
+    centersData = getFallbackCenters();
+    displayCenters(centersData);
+    updateCenterCards(centersData);
   }
 }
 
+function getFallbackCenters() {
+  return [
+    {
+      id: 1,
+      name: "E-Zero Headquarters - Pune",
+      city: "Pune",
+      lat: 18.5204,
+      lng: 73.8567,
+      address: "123 Green Business Park, Shivaji Nagar, Pune, Maharashtra 411005",
+      rating: 4.9,
+      verified: true,
+      hours: "9:00 AM - 7:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "servers", "batteries"],
+      services: ["Free pickup", "Data destruction", "Certificates"],
+      reviews: 2847
+    },
+    {
+      id: 2,
+      name: "E-Zero Mumbai - Andheri",
+      city: "Mumbai",
+      lat: 19.1136,
+      lng: 72.8697,
+      address: "456 Eco Tower, Andheri East, Mumbai, Maharashtra 400069",
+      rating: 4.6,
+      verified: true,
+      hours: "9:00 AM - 6:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "batteries"],
+      services: ["Free pickup", "Data destruction", "Bulk collection"],
+      reviews: 1892
+    },
+    {
+      id: 3,
+      name: "E-Zero Mumbai - BKC",
+      city: "Mumbai",
+      lat: 19.0596,
+      lng: 72.8656,
+      address: "BKC Tower 3, Bandra Kurla Complex, Mumbai, Maharashtra 400051",
+      rating: 4.8,
+      verified: true,
+      hours: "8:00 AM - 8:00 PM",
+      accepts: ["servers", "networking", "laptops", "desktops", "monitors", "harddrives"],
+      services: ["Corporate solutions", "Data center services"],
+      reviews: 1456
+    },
+    {
+      id: 4,
+      name: "E-Zero Delhi - Connaught Place",
+      city: "Delhi",
+      lat: 28.6315,
+      lng: 77.2167,
+      address: "789 Green Plaza, Connaught Place, New Delhi 110001",
+      rating: 4.5,
+      verified: true,
+      hours: "9:00 AM - 7:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "batteries"],
+      services: ["Free pickup", "Data destruction", "Certificates"],
+      reviews: 1654
+    },
+    {
+      id: 5,
+      name: "E-Zero Gurgaon - Cyber City",
+      city: "Gurgaon",
+      lat: 28.4940,
+      lng: 77.0885,
+      address: "DLF Cyber City, Phase 3, Gurgaon, Haryana 122002",
+      rating: 4.8,
+      verified: true,
+      hours: "8:00 AM - 8:00 PM",
+      accepts: ["servers", "networking", "laptops", "desktops", "monitors", "harddrives"],
+      services: ["Enterprise pickup", "Data destruction", "Compliance certificates"],
+      reviews: 2134
+    },
+    {
+      id: 6,
+      name: "E-Zero Bangalore - Koramangala",
+      city: "Bangalore",
+      lat: 12.9352,
+      lng: 77.6245,
+      address: "321 Circuit Avenue, Koramangala, Bangalore, Karnataka 560034",
+      rating: 4.8,
+      verified: true,
+      hours: "9:00 AM - 7:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "servers"],
+      services: ["Free pickup", "Data destruction", "Same-day payment"],
+      reviews: 1876
+    },
+    {
+      id: 7,
+      name: "E-Zero Hyderabad - HITEC City",
+      city: "Hyderabad",
+      lat: 17.4435,
+      lng: 78.3772,
+      address: "Mindspace, HITEC City, Hyderabad, Telangana 500081",
+      rating: 4.7,
+      verified: true,
+      hours: "9:00 AM - 7:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "servers"],
+      services: ["Free pickup", "Data destruction", "Enterprise solutions"],
+      reviews: 1543
+    },
+    {
+      id: 8,
+      name: "E-Zero Chennai - T. Nagar",
+      city: "Chennai",
+      lat: 13.0418,
+      lng: 80.2341,
+      address: "654 Clean Street, T. Nagar, Chennai, Tamil Nadu 600017",
+      rating: 4.5,
+      verified: true,
+      hours: "9:00 AM - 6:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "batteries"],
+      services: ["Free pickup", "Data destruction", "Certificates"],
+      reviews: 1123
+    },
+    {
+      id: 9,
+      name: "E-Zero Kolkata - Salt Lake",
+      city: "Kolkata",
+      lat: 22.5726,
+      lng: 88.4378,
+      address: "Sector V, Salt Lake City, Kolkata, West Bengal 700091",
+      rating: 4.4,
+      verified: true,
+      hours: "10:00 AM - 6:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "batteries"],
+      services: ["Free pickup", "Certificates"],
+      reviews: 765
+    },
+    {
+      id: 10,
+      name: "E-Zero Ahmedabad - SG Highway",
+      city: "Ahmedabad",
+      lat: 23.0225,
+      lng: 72.5714,
+      address: "Gift City Road, SG Highway, Ahmedabad, Gujarat 380015",
+      rating: 4.5,
+      verified: true,
+      hours: "9:00 AM - 6:00 PM",
+      accepts: ["laptops", "desktops", "phones", "tablets", "monitors", "printers", "batteries"],
+      services: ["Free pickup", "Data destruction", "Certificates"],
+      reviews: 654
+    }
+  ];
+}
+
+// ============================================
+// DISPLAY CENTERS
+// ============================================
 function displayCenters(centers) {
   // Clear existing markers
-  markerClusterGroup.clearLayers();
+  if (markerClusterGroup) {
+    markerClusterGroup.clearLayers();
+  }
   markers = [];
-
+  
   centers.forEach(center => {
-    const marker = createCenterMarker(center);
+    const marker = createMarker(center);
     if (marker) {
       markers.push(marker);
-      markerClusterGroup.addLayer(marker);
+      if (markerClusterGroup) {
+        markerClusterGroup.addLayer(marker);
+      } else {
+        marker.addTo(map);
+      }
     }
   });
 }
 
-function createCenterMarker(center) {
-  if (!center.latitude || !center.longitude) {
-    console.warn('⚠️ Center missing coordinates:', center.name);
-    return null;
-  }
-
-  const iconColor = getIconColor(center);
+function createMarker(center) {
+  const lat = center.lat || center.latitude;
+  const lng = center.lng || center.longitude;
+  
+  if (!lat || !lng) return null;
+  
+  const isPartner = center.type === 'Partner';
+  const iconColor = isPartner ? '#8B5CF6' : '#10B981'; // Purple for partners
+  const iconClass = isPartner ? 'fa-handshake' : 'fa-recycle';
+  
   const icon = L.divIcon({
-    html: `<div class="custom-marker" style="background-color: ${iconColor};"><i class="fas fa-recycle"></i></div>`,
+    html: `<div class="custom-marker" style="background: ${iconColor}"><i class="fas ${iconClass}"></i></div>`,
     iconSize: [40, 40],
     className: 'custom-marker-container'
   });
-
-  const marker = L.marker([center.latitude, center.longitude], { icon })
+  
+  const marker = L.marker([lat, lng], { icon })
     .bindPopup(createPopupContent(center), {
-      maxWidth: 300,
+      maxWidth: 280,
       className: 'custom-popup'
     });
-
+  
   marker.on('click', () => {
-    showCenterDetails(center);
-    trackEvent('center_clicked', { center_id: center.id });
+    console.log('Center clicked:', center.name);
   });
-
+  
   return marker;
 }
 
-function getIconColor(center) {
-  if (center.verified) {
-    return '#10B981'; // Green
-  } else if (center.rating >= 4) {
-    return '#3B82F6'; // Blue
-  } else {
-    return '#8B5CF6'; // Purple
-  }
-}
-
 function createPopupContent(center) {
-  const distance = userLocation ? 
-    calculateDistance(userLocation, [center.latitude, center.longitude]) : 
-    null;
-    
-  const distanceText = distance ? `${distance.toFixed(1)} km away` : '';
-  const verifiedBadge = center.verified ? 
-    '<span class="verified-badge">Verified</span>' : '';
+  const lat = center.lat || center.latitude;
+  const lng = center.lng || center.longitude;
+  const distance = userLocation ? calculateDistance(userLocation, [lat, lng]) : null;
+  const isPartner = center.type === 'Partner';
   
   return `
     <div class="popup-content">
-      <div class="popup-header">
-        <h3>${center.name}</h3>
-        ${verifiedBadge}
+      ${isPartner ? '<div class="partner-badge-popup"><i class="fas fa-handshake"></i> Official Partner</div>' : ''}
+      <h3 style="margin-bottom: 8px; font-weight: 600;">${center.name}</h3>
+      <p class="address" style="font-size: 13px; color: #64748B; margin-bottom: 12px;">${center.address}</p>
+      
+      <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 13px;">
+        <span style="color: #F59E0B;">
+          <i class="fas fa-star"></i> ${center.rating}
+        </span>
+        ${distance ? `<span style="color: #64748B;"><i class="fas fa-route"></i> ${distance.toFixed(1)} km</span>` : ''}
       </div>
-      <p class="address">${center.address}</p>
-      <div class="rating">
-        ${generateStarRating(center.rating)}
-        <span>(${center.rating})</span>
-      </div>
-      <div class="distance">${distanceText}</div>
-      <div class="accepted-items">
-        ${center.acceptedItems.slice(0, 3).join(', ')}
-        ${center.acceptedItems.length > 3 ? '...' : ''}
-      </div>
-      <div class="popup-actions">
-        <button onclick="getDirections(${center.latitude}, ${center.longitude})">Directions</button>
-        <button onclick="schedulePickup('${center.id}')">Schedule</button>
-      </div>
-    </div>
-  `;
-}
-
-function generateStarRating(rating) {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  
-  let stars = '';
-  for (let i = 0; i < fullStars; i++) {
-    stars += '<i class="fas fa-star"></i>';
-  }
-  if (hasHalfStar) {
-    stars += '<i class="fas fa-star-half-alt"></i>';
-  }
-  for (let i = 0; i < emptyStars; i++) {
-    stars += '<i class="far fa-star"></i>';
-  }
-  
-  return stars;
-}
-
-function showCenterDetails(center) {
-  const detailsContainer = document.getElementById('center-details');
-  if (!detailsContainer) return;
-
-  const distance = userLocation ? 
-    calculateDistance(userLocation, [center.latitude, center.longitude]) : 
-    null;
-
-  const detailsHTML = `
-    <div class="center-details-content">
-      <div class="center-icon">
-        <i class="fas fa-recycle"></i>
-      </div>
-      <div class="center-info">
-        <div class="center-header">
-          <h3>${center.name}</h3>
-          ${center.verified ? '<span class="verified">Verified</span>' : ''}
-        </div>
-        <p class="address">${center.address}</p>
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="label">Rating:</span>
-            <div class="rating">
-              ${generateStarRating(center.rating)}
-              <span>(${center.rating}/5)</span>
-            </div>
-          </div>
-          <div class="detail-item">
-            <span class="label">Distance:</span>
-            <span>${distance ? `${distance.toFixed(1)} km` : 'N/A'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">Hours:</span>
-            <span>${center.timings}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">Contact:</span>
-            <span>${center.contact}</span>
-          </div>
-        </div>
-        <div class="accepted-items">
-          <span class="label">Accepted Items:</span>
-          <div class="items-list">
-            ${center.acceptedItems.map(item => `<span class="item-tag">${item}</span>`).join('')}
-          </div>
-        </div>
-        <div class="actions">
-          <button onclick="getDirections(${center.latitude}, ${center.longitude})" class="btn-primary">
-            <i class="fas fa-directions"></i> Get Directions
-          </button>
-          <button onclick="schedulePickup('${center.id}')" class="btn-secondary">
-            <i class="fas fa-calendar-plus"></i> Schedule Pickup
-          </button>
-        </div>
+      
+      <div class="popup-actions" style="display: flex; gap: 8px;">
+        <button onclick="getDirections(${lat}, ${lng})"
+                style="flex: 1; padding: 8px; background: #10B981; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px;">
+          <i class="fas fa-directions"></i> Directions
+        </button>
+        <button onclick="window.scrollToSection('pickup')"
+                style="flex: 1; padding: 8px; background: white; color: #10B981; border: 1px solid #10B981; border-radius: 8px; cursor: pointer; font-size: 12px;">
+          <i class="fas fa-calendar"></i> Schedule
+        </button>
       </div>
     </div>
   `;
-  
-  detailsContainer.innerHTML = detailsHTML;
-  detailsContainer.classList.remove('hidden');
 }
+
+// ============================================
+// SEARCH & FILTERS
+// ============================================
+let searchTimeout;
 
 function initSearch() {
   const searchInput = document.getElementById('location-search');
   if (!searchInput) return;
-
+  
   searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.trim();
-    currentFilters.searchQuery = query;
+    const query = e.target.value.trim().toLowerCase();
     
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-      filterCenters();
+      filterCenters(query);
     }, 300);
   });
 }
@@ -352,216 +403,141 @@ function initSearch() {
 function initFilters() {
   const itemFilter = document.getElementById('item-filter');
   if (!itemFilter) return;
-
-  itemFilter.addEventListener('change', (e) => {
-    currentFilters.itemType = e.target.value;
-    filterCenters();
+  
+  itemFilter.addEventListener('change', () => {
+    const searchInput = document.getElementById('location-search');
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    filterCenters(query);
   });
 }
 
-function filterCenters() {
-  let filteredCenters = [...centersData];
-
-  // Filter by search query
-  if (currentFilters.searchQuery) {
-    const query = currentFilters.searchQuery.toLowerCase();
-    filteredCenters = filteredCenters.filter(center =>
-      center.name.toLowerCase().includes(query) ||
-      center.address.toLowerCase().includes(query) ||
-      center.acceptedItems.some(item => item.toLowerCase().includes(query))
-    );
-  }
-
-  // Filter by item type
-  if (currentFilters.itemType && currentFilters.itemType !== 'all') {
-    filteredCenters = filteredCenters.filter(center =>
-      center.acceptedItems.some(item => 
-        item.toLowerCase().includes(currentFilters.itemType.toLowerCase())
-      )
-    );
-  }
-
-  // Display filtered results
-  displayCenters(filteredCenters);
-  updateCenterCards(filteredCenters);
+function filterCenters(query = '') {
+  const itemFilter = document.getElementById('item-filter');
+  const itemType = itemFilter ? itemFilter.value : 'all';
   
-  console.log(`🔍 Filtered to ${filteredCenters.length} centers`);
+  let filtered = [...centersData];
+  
+  // Filter by search query
+  if (query) {
+    filtered = filtered.filter(center =>
+      center.name.toLowerCase().includes(query) ||
+      center.address.toLowerCase().includes(query)
+    );
+  }
+  
+  // Filter by item type
+  if (itemType !== 'all') {
+    filtered = filtered.filter(center => {
+      const accepts = center.accepts || center.acceptedItems || [];
+      return accepts.some(item => item.toLowerCase().includes(itemType.toLowerCase()));
+    });
+  }
+  
+  displayCenters(filtered);
+  updateCenterCards(filtered);
+  
+  console.log(`🔍 Filtered: ${filtered.length} centers`);
 }
 
+// ============================================
+// UPDATE CENTER CARDS LIST
+// ============================================
 function updateCenterCards(centers) {
-  const cardsContainer = document.getElementById('centers-grid');
-  if (!cardsContainer) return;
-
+  const container = document.getElementById('centers-list');
+  if (!container) return;
+  
   if (centers.length === 0) {
-    cardsContainer.innerHTML = `
-      <div class="no-results">
-        <i class="fas fa-search"></i>
-        <h3>No Centers Found</h3>
-        <p>Try adjusting your search criteria.</p>
-        <button onclick="resetFilters()" class="btn-primary">Reset Filters</button>
+    container.innerHTML = `
+      <div style="text-align: center; padding: 32px 16px; color: #64748B;">
+        <i class="fas fa-search-location" style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;"></i>
+        <p>No centers found matching your search.</p>
+        <button onclick="filterCenters('')" style="margin-top: 12px; color: #10B981; background: none; border: none; font-weight: 500; cursor: pointer;">
+          Clear Filters
+        </button>
       </div>
     `;
     return;
   }
-
-  cardsContainer.innerHTML = centers.map(center => createCenterCard(center)).join('');
-}
-
-function createCenterCard(center) {
-  const distance = userLocation ? 
-    calculateDistance(userLocation, [center.latitude, center.longitude]) : 
-    null;
-
-  const verifiedClass = center.verified ? 'verified' : 'unverified';
-  const verifiedText = center.verified ? 'Verified' : 'Unverified';
-
-  return `
-    <div class="center-card ${verifiedClass}" onclick="focusOnCenter(${center.latitude}, ${center.longitude})">
-      <div class="card-header">
-        <div class="card-icon">
-          <i class="fas fa-recycle"></i>
-        </div>
-        <div class="verification-badge">
-          <span class="${verifiedClass}">${verifiedText}</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <h3>${center.name}</h3>
-        <p class="address">${center.address}</p>
-        <div class="card-meta">
-          <div class="timing">
-            <i class="fas fa-clock"></i>
-            <span>${center.timings}</span>
+  
+  container.innerHTML = centers.map(center => {
+    const lat = center.lat || center.latitude;
+    const lng = center.lng || center.longitude;
+    const distance = userLocation ? calculateDistance(userLocation, [lat, lng]).toFixed(1) : null;
+    const isPartner = center.type === 'Partner';
+    
+    return `
+      <div class="center-card ${isPartner ? 'partner-card' : ''}" onclick="focusOnCenter(${lat}, ${lng})">
+        <div class="center-info">
+          ${isPartner ? '<span class="partner-badge-sm">Official Partner</span>' : ''}
+          <h3>${center.name}</h3>
+          <p class="center-address"><i class="fas fa-map-marker-alt"></i> ${center.address}</p>
+          
+          <div class="center-meta">
+            <span class="rating">
+              <i class="fas fa-star"></i> ${center.rating} (${center.reviews})
+            </span>
+            ${distance ? `<span><i class="fas fa-route"></i> ${distance} km</span>` : ''}
+            <span class="status open">
+              <i class="far fa-clock"></i> ${center.hours ? center.hours.split('-')[0] : 'Open'}
+            </span>
           </div>
-          <div class="distance">
-            <i class="fas fa-route"></i>
-            <span>${distance ? `${distance.toFixed(1)} km` : 'N/A'}</span>
+          
+          <div class="center-features">
+            ${(center.services || []).slice(0, 2).map(s => `<span>${s}</span>`).join('')}
           </div>
         </div>
-        <div class="rating">
-          ${generateStarRating(center.rating)}
-          <span>(${center.rating}/5)</span>
-        </div>
-        <div class="accepted-items">
-          ${center.acceptedItems.slice(0, 3).map(item => 
-            `<span class="item-tag">${item}</span>`
-          ).join('')}
-          ${center.acceptedItems.length > 3 ? 
-            `<span class="more-items">+${center.acceptedItems.length - 3}</span>` : 
-            ''
-          }
-        </div>
-        <div class="card-actions">
-          <button onclick="event.stopPropagation(); getDirections(${center.latitude}, ${center.longitude})" class="btn-directions">
-            <i class="fas fa-directions"></i> Directions
-          </button>
-          <button onclick="event.stopPropagation(); schedulePickup('${center.id}')" class="btn-schedule">
-            <i class="fas fa-calendar-plus"></i> Schedule
-          </button>
+        
+        <div class="center-action">
+          <div class="btn-icon">
+            <i class="fas fa-chevron-right"></i>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+  }).join('');
 }
 
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
 function calculateDistance(coord1, coord2) {
-  const R = 6371; // Earth's radius in km
+  const R = 6371; // Earth radius in km
   const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
   const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
 }
 
-function updateDistances() {
-  if (!userLocation) return;
-  filterCenters();
-}
-
-function focusOnCenter(lat, lng) {
-  if (map) {
-    map.setView([lat, lng], 15);
-    trackEvent('center_focused', { lat, lng });
-  }
-}
-
 function showMapError(message) {
-  const mapContainer = document.getElementById('centers-map');
-  if (!mapContainer) return;
-
-  mapContainer.innerHTML = `
-    <div class="map-error">
-      <div class="error-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <h3>Map Error</h3>
-      <p>${message}</p>
-      <button onclick="window.location.reload()" class="btn-primary">
-        <i class="fas fa-refresh"></i> Reload Page
+  const container = document.getElementById('centers-map');
+  if (!container) return;
+  
+  container.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #F8FAFC; color: #64748B;">
+      <i class="fas fa-map-marked-alt" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+      <p style="margin-bottom: 16px;">${message}</p>
+      <button onclick="location.reload()" style="padding: 8px 16px; background: #10B981; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        <i class="fas fa-refresh"></i> Reload
       </button>
     </div>
   `;
 }
 
-// Global functions for HTML onclick handlers
+// ============================================
+// GLOBAL FUNCTIONS
+// ============================================
 window.getDirections = function(lat, lng) {
-  if (userLocation) {
-    const url = `https://www.google.com/maps/dir/${userLocation[0]},${userLocation[1]}/${lat},${lng}`;
-    window.open(url, '_blank');
-  } else {
-    const url = `https://www.google.com/maps/search/${lat},${lng}`;
-    window.open(url, '_blank');
-  }
-  trackEvent('directions_requested', { lat, lng });
+  const url = userLocation 
+    ? `https://www.google.com/maps/dir/${userLocation[0]},${userLocation[1]}/${lat},${lng}`
+    : `https://www.google.com/maps/search/${lat},${lng}`;
+  window.open(url, '_blank');
 };
 
-window.schedulePickup = function(centerId) {
-  console.log('📅 Scheduling pickup for center:', centerId);
-  window.scrollToSection('pickup');
-  
-  const center = centersData.find(c => c.id === centerId);
-  if (center && window.prefillPickupForm) {
-    window.prefillPickupForm(center);
-  }
-  
-  trackEvent('pickup_scheduled', { center_id: centerId });
-  
-  if (window.EZero?.utils?.showNotification) {
-    window.EZero.utils.showNotification('Redirecting to pickup form...', 'info');
+window.focusOnCenter = function(lat, lng) {
+  if (map) {
+    map.setView([lat, lng], 15);
   }
 };
-
-window.resetFilters = function() {
-  currentFilters = {
-    itemType: 'all',
-    searchQuery: '',
-    radius: 50
-  };
-  
-  const searchInput = document.getElementById('location-search');
-  const itemFilter = document.getElementById('item-filter');
-  
-  if (searchInput) searchInput.value = '';
-  if (itemFilter) itemFilter.value = 'all';
-  
-  filterCenters();
-  console.log('🔄 Filters reset');
-};
-
-function trackEvent(eventName, data = {}) {
-  console.log(`📊 Event: ${eventName}`, data);
-}
-
-// Auto-initialize when ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('centers-map')) {
-      initMap();
-    }
-  });
-} else if (document.getElementById('centers-map')) {
-  initMap();
-}
